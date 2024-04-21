@@ -1,0 +1,250 @@
+name: Experiment 1 - SCA Scanning Python
+
+on:
+  workflow_call:
+    inputs:
+      eclipse-steady-scan-enabled:
+        description: 'Enable Eclipse Steady scan'
+        type: boolean
+        required: false
+        default: true
+      snyk-scan-enabled:
+        description: 'Enable Snyk scan'
+        type: boolean
+        required: false
+        default: true
+      owasp-dependency-scan-enabled:
+        description: 'Enable OWASP Dependency Check scan'
+        type: boolean
+        required: false
+        default: true
+      python-artifact-name:
+        description: 'Python artifact name'
+        type: string
+        required: false
+      python-source-dir:
+        description: 'Python source directory'
+        type: string
+        required: false
+        default: src
+      python-version:
+        description: 'Python version to build project'
+        type: string
+        required: false
+        default: 3.12
+      python-build-artifact:
+        description: 'Python build artifact'
+        type: string
+        required: false
+        default: python-build
+
+jobs:
+  eclipse_steady_scan:
+    name: Run SCA Eclipse Steady Scan
+    if: ${{ inputs.eclipse-steady-scan-enabled == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Install Python
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install Python Dependencies
+        shell: bash
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install --no-cache-dir -e .
+          pip install unzip
+
+      - name: Build Python Package
+        shell: bash
+        run: python setup.py build
+
+      - name: Download Eclipse Steady CLI And Copy Source Files To App Directory
+        shell: bash
+        run: |
+          curl -LO https://github.com/eclipse/steady/releases/download/release-3.2.5/steady-cli-3.2.5.zip       
+          unzip steady-cli-3.2.5.zip
+          cp -a ${{ inputs.python-source-dir }}/. steady-cli/app/
+
+      - name: Update Eclipse Steady Properties
+        shell: bash
+        run: |
+          mv steady-cli/steady-custom.properties.sample steady-cli/steady-custom.properties
+          sed -i 's,http://localhost:8033/backend,http://steady.b00158319.com:8033/backend,g' steady-cli/steady-custom.properties
+          sed -i 's,<GROUP>,${{ inputs.python-artifact-name }},g' steady-cli/steady-custom.properties
+          sed -i 's,<ARTIFACT>,${{ inputs.python-artifact-name }},g' steady-cli/steady-custom.properties
+          sed -i 's,<VERSION>,1.0.0,g' steady-cli/steady-custom.properties
+          echo 'vulas.core.space.token=${{ secrets.ECLIPSE_STEADY_WORKSPACE_TOKEN }}' >> steady-cli/steady-custom.properties
+          echo 'vulas.core.bom.python.pip=/usr/bin/pip' >> steady-cli/steady-custom.properties
+
+      - name: Run Eclipse Steady Scan (App)
+        working-directory: steady-cli
+        shell: bash
+        run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal app
+
+      - name: Run Eclipse Steady Scan (Report)
+        working-directory: steady-cli
+        shell: bash
+        run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal report
+
+      - name: Upload Eclipse Steady Scan Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-steady-scan-reports-json
+          path: |
+            '**/vulas-report.json'
+            '**/vulas-report.html'
+
+  snyk_scan:
+    name: Run SCA Snyk Scan
+    if: ${{ inputs.snyk-scan-enabled == true }}
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Python Build
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          name: ${{ inputs.python-build-artifact }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: in_progress
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Extract Python Build
+        shell: bash
+        run: tar -xzf ${{ inputs.python-build-artifact }}.tgz
+
+      - name: Install Python Dependencies
+        shell: bash
+        run: |
+          [[ -e requirements-dev.txt ]] && cp requirements-dev.txt requirements.txt
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install --no-cache-dir -e .
+          pip install pycairo
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4.0.2
+
+      - name: Install Snyk CLI
+        shell: bash
+        run: |
+          npm install snyk -g
+          npm install snyk-to-html -g
+
+      # Snyk returns exit code 1 if vulnerabilities are found
+      - name: Run Snyk Monitor Scan
+        shell: bash
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk monitor --command=python --file=setup.py
+          if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
+      # Snyk returns exit code 1 if vulnerabilities are found
+      - name: Run Snyk Test Scan (JSON)
+        shell: bash
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk test --command=python3 --file=setup.py --sarif-file-output=snyk.sarif --json > snyk-test-report.json || EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
+      - name: Run Snyk Test Scan (HTML)
+        shell: bash
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk test --command=python3 --file=setup.py --json | snyk-to-html -o snyk-test-report.html || EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
+      - name: Upload Snyk Scan Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: snyk-scan-report
+          path: |
+            snyk-test-report.json
+            snyk-test-report.html
+
+      - name: Upload Snyk Result To GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
+          category: snyk-sca-tool
+
+  owasp_dependency_check:
+    name: Run SCA OWASP Dependency Check
+    if: ${{ inputs.owasp-dependency-scan-enabled == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Python Build
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          name: ${{ inputs.python-build-artifact }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: in_progress
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Extract Python Build
+        shell: bash
+        run: tar -xzf ${{ inputs.python-build-artifact }}.tgz
+
+      - name: Install Python Dependencies
+        shell: bash
+        run: |
+          [[ -e requirements-dev.txt ]] && cp requirements-dev.txt requirements.txt
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install --no-cache-dir -e .
+          pip install unzip
+
+      - name: Install OWASP Dependency Check
+        shell: bash
+        run: |
+          VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+          curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+          unzip dependency-check
+          chmod +x ./dependency-check/bin/dependency-check.sh
+
+      - name: Run OWASP Dependency Check
+        shell: bash
+        run: |
+          mkdir -p owasp-reports
+          ./dependency-check/bin/dependency-check.sh --nvdApiKey ${{ secrets.NVD_API_KEY }} --scan . --project "$(python ./setup.py --name)" --format ALL --out ${{ github.workspace }}/owasp-reports
+
+      - name: Upload OWASP Dependency Check Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: OWASP Dependency Check Report
+          path: ${{ github.workspace }}/owasp-reports
+
+      - name: Upload OWASP Dependency Check Result To GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: owasp-reports/dependency-check-report.sarif
+          category: owasp-dependency-check-sca-tool

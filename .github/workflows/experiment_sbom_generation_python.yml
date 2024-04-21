@@ -1,0 +1,39 @@
+name: Experiment - SBOM Generation
+
+on:
+  workflow_call:
+    inputs:
+      sbom-generation-enabled:
+        description: 'Enable SBOM generation'
+        type: boolean
+        required: false
+        default: true
+
+jobs:
+  sbom_create:
+    name: Create SBOM
+    if: ${{ inputs.sbom-generation-enabled == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.12
+
+      - name: Create SBOM
+        shell: bash
+        run: |
+          [[ -e requirements-dev.txt ]] && cp requirements-dev.txt requirements.txt
+          pip install cyclonedx-bom
+          python -m cyclonedx_py requirements -o sbom.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-sbom
+          path: sbom.json
