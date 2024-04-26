@@ -45,6 +45,7 @@ The workflow can be triggered using the following example snippet:
 | **eclipse-steady-scan-enabled:**  | no       | boolean | true        | Enable Eclipse Steady scan               |
 | **snyk-scan-enabled**             | no       | boolean | true        | Enable Snyk scan                         |
 | **owasp-dependency-scan-enabled** | no       | boolean | true        | Enable OWASP Dependency scan             |
+| **grype-scan-enabled**            | no       | boolean | true        | Enable Grype scan                        |
 | **project-name**                  | yes      | string  |             | Name of project being scanned            |
 | **java-version**                  | no       | string  | 8           | Java version to build Maven project      |
 | **java-distribution**             | no       | string  | adopt       | Java distribution to build Maven project |
