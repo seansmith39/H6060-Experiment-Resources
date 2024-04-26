@@ -18,6 +18,11 @@ on:
         type: boolean
         required: false
         default: true
+      grype-scan-enabled:
+        description: 'Enable Grype scan'
+        type: boolean
+        required: false
+        default: true
       python-artifact-name:
         description: 'Python artifact name'
         type: string
@@ -248,3 +253,40 @@ jobs:
         with:
           sarif_file: owasp-reports/dependency-check-report.sarif
           category: owasp-dependency-check-sca-tool
+
+  grype_scan:
+    name: Run SAST Grype Scan
+    if: ${{ inputs.grype-scan-enabled == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Python Build
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          name: ${{ inputs.python-build-artifact }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: in_progress
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Extract Python Build
+        shell: bash
+        run: tar -xzf ${{ inputs.python-build-artifact }}.tgz
+
+      - name: Run Grype Scan
+        uses: anchore/scan-action@v3.6.4
+        id: scan
+        with:
+          path:
+          by-cve: true
+          fail-build: false
+          output-format: sariff
+
+      - name: Upload Grype Result To GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}

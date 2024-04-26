@@ -53,15 +53,16 @@ The workflow can be triggered using the following example snippet:
 
 ### experiment_1_sca_python.yml
 
-| name                                | required | type    | default      | description                                                    |
-|-------------------------------------|----------|---------|--------------|----------------------------------------------------------------|
-| **eclipse-steady-scan-enabled:**    | no       | boolean | true         | Enable Eclipse Steady scan                                     |
-| **snyk-scan-enabled**               | no       | boolean | true         | Enable Snyk scan                                               |
-| **owasp-dependency-scan-enabled**   | no       | boolean | true         | Enable OWASP Dependency scan                                   |
-| **python-artifact-name**            | no       | string  |              | Name of python artifact name for Eclipse Steady identification |
-| **python-source-dir**               | no       | string  | src          | Location of python source files                                |
-| **python-version**                  | no       | string  | 3.12         | Python version to build project                                |
-| **python-build-artifact**           | no       | string  | python-build | Python build artifact                                          |
+| name                              | required | type    | default      | description                                                    |
+|-----------------------------------|----------|---------|--------------|----------------------------------------------------------------|
+| **eclipse-steady-scan-enabled:**  | no       | boolean | true         | Enable Eclipse Steady scan                                     |
+| **snyk-scan-enabled**             | no       | boolean | true         | Enable Snyk scan                                               |
+| **owasp-dependency-scan-enabled** | no       | boolean | true         | Enable OWASP Dependency scan                                   |
+| **grype-scan-enabled**            | no       | boolean | true         | Enable Grype scan                                              |
+| **python-artifact-name**          | no       | string  |              | Name of python artifact name for Eclipse Steady identification |
+| **python-source-dir**             | no       | string  | src          | Location of python source files                                |
+| **python-version**                | no       | string  | 3.12         | Python version to build project                                |
+| **python-build-artifact**         | no       | string  | python-build | Python build artifact                                          |
 
 ---
 
