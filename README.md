@@ -8,6 +8,7 @@ The following SCA scans are performed:
 1. Eclipse Steady
 2. OWASP Dependency Check
 3. Snyk
+4. Grype
 
 ## Triggering the GitHub Workflow
 
