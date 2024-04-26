@@ -284,7 +284,7 @@ jobs:
           path:
           by-cve: true
           fail-build: false
-          output-format: sariff
+          output-format: sarif
 
       - name: Upload Grype Result To GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
