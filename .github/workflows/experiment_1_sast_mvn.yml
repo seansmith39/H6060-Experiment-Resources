@@ -165,14 +165,16 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
 
       - name: Start Xvfb
-
         shell: bash
         run: Xvfb $DISPLAY &
 
       - name: Generate Jacoco Report
         if: ${{ inputs.jacoco-scan-enabled == true }}
-        shell: bash
-        run: ${{ inputs.mvn-jacoco-command }}
+        uses: nick-fields/retry@v3.0.0
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: ${{ inputs.mvn-jacoco-command }}
 
       - name: Run DeepSource Scan
         uses: DeepSourceCorp/test-coverage-action@v1.1.2
