@@ -166,7 +166,7 @@ jobs:
 
       - name: Start Xvfb
         shell: bash
-        run: Xvfb $DISPLAY &
+        run: Xvfb 99 &
 
       - name: Generate Jacoco Report
         if: ${{ inputs.jacoco-scan-enabled == true }}
