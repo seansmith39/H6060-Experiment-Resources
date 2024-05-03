@@ -66,6 +66,7 @@ The workflow can be triggered using the following example snippet:
 | **python-source-dir**             | no       | string  | src          | Location of python source files                                |
 | **python-version**                | no       | string  | 3.12         | Python version to build project                                |
 | **python-build-artifact**         | no       | string  | python-build | Python build artifact                                          |
+| **snyk-file-to-scan**             | no       | string  | setup.py     | Name of Snyk file to scan                                      |
 
 ---
 
@@ -128,12 +129,13 @@ The workflow can be triggered using the following example snippet:
 
 ### experiment_1_sast_python.yml
 
-| name                             | required | type    | default               | description                                 |
-|----------------------------------|----------|---------|-----------------------|---------------------------------------------|
-| **sonarqube-scan-enabled**       | no       | boolean | true                  | Enable SonarQube scan                       |
-| **semgrep-scan-enabled**         | no       | boolean | true                  | Enable Semgrep scan                         |
-| **deepsource-scan-enabled**      | no       | boolean | true                  | Enable Deepsource scan                      |
-| **horusec-scan-enabled**         | no       | boolean | true                  | Enable Horusec scan                         |
+| name                        | required | type    | default | description                          |
+|-----------------------------|----------|---------|---------|--------------------------------------|
+| **sonarqube-scan-enabled**  | no       | boolean | true    | Enable SonarQube scan                |
+| **semgrep-scan-enabled**    | no       | boolean | true    | Enable Semgrep scan                  |
+| **deepsource-scan-enabled** | no       | boolean | true    | Enable Deepsource scan               |
+| **horusec-scan-enabled**    | no       | boolean | true    | Enable Horusec scan                  |
+| **include-coverage-report** | no       | boolean | true    | Whether to include a coverage report |
 
 ---
 
