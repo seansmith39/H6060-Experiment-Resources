@@ -52,6 +52,7 @@ The workflow can be triggered using the following example snippet:
 | **mvn-build-artifact**            | no       | string  | maven-build | Maven build artifact                     |
 | **maven-setup-required**          | no       | boolean | false       | Maven installation is required           |
 | **snyk-sarif-enabled**            | no       | boolean | true        | Generate sariff report using Snyk        |
+| **eclipse-steady-report-enabled** | no       | boolean | true        | Generate Eclipse Steady report           |
 
 ### experiment_1_sca_python.yml
 
