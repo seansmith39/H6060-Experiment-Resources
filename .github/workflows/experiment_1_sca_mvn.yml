@@ -52,6 +52,11 @@ on:
         type: boolean
         required: false
         default: true
+      eclipse-steady-report-enabled:
+        description: 'Enable Eclipse Steady report'
+        type: boolean
+        required: false
+        default: true
 
 jobs:
   eclipse_steady_scan:
@@ -90,19 +95,24 @@ jobs:
           java-version: ${{ inputs.java-version }}
           maven-version: 3.9.6
 
-      - name: Run Eclipse Steady Scan
+      - name: Run Eclipse Steady Scan (App)
         shell: bash
-        run: |
-          mvn -Dsteady compile steady:app
-          mvn -Dsteady steady:report
+        run: mvn -Dsteady compile steady:app
+
+      - name: Run Eclipse Steady Scan (Report)
+        if: ${{ inputs.eclipse-steady-report-enabled == true }}
+        shell: bash
+        run: mvn -Dsteady steady:report
 
       - name: Upload Eclipse Steady Scan Json Results
+        if: ${{ inputs.eclipse-steady-report-enabled == true }}
         uses: actions/upload-artifact@v4
         with:
           name: eclipse-steady-scan-reports-json
           path: '**/vulas-report.json'
 
       - name: Upload Eclipse Steady Scan Html Results
+        if: ${{ inputs.eclipse-steady-report-enabled == true }}
         uses: actions/upload-artifact@v4
         with:
           name: eclipse-steady-scan-reports-html
