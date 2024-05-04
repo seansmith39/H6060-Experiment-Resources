@@ -47,6 +47,11 @@ on:
         type: string
         required: false
         default: setup.py
+      python-dependencies-file:
+        description: 'Python dependencies file'
+        type: string
+        required: false
+        default: requirements.txt
 
 jobs:
   eclipse_steady_scan:
@@ -58,13 +63,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
         with:
           java-version: 17
           distribution: temurin
-
+                    
       - name: Install Python
         uses: actions/setup-python@v5.1.0
         with:
@@ -73,9 +79,9 @@ jobs:
       - name: Install Python Dependencies
         shell: bash
         run: |
-          [[ -e requirements-dev.txt ]] && cp requirements-dev.txt requirements.txt
+          [[ "${{ inputs.python-dependencies-file }}" != "requirements.txt" ]] && cp ${{ inputs.python-dependencies-file }} requirements.txt
           python3 -m pip install --upgrade pip
-          pip install -r requirements.txt        
+          [[ -f requirements.txt ]] && pip install -r requirements.txt       
           pip install --no-cache-dir -e .
           pip install unzip setuptools
 
@@ -129,6 +135,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Download Python Build
         uses: dawidd6/action-download-artifact@v3.1.4
@@ -142,13 +149,18 @@ jobs:
       - name: Extract Python Build
         shell: bash
         run: tar -xzf ${{ inputs.python-build-artifact }}.tgz
+      
+      - name: Install Python
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: ${{ inputs.python-version }}
 
       - name: Install Python Dependencies
         shell: bash
         run: |
-          [[ -e requirements-dev.txt ]] && cp requirements-dev.txt requirements.txt
+          [[ "${{ inputs.python-dependencies-file }}" != "requirements.txt" ]] && cp ${{ inputs.python-dependencies-file }} requirements.txt
           python3 -m pip install --upgrade pip
-          pip install -r requirements.txt
+          [[ -f requirements.txt ]] && pip install -r requirements.txt       
           pip install --no-cache-dir -e .
           pip install pycairo
 
@@ -211,6 +223,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Download Python Build
         uses: dawidd6/action-download-artifact@v3.1.4
@@ -224,13 +237,18 @@ jobs:
       - name: Extract Python Build
         shell: bash
         run: tar -xzf ${{ inputs.python-build-artifact }}.tgz
+        
+      - name: Install Python
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: ${{ inputs.python-version }}
 
       - name: Install Python Dependencies
         shell: bash
         run: |
-          [[ -e requirements-dev.txt ]] && cp requirements-dev.txt requirements.txt
+          [[ "${{ inputs.python-dependencies-file }}" != "requirements.txt" ]] && cp ${{ inputs.python-dependencies-file }} requirements.txt
           python3 -m pip install --upgrade pip
-          pip install -r requirements.txt
+          [[ -f requirements.txt ]] && pip install -r requirements.txt       
           pip install --no-cache-dir -e .
           pip install unzip
 
@@ -269,6 +287,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Download Python Build
         uses: dawidd6/action-download-artifact@v3.1.4

@@ -56,17 +56,18 @@ The workflow can be triggered using the following example snippet:
 
 ### experiment_1_sca_python.yml
 
-| name                              | required | type    | default      | description                                                    |
-|-----------------------------------|----------|---------|--------------|----------------------------------------------------------------|
-| **eclipse-steady-scan-enabled:**  | no       | boolean | true         | Enable Eclipse Steady scan                                     |
-| **snyk-scan-enabled**             | no       | boolean | true         | Enable Snyk scan                                               |
-| **owasp-dependency-scan-enabled** | no       | boolean | true         | Enable OWASP Dependency scan                                   |
-| **grype-scan-enabled**            | no       | boolean | true         | Enable Grype scan                                              |
-| **python-artifact-name**          | no       | string  |              | Name of python artifact name for Eclipse Steady identification |
-| **python-source-dir**             | no       | string  | src          | Location of python source files                                |
-| **python-version**                | no       | string  | 3.12         | Python version to build project                                |
-| **python-build-artifact**         | no       | string  | python-build | Python build artifact                                          |
-| **snyk-file-to-scan**             | no       | string  | setup.py     | Name of Snyk file to scan                                      |
+| name                              | required | type    | default          | description                                                    |
+|-----------------------------------|----------|---------|------------------|----------------------------------------------------------------|
+| **eclipse-steady-scan-enabled:**  | no       | boolean | true             | Enable Eclipse Steady scan                                     |
+| **snyk-scan-enabled**             | no       | boolean | true             | Enable Snyk scan                                               |
+| **owasp-dependency-scan-enabled** | no       | boolean | true             | Enable OWASP Dependency scan                                   |
+| **grype-scan-enabled**            | no       | boolean | true             | Enable Grype scan                                              |
+| **python-artifact-name**          | no       | string  |                  | Name of python artifact name for Eclipse Steady identification |
+| **python-source-dir**             | no       | string  | src              | Location of python source files                                |
+| **python-version**                | no       | string  | 3.12             | Python version to build project                                |
+| **python-build-artifact**         | no       | string  | python-build     | Python build artifact                                          |
+| **snyk-file-to-scan**             | no       | string  | setup.py         | Name of Snyk file to scan                                      |
+| **python-dependencies-file**      | no       | string  | requirements.txt | Python requirements file to install                            |
 
 ---
 
@@ -154,3 +155,14 @@ The workflow can be triggered using the following example snippet:
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment_sbom_generation_python.yml@main
     secrets: inherit
 ```
+
+## GitHub Workflow Inputs
+
+### experiment_sbom_generation_python.yml
+
+| name                           | required | type    | default          | description                           |
+|--------------------------------|----------|---------|------------------|---------------------------------------|
+| **sbom-scan-enabled**          | no       | boolean | true             | Enable SBOM creation                  |
+| **semgrep-scan-enabled**       | no       | boolean | true             | Enable Semgrep scan                   |
+| **python-dependencies-file**   | no       | string  | requirements.txt | Python requirements file to scan      |
+| **download-requirements-file** | no       | boolean | false            | Download python requirements artifact |
