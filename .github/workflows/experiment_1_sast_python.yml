@@ -23,6 +23,11 @@ on:
         type: boolean
         required: false
         default: true
+      include-coverage-report:
+        description: 'Include coverage report'
+        type: boolean
+        required: false
+        default: true
 
 jobs:
   sonarqube_scan:
@@ -36,6 +41,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download Python Coverage
+        if: ${{ inputs.include-coverage-report == true }}
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: python-coverage-report

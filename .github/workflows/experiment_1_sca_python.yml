@@ -42,6 +42,11 @@ on:
         type: string
         required: false
         default: python-build
+      snyk-file-to-scan:
+        description: 'Snyk file to scan'
+        type: string
+        required: false
+        default: setup.py
 
 jobs:
   eclipse_steady_scan:
@@ -68,10 +73,11 @@ jobs:
       - name: Install Python Dependencies
         shell: bash
         run: |
+          [[ -e requirements-dev.txt ]] && cp requirements-dev.txt requirements.txt
           python3 -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          pip install -r requirements.txt        
           pip install --no-cache-dir -e .
-          pip install unzip
+          pip install unzip setuptools
 
       - name: Build Python Package
         shell: bash
@@ -161,7 +167,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk monitor --command=python --file=setup.py
+          snyk monitor --command=python --file=${{ inputs.snyk-file-to-scan }}
           if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
 
       # Snyk returns exit code 1 if vulnerabilities are found
@@ -170,7 +176,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk test --command=python3 --file=setup.py --sarif-file-output=snyk.sarif --json > snyk-test-report.json || EXIT_CODE=$?
+          snyk test --command=python3 --file=${{ inputs.snyk-file-to-scan }} --sarif-file-output=snyk.sarif --json > snyk-test-report.json || EXIT_CODE=$?
           if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
 
       - name: Run Snyk Test Scan (HTML)
@@ -178,7 +184,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk test --command=python3 --file=setup.py --json | snyk-to-html -o snyk-test-report.html || EXIT_CODE=$?
+          snyk test --command=python3 --file=${{ inputs.snyk-file-to-scan }} --json | snyk-to-html -o snyk-test-report.html || EXIT_CODE=$?
           if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
 
       - name: Upload Snyk Scan Results
