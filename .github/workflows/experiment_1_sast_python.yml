@@ -39,6 +39,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Download Python Coverage
         if: ${{ inputs.include-coverage-report == true }}
@@ -75,6 +76,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Run Semgrep Scan
         shell: bash
@@ -94,6 +96,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Download Python Coverage
         uses: dawidd6/action-download-artifact@v3.1.4
@@ -120,6 +123,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: 'recursive'
 
       - name: Run Horusec Scan
         uses: fike/horusec-action@v0.2.2
