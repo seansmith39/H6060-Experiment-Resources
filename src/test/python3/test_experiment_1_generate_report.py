@@ -2,15 +2,50 @@
 
 import os
 import unittest
+import json as JSON
 from argparse import Namespace
 from unittest.mock import patch
 from main.python3 import experiment_1_generate_report
 
 
+TEST_DIRECTORY_RESOURCES = (
+    os.path.dirname(os.path.realpath(__file__)) + "/resources/"
+)
+NIST_CVE_ID_RESPONSE = TEST_DIRECTORY_RESOURCES + "nist-cve-information.json"
+
 DEFAULT_PRODUCT_NAME = "horusec"
 DEFAULT_CSV_REPORT_FILENAME = (
     f"experiment_1_{DEFAULT_PRODUCT_NAME.lower()}_results.csv"
 )
+NVD_API_KEY = "11111111-2222-3333-4444-555555555555"
+NIST_CVE_ID = "CVE-2019-14540"
+
+
+def mocked_response(token: str, url: str):
+    class MockResponse:
+        def __init__(self, file, status_code):
+            self.file = file
+            try:
+                with open(self.file, "r") as f:
+                    self.text = f.read()
+            except Exception:
+                self.text = file
+
+            self.status_code = status_code
+
+        def status_code(self):
+            return self.status_code
+
+        def ok(self):
+            return self.ok
+
+        def json(self):
+            return JSON.loads(self.text)
+
+    if NIST_CVE_ID in url:
+        return MockResponse(NIST_CVE_ID_RESPONSE, None)
+    else:
+        return None
 
 
 class DevNull:
@@ -27,16 +62,17 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestExperiment1GenerateReport, self).__init__(*args, **kwargs)
 
-    def __mock_args(product_name: str) -> Namespace:
+    def __mock_args(nvd_api_key: str, product_name: str) -> Namespace:
         """Mock arguments in argparse.Namespace type
 
-        :argument
+        :parameter
+            nvd_api_key:str -- NVD API Key to be mocked in the arguments
             product_name:str -- Name of the product to be mocked in the arguments
 
         :return
             argparse.Namespace -- Mocked arguments
         """
-        return Namespace(product_name=product_name)
+        return Namespace(nvd_api_key=nvd_api_key, product_name=product_name)
 
     def test_get_mitre_top_25_cwe(self):
         mitre_top_25 = experiment_1_generate_report.get_mitre_top_25_cwe()
@@ -48,6 +84,22 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             if "CWE-213" in value:
                 owasp_cwe_category = key
         self.assertEqual(owasp_cwe_category, "A04 Insecure Design")
+
+    @patch(
+        "main.python3.experiment_1_generate_report.get_cve_information_from_nvd",
+        side_effect=mocked_response,
+    )
+    def test_get_cve_information_from_nvd(self, mock_response):
+        with open(NIST_CVE_ID_RESPONSE, "r") as f:
+            expected_cve_information = JSON.load(f)
+        nist_cve_response = (
+            experiment_1_generate_report.get_cve_information_from_nvd(
+                NVD_API_KEY, NIST_CVE_ID
+            )
+        )
+        self.assertEqual(
+            JSON.loads(nist_cve_response.text), expected_cve_information
+        )
 
     def test_write_csv_report(self):
         product_data = [
@@ -72,7 +124,12 @@ class TestExperiment1GenerateReport(unittest.TestCase):
 
     def test_main(self):
         args = experiment_1_generate_report.get_args(
-            ["--product-name", DEFAULT_PRODUCT_NAME]
+            [
+                "--nvd-api-key",
+                NVD_API_KEY,
+                "--product-name",
+                DEFAULT_PRODUCT_NAME,
+            ]
         )
         result = experiment_1_generate_report.main(args)
         self.assertEqual(result, None)

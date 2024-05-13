@@ -3,19 +3,27 @@
 import csv
 import sys
 import argparse
+from time import sleep
+from requests import get
 
 
 def get_args(args: argparse.Namespace) -> argparse.Namespace:
     """Parse and return the arguments of the application
 
-    :argument
-        args: Inputted arguments to parse
+    :parameter
+        args:argparse.Namespace -- Submitted arguments to parse
 
     :returns
-        Parsed arguments
+        argparse.Namespace -- Parsed arguments
     """
     parser = argparse.ArgumentParser(
         description="Experiment 1 - Generate Report."
+    )
+    parser.add_argument(
+        "--nvd-api-key",
+        action="store",
+        required=True,
+        help="NIST NVD API key.",
     )
     parser.add_argument(
         "--product-name",
@@ -31,7 +39,7 @@ def get_mitre_top_25_cwe():
     """Top 25 CWE of 2024
 
     :returns
-        A list of CWE IDs
+        list -- Top 25 CWE IDs
     """
     return [
         "CWE-787",
@@ -66,7 +74,7 @@ def get_owasp_top_10_cwe():
     """Top 10 OWASP CWE of 2024
 
     :returns
-        A list of CWE IDs corresponding to the OWASP security category
+        list -- CWE IDs corresponding to the OWASP security category
     """
     return {
         "A01 Broken Access Control": [
@@ -288,12 +296,43 @@ def get_owasp_top_10_cwe():
     }
 
 
+def get_cve_information_from_nvd(
+    nvd_api_key: str, cve_id: str
+) -> dict:  # pragma: no cover
+    """Query NIST NVD with CVE ID
+
+    :parameter
+        nvd_api_key:str -- NIST API key
+        cve_id:str -- CVE ID to query
+
+    :return:
+        dict -- JSON data containing CVE information
+    """
+    url = "https://services.nvd.nist.gov/rest/json/cves/2.0?"
+    sleep_time = 0.1
+    headers = {"apiKey": nvd_api_key}
+    parameters = {"keywordSearch": cve_id}
+
+    for tries in range(3):
+        try:
+            sleep(sleep_time)
+            response = get(url, params=parameters, headers=headers)
+            data = response.json()
+        except Exception as e:
+            if response.status_code == 403:
+                print(f"Requests are being rate limited by NIST API: {e}")
+                sleep(sleep_time)
+        else:
+            break
+    return data
+
+
 def write_csv_report(product_name: str, product_data: dict) -> None:
     """Write parsed product report to CSV
 
-    :argument
-        product_name: Name of product to use in report title
-        product_data: Dictionary containing parsed data from product report
+    :parameter
+        product_name:str -- Name of product to use in report title
+        product_data:dict -- Parsed data from product report
     """
     filename = f"experiment_1_{product_name.lower()}_results.csv"
 
@@ -320,8 +359,8 @@ def write_csv_report(product_name: str, product_data: dict) -> None:
 def main(args: argparse.Namespace) -> None:
     """Main function of script
 
-    :argument
-        args: Parsed arguments supplied to script
+    :parameter
+        args:argparse.Namespace -- Parsed arguments supplied to script
     """
     print("Hello World")
 
