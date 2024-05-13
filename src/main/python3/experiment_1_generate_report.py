@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import csv
 import sys
 import argparse
@@ -13,7 +14,7 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
     :parameter
         args:argparse.Namespace -- Submitted arguments to parse
 
-    :returns
+    :return
         argparse.Namespace -- Parsed arguments
     """
     parser = argparse.ArgumentParser(
@@ -38,7 +39,7 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
 def get_mitre_top_25_cwe():
     """Top 25 CWE of 2024
 
-    :returns
+    :return
         list -- Top 25 CWE IDs
     """
     return [
@@ -73,7 +74,7 @@ def get_mitre_top_25_cwe():
 def get_owasp_top_10_cwe():
     """Top 10 OWASP CWE of 2024
 
-    :returns
+    :return
         list -- CWE IDs corresponding to the OWASP security category
     """
     return {
@@ -305,7 +306,7 @@ def get_cve_information_from_nvd(
         nvd_api_key:str -- NIST API key
         cve_id:str -- CVE ID to query
 
-    :return:
+    :return
         dict -- JSON data containing CVE information
     """
     url = "https://services.nvd.nist.gov/rest/json/cves/2.0?"
@@ -325,6 +326,21 @@ def get_cve_information_from_nvd(
         else:
             break
     return data
+
+
+def get_cve_id_year(cve_id: str) -> int:
+    """Parse year from CVE ID
+
+    :parameter
+        cve_id:str -- CVE ID
+
+    :return
+        int -- CVE year
+    """
+    cve_year_pattern = re.compile(r"(?<=-)\w+(?=-)")
+    match = re.search(cve_year_pattern, cve_id)
+    if match:
+        return int(match.group(0))
 
 
 def write_csv_report(product_name: str, product_data: dict) -> None:

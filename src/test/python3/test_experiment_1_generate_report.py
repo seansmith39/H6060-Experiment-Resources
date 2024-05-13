@@ -101,6 +101,10 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             JSON.loads(nist_cve_response.text), expected_cve_information
         )
 
+    def test_get_cve_id_year(self):
+        cve_year = experiment_1_generate_report.get_cve_id_year(NIST_CVE_ID)
+        self.assertEqual(cve_year, 2019)
+
     def test_write_csv_report(self):
         product_data = [
             [
