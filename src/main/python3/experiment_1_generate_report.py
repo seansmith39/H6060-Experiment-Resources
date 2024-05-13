@@ -343,6 +343,15 @@ def get_cve_id_year(cve_id: str) -> int:
         return int(match.group(0))
 
 
+def get_cwe_pattern() -> str:
+    """Get regex pattern for CWE ID
+
+    :return
+        str -- CWE ID regex pattern
+    """
+    return "CWE-(\\d+){0,9}"
+
+
 def write_csv_report(product_name: str, product_data: dict) -> None:
     """Write parsed product report to CSV
 

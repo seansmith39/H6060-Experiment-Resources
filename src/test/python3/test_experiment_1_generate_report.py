@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import unittest
 import json as JSON
 from argparse import Namespace
@@ -104,6 +105,14 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     def test_get_cve_id_year(self):
         cve_year = experiment_1_generate_report.get_cve_id_year(NIST_CVE_ID)
         self.assertEqual(cve_year, 2019)
+        cve_year = experiment_1_generate_report.get_cve_id_year("TEST")
+        self.assertEqual(cve_year, None)
+
+    def test_get_cwe_pattern(self):
+        cwe_pattern = experiment_1_generate_report.get_cwe_pattern()
+        cwe_id = "CWE-502"
+        match = re.search(cwe_pattern, cwe_id)
+        self.assertEqual(match.group(0), cwe_id)
 
     def test_write_csv_report(self):
         product_data = [
