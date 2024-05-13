@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+python3 -m black .
+python3 -m flake8
+
 PROJECT_ROOT=$(pwd)
 export PYTHONPATH="${PROJECT_ROOT}/src"
 cd "${PROJECT_ROOT}/src/test/python3"
