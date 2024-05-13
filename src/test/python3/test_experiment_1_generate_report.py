@@ -21,6 +21,13 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         mitre_top_25 = experiment_1_generate_report.get_mitre_top_25_cwe()
         self.assertTrue('CWE-276' in mitre_top_25)
 
+    def test_get_owasp_top_10_cwe(self):
+        owasp_top_10 = experiment_1_generate_report.get_owasp_top_10_cwe()
+        for key, value in owasp_top_10.items():
+            if 'CWE-213' in value:
+                owasp_cwe_category = key
+        self.assertEqual(owasp_cwe_category, 'A04 Insecure Design')
+
 
 if __name__ == '__main__':
     unittest.main()
