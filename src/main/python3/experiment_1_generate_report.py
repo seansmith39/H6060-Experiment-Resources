@@ -3,9 +3,21 @@
 import re
 import csv
 import sys
+import json
 import argparse
-from time import sleep
+import logging
+import time
+import random
 from requests import get
+from requests.auth import HTTPBasicAuth
+
+
+class LogFilter:  # pragma: no cover
+    def __init__(self, level):
+        self.__level = level
+
+    def filter(self, log_record):
+        return log_record.levelno <= self.__level
 
 
 def get_args(args: argparse.Namespace) -> argparse.Namespace:
@@ -27,16 +39,53 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         help="NIST NVD API key.",
     )
     parser.add_argument(
+        "--opencve-username",
+        action="store",
+        required=False,
+        help="OpenCVE registered username.",
+    )
+    parser.add_argument(
+        "--opencve-password",
+        action="store",
+        required=False,
+        help="OpenCVE registered password.",
+    )
+    parser.add_argument(
         "--product-name",
         action="store",
         choices=["horusec"],
         required=True,
         help="Name of product to parse report.",
     )
+    parser.add_argument(
+        "--input-report-filename",
+        action="store",
+        required=True,
+        help="Name of JSON report to parse",
+    )
     return parser.parse_args(args)
 
 
-def get_mitre_top_25_cwe():
+def handle_response_failure(
+    request: str, retry: int
+) -> int:  # pragma: no cover
+    """Check if response is a 404 or 500 and retry
+
+    :parameters
+        request:requests -- Request object
+        retry:int -- Number of retries
+
+    :return
+        int -- Number of retries
+    """
+    if request.status_code == 404 or request.status_code == 500:
+        sleep_time = min(64, (2**retry)) + (random.randint(0, 1000) / 1000.0)
+        log.info(f"Waiting {str(sleep_time)} seconds before retrying.")
+        time.sleep(sleep_time)
+    return retry + 1
+
+
+def get_mitre_top_25_cwe() -> list:
     """Top 25 CWE of 2024
 
     :return
@@ -71,7 +120,7 @@ def get_mitre_top_25_cwe():
     ]
 
 
-def get_owasp_top_10_cwe():
+def get_owasp_top_10_cwe() -> set:
     """Top 10 OWASP CWE of 2024
 
     :return
@@ -310,22 +359,67 @@ def get_cve_information_from_nvd(
         dict -- JSON data containing CVE information
     """
     url = "https://services.nvd.nist.gov/rest/json/cves/2.0?"
-    sleep_time = 0.1
+    log.info(f"GET request: {url}")
+    retries = 0
+    max_retries = 2
+
     headers = {"apiKey": nvd_api_key}
     parameters = {"keywordSearch": cve_id}
 
-    for tries in range(3):
-        try:
-            sleep(sleep_time)
-            response = get(url, params=parameters, headers=headers)
-            data = response.json()
-        except Exception as e:
-            if response.status_code == 403:
-                print(f"Requests are being rate limited by NIST API: {e}")
-                sleep(sleep_time)
+    while 0 <= retries < max_retries:
+        headers["Accept"] = "application/json"
+        request = get(url, headers=headers, params=parameters)
+        if request.ok:
+            log.info("GET request successful")
+            return request
         else:
-            break
-    return data
+            retries = handle_response_failure(request, retries)
+
+    log.error(
+        f"{request.status_code} Status after {retries} retries. Failed to get data. Skipping..."
+    )
+    reason = request.text.encode("utf8")
+    log.error(f"Reason: {reason}")
+    return None
+
+
+def get_opencve_cwe_details(
+    opencve_username: str, opencve_password: str, cwe_id: str
+) -> str:  # pragma: no cover
+    """Query opencve with CWE ID
+
+    :parameter
+        opencve_username:str -- OpenCVE username
+        opencve_password:str -- OpenCVE password
+        cwe_id:str -- CVE ID to query
+
+    :return
+        str,str -- name and description associated with CWE ID
+    """
+    url = f"https://www.opencve.io/api/cwe/{cwe_id}"
+    log.info(f"GET request: {url}")
+    retries = 0
+    max_retries = 2
+
+    while 0 <= retries < max_retries:
+        headers = {"Accept": "application/json"}
+        request = get(
+            url,
+            headers=headers,
+            auth=HTTPBasicAuth(opencve_username, opencve_password),
+        )
+        if request.ok:
+            log.info("GET request successful")
+            return request
+        else:
+            retries = handle_response_failure(request, retries)
+
+    log.error(
+        f"{request.status_code} Status after {retries} retries. Failed to get data. Skipping..."
+    )
+    reason = request.text.encode("utf8")
+    log.error(f"Reason: {reason}")
+    return None
 
 
 def get_cve_id_year(cve_id: str) -> int:
@@ -352,6 +446,107 @@ def get_cwe_pattern() -> str:
     return "CWE-(\\d+){0,9}"
 
 
+def search_owasp_top_10(cwe_id: str) -> str:
+    """Search OWASP Top 10 for CWE ID
+
+    :parameter
+        cwe_id:str -- CWE ID to check if in OWASP top 10
+
+    :return
+        str -- OWASP category associated with CWE ID
+    """
+    for key, value in get_owasp_top_10_cwe().items():
+        if cwe_id in value:
+            log.info(f"{cwe_id} found in OWASP Top 10: {key}")
+            return key
+    log.info(f"{cwe_id} not found in OWASP Top 10")
+    return "N/A"
+
+
+def search_mitre_top_25(cwe_id: str) -> str:
+    """Search MITRE Top 25 for CWE ID
+
+    :parameter
+        cwe_id:str -- CWE ID to check if in MITRE top 25
+
+    :return
+        str -- MITRE ranking for CWE ID
+    """
+    if cwe_id in get_mitre_top_25_cwe():
+        cwe_index = str(get_mitre_top_25_cwe().index(cwe_id) + 1)
+        log.info(f"{cwe_id} found in MITRE Top 25 at index {cwe_index}")
+        return cwe_index
+    log.info(f"{cwe_id} not found in MITRE Top 25")
+    return "N/A"
+
+
+def parse_horusec_data(
+    opencve_username, opencve_password, input_report_filename: str
+) -> dict:
+    """Parse Horusec SAST JSON report and write data to output file
+
+    :parameter
+        opencve_username:str -- OpenCVE username
+        opencve_password:str -- OpenCVE password
+        input_report_filename:str -- Name of Horusec JSON report to parse
+
+    :return
+        dict -- CSV data to write to output file
+    """
+    log.info(f"Parsing Horusec report: {input_report_filename}")
+    with open(input_report_filename, "r") as f:
+        data = json.load(f)
+    unique_cwe = []
+    csv_rows = []
+    for vulnerabilities in data["analysisVulnerabilities"]:
+        vulnerability_index = vulnerabilities["vulnerabilities"]
+        if vulnerability_index["type"].upper() == "VULNERABILITY":
+            details = vulnerability_index["details"]
+            match = re.search(get_cwe_pattern(), details)
+            if match:
+                log.info(f"CWE ID found: {match.group(0)} in Horusec report")
+                cwe_id = match.group(0)
+                cwe_security_tool = vulnerability_index["securityTool"]
+                cwe_severity = vulnerability_index["severity"]
+                cwe_confidence = vulnerability_index["confidence"]
+                cwe_rule_id = vulnerability_index["rule_id"]
+                cwe_language = vulnerability_index["language"]
+
+                opencve_cwe_details = get_opencve_cwe_details(
+                    opencve_username, opencve_password, cwe_id
+                )
+                if opencve_cwe_details:
+                    cwe_name = opencve_cwe_details.json()["name"]
+                    cwe_description = opencve_cwe_details.json()["description"]
+
+                cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+                cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+
+                if cwe_id not in unique_cwe:
+                    unique_cwe.append(cwe_id)
+                    horusec_data = [
+                        "SAST",
+                        cwe_security_tool,
+                        "Syntax-based",
+                        "N/A",
+                        cwe_id,
+                        cwe_name,
+                        cwe_description,
+                        "N/A",
+                        cwe_severity,
+                        cwe_confidence,
+                        cwe_owasp_top_10,
+                        cwe_mitre_top_25,
+                        "N/A",
+                        "N/A",
+                        cwe_rule_id,
+                        cwe_language,
+                    ]
+                    log.info("Horusec parsed data: " + str(horusec_data))
+                    csv_rows.append(horusec_data)
+    return csv_rows
+
+
 def write_csv_report(product_name: str, product_data: dict) -> None:
     """Write parsed product report to CSV
 
@@ -360,6 +555,7 @@ def write_csv_report(product_name: str, product_data: dict) -> None:
         product_data:dict -- Parsed data from product report
     """
     filename = f"experiment_1_{product_name.lower()}_results.csv"
+    log.info(f"Writing {product_name} report to {filename}")
 
     fields = [
         "Tool Type",
@@ -367,18 +563,24 @@ def write_csv_report(product_name: str, product_data: dict) -> None:
         "Tool Classification",
         "CVE",
         "CWE",
+        "CWE Name",
+        "CWE Description",
         "CVSS",
         "Severity",
+        "Confidence",
         "OWASP Top 10",
         "MITRE Top 25",
         "Dependency Scope",
         "Dependency",
+        "Rule ID",
+        "Language",
     ]
 
     with open(filename, "w") as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(fields)
         writer.writerows(product_data)
+    return None
 
 
 def main(args: argparse.Namespace) -> None:
@@ -387,11 +589,32 @@ def main(args: argparse.Namespace) -> None:
     :parameter
         args:argparse.Namespace -- Parsed arguments supplied to script
     """
-    print("Hello World")
+    product_name = args.product_name.upper()
+    if product_name == "HORUSEC":  # pragma: no cover
+        csv_rows = parse_horusec_data(
+            args.opencve_username,
+            args.opencve_password,
+            args.input_report_filename,
+        )
+        write_csv_report(product_name, csv_rows)
+    return None
 
 
 if __name__ == "__main__":
     """The starting point of the application
     Script should be running in the root dir of project
     """
+    log = logging.getLogger()
+    log.setLevel(logging.NOTSET)
+
+    logging_handler_out = logging.StreamHandler(sys.stdout)
+    logging_handler_out.setLevel(logging.INFO)
+    logging_handler_out.addFilter(LogFilter(logging.INFO))
+    log.addHandler(logging_handler_out)
+
+    logging_handler_err = logging.StreamHandler(sys.stderr)
+    logging_handler_err.setLevel(logging.ERROR)
+    logging_handler_err.addFilter(LogFilter(logging.ERROR))
+    log.addHandler(logging_handler_err)
+
     main(get_args(sys.argv[1:]))
