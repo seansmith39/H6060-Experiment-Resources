@@ -5,15 +5,23 @@ import argparse
 
 
 def get_args(args: argparse.Namespace) -> argparse.Namespace:
-    """ Parse and return the arguments of the application """
+    """ Parse and return the arguments of the application
+
+    :argument
+        args: Inputted arguments to parse
+
+    :returns
+        Parsed arguments
+    """
     parser = argparse.ArgumentParser(description='Experiment 1 - Generate Report.')
+    parser.add_argument('--product-name', action='store', choices=['horusec'], required=True, help='Name of product to parse report.')
     return parser.parse_args(args)
 
 
 def get_mitre_top_25_cwe():
     """ Top 25 CWE of 2024
 
-    Returns:
+    :returns
         A list of CWE IDs
     """
     return ['CWE-787', 'CWE-79', 'CWE-89', 'CWE-416', 'CWE-78', 'CWE-20', 'CWE-125', 'CWE-22', 'CWE-352', 'CWE-434',
@@ -24,7 +32,7 @@ def get_mitre_top_25_cwe():
 def get_owasp_top_10_cwe():
     """ Top 10 OWASP CWE of 2024
 
-    Returns:
+    :returns
         A list of CWE IDs corresponding to the OWASP security category
     """
     return {
@@ -40,11 +48,18 @@ def get_owasp_top_10_cwe():
         'A10 Server Side Request Forgery (SSRF)': ["CWE-918"]
     }
 
+
 def main(args: argparse.Namespace) -> None:
+    """ Main function of script
+
+    :argument
+        args: Parsed arguments supplied to script
+    """
     print("Hello World")
 
 
 if __name__ == '__main__':
-    ''' Script should be running in the root dir of project'''
-    ''' The starting point of the application '''
+    """ The starting point of the application
+        Script should be running in the root dir of project
+    """
     main(get_args(sys.argv[1:]))
