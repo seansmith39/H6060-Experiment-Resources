@@ -18,10 +18,9 @@ NIST_CVE_ID_RESPONSE = TEST_DIRECTORY_RESOURCES + "nist-cve-information.json"
 OPENCVE_CWE_RESPONSE = TEST_DIRECTORY_RESOURCES + "opencve-cwe.json"
 HORUSEC_JSON_REPORT = TEST_DIRECTORY_RESOURCES + "horusec-report.json"
 
+
 DEFAULT_PRODUCT_NAME = "horusec"
-DEFAULT_CSV_REPORT_FILENAME = (
-    f"experiment_1_{DEFAULT_PRODUCT_NAME.lower()}_results.csv"
-)
+DEFAULT_CSV_REPORT_FILENAME = "experiment_1_results.csv"
 NVD_API_KEY = "11111111-2222-3333-4444-555555555555"
 OPENCVE_USERNAME = "username"
 OPENCVE_PASSWORD = "password"
@@ -80,14 +79,14 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             sys.stdout = f
 
     def __mock_args(
-        nvd_api_key: str, product_name: str, input_report_filename: str
+        nvd_api_key: str, product_name: str, horusec_report_filename: str
     ) -> Namespace:
         """Mock arguments in argparse.Namespace type
 
         :parameter
             nvd_api_key:str -- NVD API Key to be mocked in the arguments
             product_name:str -- Name of the product to be mocked in the arguments
-            input_report_filename:str -- Name of the security tool report to parse data from
+            horusec_report_filename:str -- Name of the Horusec report to parse data from
 
         :return
             argparse.Namespace -- Mocked arguments
@@ -95,7 +94,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         return Namespace(
             nvd_api_key=nvd_api_key,
             product_name=product_name,
-            input_report_filename=input_report_filename,
+            horusec_report_filename=horusec_report_filename,
         )
 
     def test_get_mitre_top_25_cwe(self):
@@ -205,8 +204,11 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 "LEAKS",
             ]
         ]
-        experiment_1_generate_report.write_csv_report(
-            DEFAULT_PRODUCT_NAME, product_data
+        experiment_1_generate_report.create_csv_report(
+            DEFAULT_CSV_REPORT_FILENAME
+        )
+        experiment_1_generate_report.write_to_csv_report(
+            DEFAULT_CSV_REPORT_FILENAME, DEFAULT_PRODUCT_NAME, product_data
         )
         self.assertTrue(os.path.isfile(DEFAULT_CSV_REPORT_FILENAME))
 
@@ -223,9 +225,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 OPENCVE_USERNAME,
                 "--opencve-password",
                 OPENCVE_PASSWORD,
-                "--product-name",
-                DEFAULT_PRODUCT_NAME,
-                "--input-report-filename",
+                "--horusec-report-filename",
                 HORUSEC_JSON_REPORT,
             ]
         )

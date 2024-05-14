@@ -51,17 +51,10 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         help="OpenCVE registered password.",
     )
     parser.add_argument(
-        "--product-name",
+        "--horusec-report-filename",
         action="store",
-        choices=["horusec"],
-        required=True,
-        help="Name of product to parse report.",
-    )
-    parser.add_argument(
-        "--input-report-filename",
-        action="store",
-        required=True,
-        help="Name of JSON report to parse",
+        required=False,
+        help="Name of Horusec JSON report to parse",
     )
     return parser.parse_args(args)
 
@@ -547,15 +540,13 @@ def parse_horusec_data(
     return csv_rows
 
 
-def write_csv_report(product_name: str, product_data: dict) -> None:
-    """Write parsed product report to CSV
+def create_csv_report(csv_filename: str) -> None:
+    """Create initial CSV report file
 
     :parameter
-        product_name:str -- Name of product to use in report title
-        product_data:dict -- Parsed data from product report
+        csv_filename:str -- Name of CSV file to create
     """
-    filename = f"experiment_1_{product_name.lower()}_results.csv"
-    log.info(f"Writing {product_name} report to {filename}")
+    log.info(f"Creating report: {csv_filename}")
 
     fields = [
         "Tool Type",
@@ -576,9 +567,26 @@ def write_csv_report(product_name: str, product_data: dict) -> None:
         "Language",
     ]
 
-    with open(filename, "w") as csv_file:
+    with open(csv_filename, "w") as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(fields)
+    return None
+
+
+def write_to_csv_report(
+    csv_filename: str, product_name: str, product_data: dict
+) -> None:
+    """Write parsed product report to CSV
+
+    :parameter
+        csv_filename:str -- Name of CSV file to write to
+        product_name:str -- Name of product to use in report title
+        product_data:dict -- Parsed data from product report
+    """
+    log.info(f"Writing {product_name} results to report: {csv_filename}")
+
+    with open(csv_filename, "a") as csv_file:
+        writer = csv.writer(csv_file)
         writer.writerows(product_data)
     return None
 
@@ -589,19 +597,22 @@ def main(args: argparse.Namespace) -> None:
     :parameter
         args:argparse.Namespace -- Parsed arguments supplied to script
     """
-    product_name = args.product_name.upper()
-    if product_name == "HORUSEC":  # pragma: no cover
+    csv_report_filename = "experiment_1_results.csv"
+    create_csv_report(csv_report_filename)
+
+    if args.horusec_report_filename is not None:  # pragma: no cover
         csv_rows = parse_horusec_data(
             args.opencve_username,
             args.opencve_password,
-            args.input_report_filename,
+            args.horusec_report_filename,
         )
-        write_csv_report(product_name, csv_rows)
+        write_to_csv_report(csv_report_filename, "horusec", csv_rows)
     return None
 
 
 if __name__ == "__main__":
-    """The starting point of the application
+    """
+    The starting point of the application
     Script should be running in the root dir of project
     """
     log = logging.getLogger()
