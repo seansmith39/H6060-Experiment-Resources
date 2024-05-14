@@ -56,6 +56,12 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         required=False,
         help="Name of Horusec JSON report to parse",
     )
+    parser.add_argument(
+        "--insider-report-filename",
+        action="store",
+        required=False,
+        help="Name of Insider JSON report to parse",
+    )
     return parser.parse_args(args)
 
 
@@ -474,20 +480,20 @@ def search_mitre_top_25(cwe_id: str) -> str:
 
 
 def parse_horusec_data(
-    opencve_username, opencve_password, input_report_filename: str
+    opencve_username: str, opencve_password: str, horusec_report_filename: str
 ) -> dict:
     """Parse Horusec SAST JSON report and write data to output file
 
     :parameter
         opencve_username:str -- OpenCVE username
         opencve_password:str -- OpenCVE password
-        input_report_filename:str -- Name of Horusec JSON report to parse
+        horusec_report_filename:str -- Name of Horusec JSON report to parse
 
     :return
         dict -- CSV data to write to output file
     """
-    log.info(f"Parsing Horusec report: {input_report_filename}")
-    with open(input_report_filename, "r") as f:
+    log.info(f"Parsing Horusec report: {horusec_report_filename}")
+    with open(horusec_report_filename, "r") as f:
         data = json.load(f)
     unique_cwe = []
     csv_rows = []
@@ -504,7 +510,9 @@ def parse_horusec_data(
                 cwe_confidence = vulnerability_index["confidence"]
                 cwe_rule_id = vulnerability_index["rule_id"]
                 cwe_language = vulnerability_index["language"]
-
+                cwe_class = vulnerability_index["file"]
+                cwe_name = "N/A"
+                cwe_description = "N/A"
                 opencve_cwe_details = get_opencve_cwe_details(
                     opencve_username, opencve_password, cwe_id
                 )
@@ -534,9 +542,75 @@ def parse_horusec_data(
                         "N/A",
                         cwe_rule_id,
                         cwe_language,
+                        cwe_class,
                     ]
                     log.info("Horusec parsed data: " + str(horusec_data))
                     csv_rows.append(horusec_data)
+    return csv_rows
+
+
+def parse_insider_data(
+    opencve_username: str, opencve_password: str, insider_report_filename: str
+) -> dict:
+    """Parse Insider SAST JSON report and write data to output file
+
+    :parameter
+        opencve_username:str -- OpenCVE username
+        opencve_password:str -- OpenCVE password
+        insider_report_filename:str -- Name of Insider JSON report to parse
+
+    :return
+        dict -- CSV data to write to output file
+    """
+    log.info(f"Parsing Insider report: {insider_report_filename}")
+    with open(insider_report_filename, "r") as f:
+        data = json.load(f)
+    unique_cwe = []
+    csv_rows = []
+    for vulnerability in data["vulnerabilities"]:
+        match = re.search(get_cwe_pattern(), vulnerability["cwe"])
+        if match:  # pragma: no cover
+            log.info(f"CWE ID found: {match.group(0)} in Insider report")
+            cwe_id = match.group(0)
+            cwe_cvss = vulnerability["cvss"]
+            cwe_class = re.sub(
+                "[\\(\\[].*?[\\)\\]]", "", vulnerability["classMessage"]
+            ).strip()
+            cwe_name = "N/A"
+            cwe_description = "N/A"
+            opencve_cwe_details = get_opencve_cwe_details(
+                opencve_username, opencve_password, cwe_id
+            )
+            if opencve_cwe_details:
+                cwe_name = opencve_cwe_details.json()["name"]
+                cwe_description = opencve_cwe_details.json()["description"]
+
+            cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+            cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+
+            if cwe_id not in unique_cwe:
+                unique_cwe.append(cwe_id)
+                insider_data = [
+                    "SAST",
+                    "Insider",
+                    "Syntax-based",
+                    "N/A",
+                    cwe_id,
+                    cwe_name,
+                    cwe_description,
+                    cwe_cvss,
+                    "N/A",
+                    "N/A",
+                    cwe_owasp_top_10,
+                    cwe_mitre_top_25,
+                    "N/A",
+                    "N/A",
+                    "N/A",
+                    "N/A",
+                    cwe_class,
+                ]
+                log.info("Insider parsed data: " + str(insider_data))
+                csv_rows.append(insider_data)
     return csv_rows
 
 
@@ -565,6 +639,7 @@ def create_csv_report(csv_filename: str) -> None:
         "Dependency",
         "Rule ID",
         "Language",
+        "Class",
     ]
 
     with open(csv_filename, "w") as csv_file:
@@ -607,6 +682,13 @@ def main(args: argparse.Namespace) -> None:
             args.horusec_report_filename,
         )
         write_to_csv_report(csv_report_filename, "horusec", csv_rows)
+    if args.insider_report_filename is not None:  # pragma: no cover
+        csv_rows = parse_insider_data(
+            args.opencve_username,
+            args.opencve_password,
+            args.insider_report_filename,
+        )
+        write_to_csv_report(csv_report_filename, "insider", csv_rows)
     return None
 
 

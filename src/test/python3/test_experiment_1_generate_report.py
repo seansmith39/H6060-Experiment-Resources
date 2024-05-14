@@ -17,6 +17,7 @@ TEST_DIRECTORY_RESOURCES = (
 NIST_CVE_ID_RESPONSE = TEST_DIRECTORY_RESOURCES + "nist-cve-information.json"
 OPENCVE_CWE_RESPONSE = TEST_DIRECTORY_RESOURCES + "opencve-cwe.json"
 HORUSEC_JSON_REPORT = TEST_DIRECTORY_RESOURCES + "horusec-report.json"
+INSIDER_JSON_REPORT = TEST_DIRECTORY_RESOURCES + "insider-report.json"
 
 
 DEFAULT_PRODUCT_NAME = "horusec"
@@ -26,6 +27,7 @@ OPENCVE_USERNAME = "username"
 OPENCVE_PASSWORD = "password"
 NIST_CVE_ID = "CVE-2019-14540"
 HORUSEC_CWE_ID = "CWE-798"
+INSIDER_CWE_ID = "CWE-330"
 
 
 def mocked_response(*args, **kwargs):
@@ -51,7 +53,7 @@ def mocked_response(*args, **kwargs):
 
     if NIST_CVE_ID in args[1]:
         return MockResponse(NIST_CVE_ID_RESPONSE, 200)
-    elif HORUSEC_CWE_ID in args[2]:
+    elif HORUSEC_CWE_ID in args[2] or INSIDER_CWE_ID in args[2]:
         return MockResponse(OPENCVE_CWE_RESPONSE, 200)
     else:
         return None
@@ -79,7 +81,10 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             sys.stdout = f
 
     def __mock_args(
-        nvd_api_key: str, product_name: str, horusec_report_filename: str
+        nvd_api_key: str,
+        product_name: str,
+        horusec_report_filename: str,
+        insider_report_filename: str,
     ) -> Namespace:
         """Mock arguments in argparse.Namespace type
 
@@ -87,6 +92,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             nvd_api_key:str -- NVD API Key to be mocked in the arguments
             product_name:str -- Name of the product to be mocked in the arguments
             horusec_report_filename:str -- Name of the Horusec report to parse data from
+            insider_report_filename:str -- Name of the Insider report to parse data from
 
         :return
             argparse.Namespace -- Mocked arguments
@@ -95,6 +101,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             nvd_api_key=nvd_api_key,
             product_name=product_name,
             horusec_report_filename=horusec_report_filename,
+            insider_report_filename=insider_report_filename,
         )
 
     def test_get_mitre_top_25_cwe(self):
@@ -184,6 +191,43 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         self.assertEqual(csv_rows[0][13], "N/A")
         self.assertEqual(csv_rows[0][14], "HS-LEAKS-26")
         self.assertEqual(csv_rows[0][15], "Leaks")
+        self.assertEqual(
+            csv_rows[0][16],
+            "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
+        )
+
+    @patch(
+        "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
+        side_effect=mocked_response,
+    )
+    def test_parse_insider_data(self, mock_response):
+        csv_rows = experiment_1_generate_report.parse_insider_data(
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, INSIDER_JSON_REPORT
+        )
+        self.assertTrue(len(csv_rows) > 0)
+        self.assertEqual(csv_rows[0][0], "SAST")
+        self.assertEqual(csv_rows[0][1], "Insider")
+        self.assertEqual(csv_rows[0][2], "Syntax-based")
+        self.assertEqual(csv_rows[0][3], "N/A")
+        self.assertEqual(csv_rows[0][4], INSIDER_CWE_ID)
+        self.assertEqual(csv_rows[0][5], "Use of Hard-coded Credentials")
+        self.assertEqual(
+            csv_rows[0][6],
+            "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
+        )
+        self.assertEqual(csv_rows[0][7], 1)
+        self.assertEqual(csv_rows[0][8], "N/A")
+        self.assertEqual(csv_rows[0][9], "N/A")
+        self.assertEqual(csv_rows[0][10], "A02 Cryptographic Failures")
+        self.assertEqual(csv_rows[0][11], "N/A")
+        self.assertEqual(csv_rows[0][12], "N/A")
+        self.assertEqual(csv_rows[0][13], "N/A")
+        self.assertEqual(csv_rows[0][14], "N/A")
+        self.assertEqual(csv_rows[0][15], "N/A")
+        self.assertEqual(
+            csv_rows[0][16],
+            "api/src/main/java/org/xnio/IoUtils.java",
+        )
 
     def test_write_csv_report(self):
         product_data = [
@@ -202,6 +246,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 "com.fasterxml.jackson.core:jackson-databind:2.10.3",
                 "HS-LEAKS-26",
                 "LEAKS",
+                "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
             ]
         ]
         experiment_1_generate_report.create_csv_report(
@@ -227,6 +272,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 OPENCVE_PASSWORD,
                 "--horusec-report-filename",
                 HORUSEC_JSON_REPORT,
+                "--insider-report-filename",
+                INSIDER_JSON_REPORT,
             ]
         )
         result = experiment_1_generate_report.main(args)
