@@ -25,9 +25,6 @@ jobs:
                 distribution: adopt
                 java-version: 8
 
-            - name: Print ls
-              run: pwd; ls -l
-
             - name: "Create Mvn Dependency Tree"
               uses: ./main/.github/actions/maven/mvn-dependency-tree
               with:
