@@ -9,6 +9,8 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+              with:
+                path: main
 
             - name: Checkout XNIO
               uses: actions/checkout@v4
@@ -23,7 +25,10 @@ jobs:
                 distribution: adopt
                 java-version: 8
 
+            - name: Print ls
+              run: pwd; ls -l
+
             - name: "Create Mvn Dependency Tree"
-              uses: ./.github/actions/maven/mvn-dependency-tree
+              uses: ./main/.github/actions/maven/mvn-dependency-tree
               with:
                 path: xnio

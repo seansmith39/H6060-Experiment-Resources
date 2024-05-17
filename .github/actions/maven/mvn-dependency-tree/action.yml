@@ -1,0 +1,27 @@
+name: 'Maven Dependency Tree Action'
+description: "Generate a Maven dependency tree for a project"
+
+inputs:
+  path:
+    description: 'Directory to run the action'
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Generate Maven Dependency Tree
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn dependency:tree -DoutputFile=maven_dep_tree.txt
+
+    - name: Create Maven Dependency Tree Zip File
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: find . -type f -name 'maven_dep_tree.txt' -exec zip -r mvn-dependency-tree.zip {} +
+
+    - name: Upload Maven Dependency Tree Zip
+      uses: actions/upload-artifact@v4
+      with:
+        name: maven-dependency-tree
+        path: ${{ inputs.path }}/mvn-dependency-tree.zip
