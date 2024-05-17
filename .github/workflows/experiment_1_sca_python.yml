@@ -36,7 +36,7 @@ on:
         description: 'Python version to build project'
         type: string
         required: false
-        default: 3.12
+        default: '3.12'
       python-build-artifact:
         description: 'Python build artifact'
         type: string
@@ -70,7 +70,7 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-                    
+
       - name: Install Python
         uses: actions/setup-python@v5.1.0
         with:
@@ -81,7 +81,7 @@ jobs:
         run: |
           [[ "${{ inputs.python-dependencies-file }}" != "requirements.txt" ]] && cp ${{ inputs.python-dependencies-file }} requirements.txt
           python3 -m pip install --upgrade pip
-          [[ -f requirements.txt ]] && pip install -r requirements.txt       
+          [[ -f requirements.txt ]] && pip install -r requirements.txt
           pip install --no-cache-dir -e .
           pip install unzip setuptools
 
@@ -92,7 +92,7 @@ jobs:
       - name: Download Eclipse Steady CLI And Copy Source Files To App Directory
         shell: bash
         run: |
-          curl -LO https://github.com/eclipse/steady/releases/download/release-3.2.5/steady-cli-3.2.5.zip       
+          curl -LO https://github.com/eclipse/steady/releases/download/release-3.2.5/steady-cli-3.2.5.zip
           unzip steady-cli-3.2.5.zip
           cp -a ${{ inputs.python-source-dir }}/. steady-cli/app/
 
@@ -149,7 +149,7 @@ jobs:
       - name: Extract Python Build
         shell: bash
         run: tar -xzf ${{ inputs.python-build-artifact }}.tgz
-      
+
       - name: Install Python
         uses: actions/setup-python@v5.1.0
         with:
@@ -160,7 +160,7 @@ jobs:
         run: |
           [[ "${{ inputs.python-dependencies-file }}" != "requirements.txt" ]] && cp ${{ inputs.python-dependencies-file }} requirements.txt
           python3 -m pip install --upgrade pip
-          [[ -f requirements.txt ]] && pip install -r requirements.txt       
+          [[ -f requirements.txt ]] && pip install -r requirements.txt
           pip install --no-cache-dir -e .
           pip install pycairo
 
@@ -237,7 +237,7 @@ jobs:
       - name: Extract Python Build
         shell: bash
         run: tar -xzf ${{ inputs.python-build-artifact }}.tgz
-        
+
       - name: Install Python
         uses: actions/setup-python@v5.1.0
         with:
@@ -248,7 +248,7 @@ jobs:
         run: |
           [[ "${{ inputs.python-dependencies-file }}" != "requirements.txt" ]] && cp ${{ inputs.python-dependencies-file }} requirements.txt
           python3 -m pip install --upgrade pip
-          [[ -f requirements.txt ]] && pip install -r requirements.txt       
+          [[ -f requirements.txt ]] && pip install -r requirements.txt
           pip install --no-cache-dir -e .
           pip install unzip
 

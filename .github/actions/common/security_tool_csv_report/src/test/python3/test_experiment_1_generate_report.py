@@ -18,16 +18,19 @@ NIST_CVE_ID_RESPONSE = TEST_DIRECTORY_RESOURCES + "nist-cve-information.json"
 OPENCVE_CWE_RESPONSE = TEST_DIRECTORY_RESOURCES + "opencve-cwe.json"
 HORUSEC_JSON_REPORT = TEST_DIRECTORY_RESOURCES + "horusec-report.json"
 INSIDER_JSON_REPORT = TEST_DIRECTORY_RESOURCES + "insider-report.json"
-
+OWASP_DEPENDENCY_CHECK_JSON_REPORT = (
+    TEST_DIRECTORY_RESOURCES + "owasp-dependency-check-report.json"
+)
 
 DEFAULT_PRODUCT_NAME = "horusec"
 DEFAULT_CSV_REPORT_FILENAME = "experiment_1_results.csv"
 NVD_API_KEY = "11111111-2222-3333-4444-555555555555"
 OPENCVE_USERNAME = "username"
 OPENCVE_PASSWORD = "password"
-NIST_CVE_ID = "CVE-2019-14540"
+NIST_CVE_ID = "CVE-2016-2510"
 HORUSEC_CWE_ID = "CWE-798"
 INSIDER_CWE_ID = "CWE-330"
+OWASP_DEPENDENCY_CHECK_CWE_ID = "CWE-19"
 
 
 def mocked_response(*args, **kwargs):
@@ -51,10 +54,39 @@ def mocked_response(*args, **kwargs):
         def json(self):
             return JSON.loads(self.text)
 
+    if (
+        HORUSEC_CWE_ID in args[2]
+        or INSIDER_CWE_ID in args[2]
+        or OWASP_DEPENDENCY_CHECK_CWE_ID in args[2]
+    ):
+        return MockResponse(OPENCVE_CWE_RESPONSE, 200)
+    else:
+        return None
+
+
+def mocked_nvd_response(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, file, status_code):
+            self.file = file
+            try:
+                with open(self.file, "r") as f:
+                    self.text = f.read()
+            except Exception:
+                self.text = file
+
+            self.status_code = status_code
+
+        def status_code(self):
+            return self.status_code
+
+        def ok(self):
+            return self.ok
+
+        def json(self):
+            return JSON.loads(self.text)
+
     if NIST_CVE_ID in args[1]:
         return MockResponse(NIST_CVE_ID_RESPONSE, 200)
-    elif HORUSEC_CWE_ID in args[2] or INSIDER_CWE_ID in args[2]:
-        return MockResponse(OPENCVE_CWE_RESPONSE, 200)
     else:
         return None
 
@@ -117,7 +149,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
 
     @patch(
         "main.python3.experiment_1_generate_report.get_cve_information_from_nvd",
-        side_effect=mocked_response,
+        side_effect=mocked_nvd_response,
     )
     def test_get_cve_information_from_nvd(self, mock_response):
         with open(NIST_CVE_ID_RESPONSE, "r") as f:
@@ -151,7 +183,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
 
     def test_get_cve_id_year(self):
         cve_year = experiment_1_generate_report.get_cve_id_year(NIST_CVE_ID)
-        self.assertEqual(cve_year, 2019)
+        self.assertEqual(cve_year, 2016)
         cve_year = experiment_1_generate_report.get_cve_id_year("TEST")
         self.assertEqual(cve_year, None)
 
@@ -173,26 +205,22 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         self.assertEqual(csv_rows[0][0], "SAST")
         self.assertEqual(csv_rows[0][1], "HorusecEngine")
         self.assertEqual(csv_rows[0][2], "Syntax-based")
-        self.assertEqual(csv_rows[0][3], "N/A")
-        self.assertEqual(csv_rows[0][4], HORUSEC_CWE_ID)
-        self.assertEqual(csv_rows[0][5], "Use of Hard-coded Credentials")
+        self.assertEqual(csv_rows[0][3], "CRITICAL")
+        self.assertEqual(csv_rows[0][4], "MEDIUM")
+        self.assertEqual(csv_rows[0][31], HORUSEC_CWE_ID)
+        self.assertEqual(csv_rows[0][32], "Use of Hard-coded Credentials")
         self.assertEqual(
-            csv_rows[0][6],
+            csv_rows[0][33],
             "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
         )
-        self.assertEqual(csv_rows[0][7], "N/A")
-        self.assertEqual(csv_rows[0][8], "CRITICAL")
-        self.assertEqual(csv_rows[0][9], "MEDIUM")
         self.assertEqual(
-            csv_rows[0][10], "A07 Identification and Authentication Failures"
+            csv_rows[0][34], "A07 Identification and Authentication Failures"
         )
-        self.assertEqual(csv_rows[0][11], "18")
-        self.assertEqual(csv_rows[0][12], "N/A")
-        self.assertEqual(csv_rows[0][13], "N/A")
-        self.assertEqual(csv_rows[0][14], "HS-LEAKS-26")
-        self.assertEqual(csv_rows[0][15], "Leaks")
+        self.assertEqual(csv_rows[0][35], "18")
+        self.assertEqual(csv_rows[0][38], "HS-LEAKS-26")
+        self.assertEqual(csv_rows[0][39], "Leaks")
         self.assertEqual(
-            csv_rows[0][16],
+            csv_rows[0][40],
             "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
         )
 
@@ -208,60 +236,83 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         self.assertEqual(csv_rows[0][0], "SAST")
         self.assertEqual(csv_rows[0][1], "Insider")
         self.assertEqual(csv_rows[0][2], "Syntax-based")
-        self.assertEqual(csv_rows[0][3], "N/A")
-        self.assertEqual(csv_rows[0][4], INSIDER_CWE_ID)
-        self.assertEqual(csv_rows[0][5], "Use of Hard-coded Credentials")
+        self.assertEqual(csv_rows[0][31], INSIDER_CWE_ID)
+        self.assertEqual(csv_rows[0][32], "Use of Hard-coded Credentials")
         self.assertEqual(
-            csv_rows[0][6],
+            csv_rows[0][33],
             "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
         )
-        self.assertEqual(csv_rows[0][7], 1)
-        self.assertEqual(csv_rows[0][8], "N/A")
-        self.assertEqual(csv_rows[0][9], "N/A")
-        self.assertEqual(csv_rows[0][10], "A02 Cryptographic Failures")
-        self.assertEqual(csv_rows[0][11], "N/A")
-        self.assertEqual(csv_rows[0][12], "N/A")
-        self.assertEqual(csv_rows[0][13], "N/A")
-        self.assertEqual(csv_rows[0][14], "N/A")
-        self.assertEqual(csv_rows[0][15], "N/A")
+        self.assertEqual(csv_rows[0][34], "A02 Cryptographic Failures")
         self.assertEqual(
-            csv_rows[0][16],
+            csv_rows[0][40],
             "api/src/main/java/org/xnio/IoUtils.java",
         )
-
-    def test_write_csv_report(self):
-        product_data = [
-            [
-                "SCA",
-                "Eclipse Steady Scan",
-                "Code-centric",
-                NIST_CVE_ID,
-                "CWE-502",
-                "9.8",
-                "CRITICAL",
-                "MEDIUM",
-                "A08 Software and Data Integrity Failures",
-                "15",
-                "Transitive",
-                "com.fasterxml.jackson.core:jackson-databind:2.10.3",
-                "HS-LEAKS-26",
-                "LEAKS",
-                "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
-            ]
-        ]
-        experiment_1_generate_report.create_csv_report(
-            DEFAULT_CSV_REPORT_FILENAME
-        )
-        experiment_1_generate_report.write_to_csv_report(
-            DEFAULT_CSV_REPORT_FILENAME, DEFAULT_PRODUCT_NAME, product_data
-        )
-        self.assertTrue(os.path.isfile(DEFAULT_CSV_REPORT_FILENAME))
 
     @patch(
         "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
         side_effect=mocked_response,
     )
-    def test_main(self, mock_response):
+    @patch(
+        "main.python3.experiment_1_generate_report.get_cve_information_from_nvd",
+        side_effect=mocked_nvd_response,
+    )
+    def test_parse_owasp_dependency_check_data(
+        self, mock_response_opencve, mock_response_nvd
+    ):
+        csv_rows = (
+            experiment_1_generate_report.parse_owasp_dependency_check_data(
+                NVD_API_KEY,
+                OPENCVE_USERNAME,
+                OPENCVE_PASSWORD,
+                OWASP_DEPENDENCY_CHECK_JSON_REPORT,
+            )
+        )
+        self.assertTrue(len(csv_rows) > 0)
+        self.assertEqual(csv_rows[0][0], "SCA")
+        self.assertEqual(csv_rows[0][1], "OWASP Dependency Check")
+        self.assertEqual(csv_rows[0][2], "Metadata-based")
+        self.assertEqual(csv_rows[0][3], "HIGH")
+        self.assertEqual(csv_rows[0][4], "HIGHEST")
+        self.assertEqual(csv_rows[0][5], "CVE-2016-2510")
+        self.assertEqual(csv_rows[0][6], "NVD")
+        self.assertEqual(csv_rows[0][7], "2016-04-07T20:59:05.567")
+        self.assertEqual(csv_rows[0][8], "2020-10-20T22:15:18.483")
+        self.assertEqual(csv_rows[0][9], "Modified")
+        self.assertEqual(
+            csv_rows[0][10],
+            "BeanShell (bsh) before 2.0b6, when included on the classpath by an application that uses Java serialization or XStream, allows remote attackers to execute arbitrary code via crafted serialized data, related to XThis.Handler.",
+        )
+        self.assertEqual(csv_rows[0][11], "3.1")
+        self.assertEqual(csv_rows[0][13], 8.1)
+        self.assertEqual(csv_rows[0][14], "UNCHANGED")
+        self.assertEqual(csv_rows[0][15], "2.2")
+        self.assertEqual(csv_rows[0][16], "5.9")
+        self.assertEqual(csv_rows[0][17], "NETWORK")
+        self.assertEqual(csv_rows[0][18], "HIGH")
+        self.assertEqual(csv_rows[0][19], "NONE")
+        self.assertEqual(csv_rows[0][20], "NONE")
+        self.assertEqual(csv_rows[0][21], "HIGH")
+        self.assertEqual(csv_rows[0][22], "HIGH")
+        self.assertEqual(csv_rows[0][23], "HIGH")
+        self.assertEqual(csv_rows[0][31], OWASP_DEPENDENCY_CHECK_CWE_ID)
+        self.assertEqual(csv_rows[0][32], "Use of Hard-coded Credentials")
+        self.assertEqual(
+            csv_rows[0][33],
+            "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
+        )
+        self.assertEqual(
+            csv_rows[0][37], "cpe:2.3:a:beanshell:beanshell:2.0:b4:*:*:*:*:*:*"
+        )
+
+    @patch(
+        "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
+        side_effect=mocked_response,
+    )
+    @patch(
+        "main.python3.experiment_1_generate_report.get_cve_information_from_nvd",
+        side_effect=mocked_nvd_response,
+    )
+    def test_main(self, mock_response_opencve, mock_response_nvd):
         args = experiment_1_generate_report.get_args(
             [
                 "--nvd-api-key",
@@ -274,6 +325,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 HORUSEC_JSON_REPORT,
                 "--insider-report-filename",
                 INSIDER_JSON_REPORT,
+                "--owasp-dependency-check-filename",
+                OWASP_DEPENDENCY_CHECK_JSON_REPORT,
             ]
         )
         result = experiment_1_generate_report.main(args)
