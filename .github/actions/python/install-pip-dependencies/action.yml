@@ -20,18 +20,22 @@ runs:
   steps:
     - name: Install Pip
       shell: bash
+      working-directory: ${{ inputs.path }}
       run: python -m pip install --upgrade pip
 
     - name: Install Local Project
       shell: bash
+      working-directory: ${{ inputs.path }}
       run: pip install --no-cache-dir -e .
 
     - name: Install Requirements File
       if: ${{ inputs.requirement-file-name != '' }}
       shell: bash
+      working-directory: ${{ inputs.path }}
       run: pip install -r ${{ inputs.requirement-file-name }}
 
     - name: Install Additional Packages
       if: ${{ inputs.extra-pip-packages }}
       shell: bash
+      working-directory: ${{ inputs.path }}
       run: pip install ${{ inputs.extra-pip-packages }}
