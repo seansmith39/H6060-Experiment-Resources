@@ -2,7 +2,7 @@
 
 ## Description
 
-An action to generate a Pip dependency tree for python using the [pipdeptree](https://pypi.org/project/pipdeptree/) Python package.
+An action to generate a Pip dependency tree for Python using the [pipdeptree](https://pypi.org/project/pipdeptree/) Python package.
 
 Resulting JSON is uploaded as a build artifact.
 

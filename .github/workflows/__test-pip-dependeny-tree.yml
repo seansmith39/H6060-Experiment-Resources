@@ -4,7 +4,7 @@ on: push
 
 jobs:
     test-action-job:
-        name: Test Pip Dependency Action
+        name: Test Pip Dependency Tree Action
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
