@@ -1,0 +1,22 @@
+name: Test Extract Build Artifact Action
+
+on: push
+
+jobs:
+    test-action-extract-build-artifact:
+        name: Test Extract Build Artifact
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Create Sample Tar File
+              shell: bash
+              run: |
+                touch sample.txt
+                tar -czf build-artifact.tgz sample.txt
+
+            - name: "Extract Build Artifact"
+              uses: ./main/.github/actions/common/extract-build-artifact
+              with:
+                build-artifact-name: build-artifact
