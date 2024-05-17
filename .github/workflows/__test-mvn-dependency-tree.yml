@@ -1,0 +1,29 @@
+name: Test Mvn Dependency Tree Action
+
+on: push
+
+jobs:
+    test-action-job:
+        name: Test Mvn Dependency Action
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Checkout XNIO
+              uses: actions/checkout@v4
+              with:
+                repository: xnio/xnio
+                ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+                path: xnio
+
+            - name: Setup Java JDK
+              uses: actions/setup-java@v4.2.1
+              with:
+                distribution: adopt
+                java-version: 8
+
+            - name: "Create Mvn Dependency Tree"
+              uses: ./.github/actions/maven/mvn-dependency-tree
+              with:
+                path: xnio
