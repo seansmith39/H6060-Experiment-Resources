@@ -1,0 +1,32 @@
+name: 'Insider SAST Action'
+description: 'Setup and run Insider SAST scan'
+
+inputs:
+  path:
+    description: 'Directory to run the action'
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: 'composite'
+  steps:
+      - name: Set Up Insider Scan
+        shell: bash
+        working-directory: ${{ inputs.path }}
+        run: |
+          wget https://github.com/insidersec/insider/releases/download/3.0.0/insider_3.0.0_linux_x86_64.tar.gz
+          tar -xf insider_3.0.0_linux_x86_64.tar.gz
+          chmod +x insider
+
+      - name: Run Insider Scan
+        shell: bash
+        working-directory: ${{ inputs.path }}
+        run: ./insider --tech java --target .
+
+      - name: Upload Insider Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: sast-insider-report
+          path: |
+            ${{ inputs.path }}/report.json
+            ${{ inputs.path }}/report.html
