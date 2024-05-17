@@ -1,0 +1,25 @@
+name: Test Insider SAST Action
+
+on: push
+
+jobs:
+    test-action-job:
+        name: Test Insider SAST Action
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                path: main
+
+            - name: Checkout XNIO
+              uses: actions/checkout@v4
+              with:
+                repository: xnio/xnio
+                ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+                path: xnio
+
+            - name: "Run Insider (SAST)"
+              uses: ./main/.github/actions/sast/insider
+              with:
+                path: xnio
