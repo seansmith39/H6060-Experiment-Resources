@@ -26,7 +26,7 @@ jobs:
                 java-version: 8
 
             - name: "Create Mvn Dependency Tree"
-              uses: ./main/.github/actions/maven/mvn-build-upload
+              uses: ./main/.github/actions/maven/maven-build-upload
               with:
                 build-command: -U -B -fae -DskipTests clean install
                 path: xnio
