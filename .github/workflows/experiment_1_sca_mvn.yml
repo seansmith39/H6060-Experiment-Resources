@@ -31,7 +31,7 @@ on:
         description: 'Java version to build Maven project'
         type: string
         required: false
-        default: 8
+        default: '8'
       java-distribution:
         description: 'Java distribution to build Maven project'
         type: string

@@ -53,7 +53,7 @@ on:
         description: 'Java version to build Maven project'
         type: string
         required: false
-        default: 8
+        default: '8'
       java-distribution:
         description: 'Java distribution to build Maven project'
         type: string
@@ -220,7 +220,7 @@ jobs:
           wget https://github.com/insidersec/insider/releases/download/3.0.0/insider_3.0.0_linux_x86_64.tar.gz
           tar -xf insider_3.0.0_linux_x86_64.tar.gz
           chmod +x insider
-          ./insider --tech java --target . 
+          ./insider --tech java --target .
 
       - name: Upload Insider JSON Report
         uses: actions/upload-artifact@v4
