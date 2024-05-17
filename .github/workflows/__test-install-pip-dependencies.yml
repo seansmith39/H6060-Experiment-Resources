@@ -24,7 +24,7 @@ jobs:
               with:
                 python-version: 3.12
 
-            - name: "Create Pip Dependency Tree"
+            - name: "Install Pip Dependencies"
               uses: ./main/.github/actions/python/install-pip-dependencies
               with:
                 requirement-file-name: dev-requirements.txt
@@ -52,7 +52,7 @@ jobs:
               with:
                 python-version: 3.12
 
-            - name: "Create Pip Dependency Tree"
+            - name: "Install Pip Dependencies"
               uses: ./main/.github/actions/python/install-pip-dependencies
               with:
                 path: clearml
