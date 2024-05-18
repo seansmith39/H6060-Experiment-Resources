@@ -1,0 +1,29 @@
+name: 'Horusec SAST Action'
+description: 'Run Horusec SAST scan'
+
+inputs:
+  path:
+    description: 'Directory to run the action'
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+    using: 'composite'
+    steps:
+        - name: Run Horusec Scan
+          uses: fike/horusec-action@v0.2.2
+          env:
+            HORUSEC_CLI_PROJECT_PATH: ${{ inputs.path }}
+            HORUSEC_CLI_FILES_OR_PATHS_TO_IGNORE: "**/test/**"
+            HORUSEC_CLI_PRINT_OUTPUT_TYPE: json
+            HORUSEC_CLI_JSON_OUTPUT_FILEPATH: hoursec-report.json
+            HORUSEC_CLI_ENABLE_OWASP_DEPENDENCY_CHECK: true
+            HORUSEC_CLI_ENABLE_SHELLCHECK: true
+            HORUSEC_CLI_FALSE_POSITIVE_HASHES: true
+            HORUSEC_CLI_RETURN_ERROR_IF_FOUND_VULNERABILITY: false
+
+        - name: Upload Horusec Report (JSON)
+          uses: actions/upload-artifact@v4
+          with:
+            name: sast-hoursec-report
+            path: ${{ inputs.path }}/hoursec-report.json
