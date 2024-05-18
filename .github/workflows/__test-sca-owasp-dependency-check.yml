@@ -38,3 +38,39 @@ jobs:
           nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
           path: xnio
           build-artifact-name: sca-owasp-dependency-check-report-maven
+
+  test-action-python-job:
+    name: Test OWASP Dependency Check SCA Action (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Clearml
+        uses: actions/checkout@v4
+        with:
+          repository: allegroai/clearml
+          ref: f2674669265a56a8ecaed3d0147f319ee136a231
+          path: clearml
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.12
+
+      - name: "Install Pip Dependencies"
+        uses: ./main/.github/actions/python/install-pip-dependencies
+        with:
+          requirement-file-name: dev-requirements.txt
+          extra-pip-packages: setuptools
+          path: clearml
+
+      - name: "Run OWASP Dependency Check (SCA)"
+        uses: ./main/.github/actions/sca/owasp-dependency-check
+        with:
+          project-name: clearml
+          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
+          path: clearml
+          build-artifact-name: sca-owasp-dependency-check-report-python
