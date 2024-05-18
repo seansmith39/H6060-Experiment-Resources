@@ -13,16 +13,16 @@ inputs:
     default: sast-horusec-report
 
 runs:
-    using: 'composite'
-    steps:
-      - name: Run Horusec Scan
-        uses: fike/horusec-action@v0.2.2
-        with:
-          arguments: --project-path=${{ inputs.path }}/ --ignore="**/test/**" --output-format=json --json-output-file=horusec-report.json --enable-owasp-dependency-check=true --enable-shellcheck=true --return-error=false
+  using: 'composite'
+  steps:
+    - name: Run Horusec Scan
+      uses: fike/horusec-action@v0.2.2
+      with:
+        arguments: --project-path=${{ inputs.path }}/ --ignore="**/test/**" --output-format=json --json-output-file=horusec-report.json --enable-owasp-dependency-check=true --enable-shellcheck=true --return-error=false
 
-      - name: Upload Horusec Report (JSON)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.build-artifact-name }}
-          path: horusec-report.json
-          if-no-files-found: error
+    - name: Upload Horusec Report (JSON)
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: horusec-report.json
+        if-no-files-found: error

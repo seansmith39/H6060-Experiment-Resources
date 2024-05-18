@@ -1,0 +1,39 @@
+name: 'OWASP Dependency Check SCA Action'
+description: 'Run OWASP Dependency Check SCA scan'
+
+inputs:
+  project-name:
+    description: 'The name of the project being scanned'
+    required: true
+
+  nvd-api-key:
+    description: The API Key to access the NVD API'
+    required: true
+
+  path:
+    description: 'Directory to run the action'
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: 'Name of Horusec build artifact'
+    required: false
+    default: sast-horusec-report
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run OWASP Dependency Check
+      uses: dependency-check/Dependency-Check_Action@1.1.0
+      with:
+        project: ${{ inputs.project-name }}
+        path: .
+        format: JSON
+        args: >
+          --enableRetired
+          --enableExperimental
+          --prettyPrint
+          --nvdApiKey ${{ inputs.nvd-api-key }}
+          --format JSON
+          --format HTML
+          --format CSV
