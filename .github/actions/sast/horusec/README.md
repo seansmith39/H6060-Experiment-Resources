@@ -8,9 +8,10 @@ JSON result is uploaded as a build artifact.
 
 ## Inputs
 
-| name | required | type   | default                 | description                  |
-| ---- | -------- | ------ | ----------------------- | ---------------------------- |
-| path | false    | string | ${{ github.workspace }} | Path to run the Horusec scan |
+| name                | required | type   | default                 | description                    |
+| ------------------- | -------- | ------ | ----------------------- | ------------------------------ |
+| path                | false    | string | ${{ github.workspace }} | Path to run the Horusec scan   |
+| build-artifact-name | false    | string | sast-horusec-report     | Name of Horusec build artifact |
 
 ## Example Execution
 

@@ -23,6 +23,7 @@ jobs:
               uses: ./main/.github/actions/sast/horusec
               with:
                 path: xnio
+                build-artifact-name: sast-horusec-report-maven
 
     test-action-python-job:
         name: Test Horusec SAST Action (Python)
@@ -44,3 +45,4 @@ jobs:
               uses: ./main/.github/actions/sast/horusec
               with:
                 path: clearml
+                build-artifact-name: sast-horusec-report-python
