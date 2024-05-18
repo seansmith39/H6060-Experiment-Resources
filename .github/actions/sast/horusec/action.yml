@@ -20,7 +20,6 @@ runs:
             HORUSEC_CLI_ENABLE_OWASP_DEPENDENCY_CHECK: true
             HORUSEC_CLI_ENABLE_SHELLCHECK: true
             HORUSEC_CLI_FALSE_POSITIVE_HASHES: true
-            HORUSEC_CLI_RETURN_ERROR_IF_FOUND_VULNERABILITY: false
 
         - name: Upload Horusec Report (JSON)
           uses: actions/upload-artifact@v4
