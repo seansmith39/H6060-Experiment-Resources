@@ -12,14 +12,8 @@ runs:
     steps:
         - name: Run Horusec Scan
           uses: fike/horusec-action@v0.2.2
-          env:
-            HORUSEC_CLI_PROJECT_PATH: ${{ inputs.path }}
-            HORUSEC_CLI_FILES_OR_PATHS_TO_IGNORE: "**/test/**"
-            HORUSEC_CLI_PRINT_OUTPUT_TYPE: json
-            HORUSEC_CLI_JSON_OUTPUT_FILEPATH: horusec-report.json
-            HORUSEC_CLI_ENABLE_OWASP_DEPENDENCY_CHECK: true
-            HORUSEC_CLI_ENABLE_SHELLCHECK: true
-            HORUSEC_CLI_FALSE_POSITIVE_HASHES: true
+          with:
+            arguments: --project-path=${{ inputs.path }} --ignore="**/test/**" --output-format=json --json-output-file=horusec-report.json --enable-owasp-dependency-check=true --enable-shellcheck=true --false-positive
 
         - name: Upload Horusec Report (JSON)
           uses: actions/upload-artifact@v4
