@@ -25,3 +25,4 @@ runs:
       with:
         name: maven-dependency-tree
         path: ${{ inputs.path }}/mvn-dependency-tree.zip
+        if-no-files-found: error

@@ -30,3 +30,4 @@ runs:
       with:
         name: maven-build
         path: ${{ inputs.path }}/maven-build.tgz
+        if-no-files-found: error

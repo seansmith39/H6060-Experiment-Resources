@@ -25,3 +25,4 @@ runs:
       with:
         name: python-dependency-tree
         path: ${{ inputs.path }}/python_dep_tree.json
+        if-no-files-found: error
