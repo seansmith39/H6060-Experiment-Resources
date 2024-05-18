@@ -15,6 +15,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: "Check For File Existence"
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
     - name: Run Horusec Scan
       uses: fike/horusec-action@v0.2.2
       with:

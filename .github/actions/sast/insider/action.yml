@@ -15,6 +15,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: "Check For File Existence"
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
     - name: Set Up Insider Scan
       shell: bash
       working-directory: ${{ inputs.path }}

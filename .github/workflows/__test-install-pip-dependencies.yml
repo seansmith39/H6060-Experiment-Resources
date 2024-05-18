@@ -27,7 +27,7 @@ jobs:
       - name: "Install Pip Dependencies"
         uses: ./main/.github/actions/python/install-pip-dependencies
         with:
-          requirement-file-name: dev-requirements.txt
+          requirement-file-name: requirements.txt
           extra-pip-packages: setuptools wheel
           path: clearml
 

@@ -23,13 +23,19 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: "Check For File Existence"
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
     - name: Run OWASP Dependency Check (JSON)
       uses: dependency-check/Dependency-Check_Action@1.1.0
       env:
         JAVA_HOME: /opt/jdk
       with:
         project: ${{ inputs.project-name }}
-        path: ${{ inputs.path }}
+        path: ./${{ inputs.path }}
         format: JSON
         args: >
           --enableRetired
@@ -43,7 +49,7 @@ runs:
         JAVA_HOME: /opt/jdk
       with:
         project: ${{ inputs.project-name }}
-        path: ${{ inputs.path }}
+        path: ./${{ inputs.path }}
         format: HTML
         args: >
           --enableRetired
@@ -57,7 +63,7 @@ runs:
         JAVA_HOME: /opt/jdk
       with:
         project: ${{ inputs.project-name }}
-        path: ${{ inputs.path }}
+        path: ./${{ inputs.path }}
         format: CSV
         args: >
           --enableRetired
