@@ -1,10 +1,10 @@
-name: Test Hoursec SAST Action
+name: Test Horusec SAST Action
 
 on: push
 
 jobs:
     test-action-mvn-job:
-        name: Test Hoursec SAST Action (Maven)
+        name: Test Horusec SAST Action (Maven)
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -19,13 +19,13 @@ jobs:
                 ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
                 path: xnio
 
-            - name: "Run Hoursec (SAST)"
-              uses: ./main/.github/actions/sast/hoursec
+            - name: "Run Horusec (SAST)"
+              uses: ./main/.github/actions/sast/horusec
               with:
                 path: xnio
 
     test-action-python-job:
-        name: Test Hoursec SAST Action (Python)
+        name: Test Horusec SAST Action (Python)
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -40,7 +40,7 @@ jobs:
                   ref: f2674669265a56a8ecaed3d0147f319ee136a231
                   path: clearml
 
-            - name: "Run Hoursec (SAST)"
-              uses: ./main/.github/actions/sast/hoursec
+            - name: "Run Horusec (SAST)"
+              uses: ./main/.github/actions/sast/horusec
               with:
                 path: clearml

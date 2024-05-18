@@ -10,7 +10,7 @@ JSON result is uploaded as a build artifact.
 
 | name | required | type   | default                 | description                  |
 | ---- | -------- | ------ | ----------------------- | ---------------------------- |
-| path | false    | string | ${{ github.workspace }} | Path to run the Hoursec scan |
+| path | false    | string | ${{ github.workspace }} | Path to run the Horusec scan |
 
 ## Example Execution
 
