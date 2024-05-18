@@ -3,46 +3,46 @@ name: Test Horusec SAST Action
 on: push
 
 jobs:
-    test-action-mvn-job:
-        name: Test Horusec SAST Action (Maven)
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                path: main
+  test-action-mvn-job:
+    name: Test Horusec SAST Action (Maven)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
 
-            - name: Checkout XNIO
-              uses: actions/checkout@v4
-              with:
-                repository: xnio/xnio
-                ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
-                path: xnio
+      - name: Checkout XNIO
+        uses: actions/checkout@v4
+        with:
+          repository: xnio/xnio
+          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+          path: xnio
 
-            - name: "Run Horusec (SAST)"
-              uses: ./main/.github/actions/sast/horusec
-              with:
-                path: xnio
-                build-artifact-name: sast-horusec-report-maven
+      - name: "Run Horusec (SAST)"
+        uses: ./main/.github/actions/sast/horusec
+        with:
+          path: xnio
+          build-artifact-name: sast-horusec-report-maven
 
-    test-action-python-job:
-        name: Test Horusec SAST Action (Python)
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                path: main
+  test-action-python-job:
+    name: Test Horusec SAST Action (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
 
-            - name: Checkout Clearml
-              uses: actions/checkout@v4
-              with:
-                  repository: allegroai/clearml
-                  ref: f2674669265a56a8ecaed3d0147f319ee136a231
-                  path: clearml
+      - name: Checkout Clearml
+        uses: actions/checkout@v4
+        with:
+          repository: allegroai/clearml
+          ref: f2674669265a56a8ecaed3d0147f319ee136a231
+          path: clearml
 
-            - name: "Run Horusec (SAST)"
-              uses: ./main/.github/actions/sast/horusec
-              with:
-                path: clearml
-                build-artifact-name: sast-horusec-report-python
+      - name: "Run Horusec (SAST)"
+        uses: ./main/.github/actions/sast/horusec
+        with:
+          path: clearml
+          build-artifact-name: sast-horusec-report-python

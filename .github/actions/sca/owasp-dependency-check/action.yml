@@ -1,0 +1,53 @@
+name: 'OWASP Dependency Check SCA Action'
+description: 'Run OWASP Dependency Check SCA scan'
+
+inputs:
+  project-name:
+    description: 'The name of the project being scanned'
+    required: true
+
+  nvd-api-key:
+    description: The API Key to access the NVD API'
+    required: true
+
+  path:
+    description: 'Directory to run the action'
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: 'Name of Horusec build artifact'
+    required: false
+    default: sast-horusec-report
+
+runs:
+  using: 'composite'
+  steps:
+    - name: "Check For File Existence"
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Set Up OWASP Dependency Check Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+        curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+        unzip dependency-check
+        chmod +x ./dependency-check/bin/dependency-check.sh
+
+    - name: Run OWASP Dependency Check Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mkdir -p owasp-reports
+        ./dependency-check/bin/dependency-check.sh --nvdApiKey ${{ inputs.nvd-api-key }} --scan . --project ${{ inputs.project-name }} --format ALL --out ${{ github.workspace }}/owasp-reports --enableRetired --enableExperimental --prettyPrint
+
+    - name: Upload OWASP Dependency Check Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: ${{ github.workspace }}/owasp-reports
+        if-no-files-found: error
