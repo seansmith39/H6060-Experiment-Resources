@@ -3,38 +3,38 @@ name: Test OWASP Dependency Check SCA Action
 on: push
 
 jobs:
-    test-action-mvn-job:
-        name: Test OWASP Dependency Check SCA Action (Maven)
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
-            with:
-              path: main
+  test-action-mvn-job:
+    name: Test OWASP Dependency Check SCA Action (Maven)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
 
-          - name: Checkout XNIO
-            uses: actions/checkout@v4
-            with:
-              repository: xnio/xnio
-              ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
-              path: xnio
+      - name: Checkout XNIO
+        uses: actions/checkout@v4
+        with:
+          repository: xnio/xnio
+          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+          path: xnio
 
-          - name: Setup Java JDK
-            uses: actions/setup-java@v4.2.1
-            with:
-              distribution: adopt
-              java-version: 8
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: adopt
+          java-version: 8
 
-          - name: "Build and Upload Maven Package"
-            uses: ./main/.github/actions/maven/maven-build-upload
-            with:
-              build-command: -U -B -fae -DskipTests clean install
-              path: xnio
+      - name: "Build and Upload Maven Package"
+        uses: ./main/.github/actions/maven/maven-build-upload
+        with:
+          build-command: -U -B -fae -DskipTests clean install
+          path: xnio
 
-          - name: "Run OWASP Dependency Check (SCA)"
-            uses: ./main/.github/actions/sca/owasp-dependency-check
-            with:
-                project-name: xnio
-                nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
-                path: xnio
-                build-artifact-name: sca-owasp-dependency-check-report-maven
+      - name: "Run OWASP Dependency Check (SCA)"
+        uses: ./main/.github/actions/sca/owasp-dependency-check
+        with:
+          project-name: xnio
+          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
+          path: xnio
+          build-artifact-name: sca-owasp-dependency-check-report-maven
