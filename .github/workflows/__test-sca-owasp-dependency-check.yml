@@ -32,7 +32,7 @@ jobs:
               path: xnio
 
           - name: "Run OWASP Dependency Check (SCA)"
-            uses: ./main/.github/actions/sast/horusec
+            uses: ./main/.github/actions/sca/owasp-dependency-check
             with:
                 project-name: xnio
                 nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
