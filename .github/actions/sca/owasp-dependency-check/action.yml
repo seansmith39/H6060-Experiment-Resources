@@ -29,51 +29,24 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Run OWASP Dependency Check (JSON)
-      uses: dependency-check/Dependency-Check_Action@1.1.0
-      env:
-        JAVA_HOME: /opt/jdk
-      with:
-        project: ${{ inputs.project-name }}
-        path: ./${{ inputs.path }}
-        format: JSON
-        args: >
-          --enableRetired
-          --enableExperimental
-          --prettyPrint
-          --nvdApiKey ${{ inputs.nvd-api-key }}
+    - name: Set Up OWASP Dependency Check Scan
+      shell: bash
+      run: |
+        VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+        curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+        unzip dependency-check
+        chmod +x ./dependency-check/bin/dependency-check.sh
 
-    - name: Run OWASP Dependency Check (HTML)
-      uses: dependency-check/Dependency-Check_Action@1.1.0
-      env:
-        JAVA_HOME: /opt/jdk
-      with:
-        project: ${{ inputs.project-name }}
-        path: ./${{ inputs.path }}
-        format: HTML
-        args: >
-          --enableRetired
-          --enableExperimental
-          --prettyPrint
-          --nvdApiKey ${{ inputs.nvd-api-key }}
-
-    - name: Run OWASP Dependency Check (CSV)
-      uses: dependency-check/Dependency-Check_Action@1.1.0
-      env:
-        JAVA_HOME: /opt/jdk
-      with:
-        project: ${{ inputs.project-name }}
-        path: ./${{ inputs.path }}
-        format: CSV
-        args: >
-          --enableRetired
-          --enableExperimental
-          --prettyPrint
-          --nvdApiKey ${{ inputs.nvd-api-key }}
+    - name: Run OWASP Dependency Check Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mkdir -p owasp-reports
+        ./dependency-check/bin/dependency-check.sh --nvdApiKey ${{ secrets.TEST_NVD_API_KEY }} --scan . --project ${{ inputs.project-name }} --format ALL --out ${{ github.workspace }}/owasp-reports --enableRetired --enableExperimental --prettyPrint
 
     - name: Upload OWASP Dependency Check Report
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.build-artifact-name }}
-        path: ${{ github.workspace }}/reports
+        path: ${{ github.workspace }}/owasp-reports
         if-no-files-found: error
