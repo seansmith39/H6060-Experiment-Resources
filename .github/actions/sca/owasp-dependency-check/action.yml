@@ -42,7 +42,7 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         mkdir -p owasp-reports
-        ./dependency-check/bin/dependency-check.sh --nvdApiKey ${{ secrets.TEST_NVD_API_KEY }} --scan . --project ${{ inputs.project-name }} --format ALL --out ${{ github.workspace }}/owasp-reports --enableRetired --enableExperimental --prettyPrint
+        ./dependency-check/bin/dependency-check.sh --nvdApiKey ${{ inputs.nvd-api-key }} --scan . --project ${{ inputs.project-name }} --format ALL --out ${{ github.workspace }}/owasp-reports --enableRetired --enableExperimental --prettyPrint
 
     - name: Upload OWASP Dependency Check Report
       uses: actions/upload-artifact@v4
