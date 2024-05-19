@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: rubenlagus/TelegramBots
-          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+          ref: e9add4fd0d33f8b62b9d986b2716e7e5893cb817
           path: telegrambots
 
       - name: Setup Java JDK
