@@ -1,0 +1,59 @@
+name: Semgrep SAST Action
+description: Run Semgrep SAST scan
+
+inputs:
+  language:
+    description: Programming language for Semgrep ruleset
+    required: true
+
+  path:
+    description: Directory to run the action
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: Name of Semgrep build artifact
+    required: false
+    default: sast-semgrep-report
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Run Semgrep Scan (Java)
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        semgrep scan \
+          --config=p/ci \
+          --config=p/java \
+          --config=p/cwe-top-25 \
+          --config=p/owasp-top-ten \
+          --json \
+          --json-output=result.json
+
+    - name: Run Semgrep Scan (Python)
+      if: ${{ inputs.language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        semgrep scan \
+          --config=p/ci \
+          --config=p/python \
+          --config=p/cwe-top-25 \
+          --config=p/owasp-top-ten \
+          --json \
+          --json-output=result.json
+          
+    - name: Upload Semgrep Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: ${{ inputs.path }}/result.json
+        if-no-files-found: error
