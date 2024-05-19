@@ -5,15 +5,18 @@ author: sean.smith [B00158319@mytudublin.ie]
 inputs:
   language:
     description: Programming language to initialise with CodeQL
+    type: string
     required: true
 
   path:
     description: Directory to run the action
+    type: string
     required: false
     default: ${{ github.workspace }}
 
   build-artifact-name:
     description: Name of CodeQL build artifact
+    type: string
     required: false
     default: sast-codeql-report
 

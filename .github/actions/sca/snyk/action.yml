@@ -1,0 +1,81 @@
+name: Snyk SCA Action
+description: Run Snyk SCA scan
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  language:
+    description: Programming language to run Snyk scan against
+    type: string
+    required: true
+
+  snyk-package-manager:
+    description: Snyk package manager (Python only)
+    type: string
+    required: false
+
+  snyk-file-to-scan:
+    description: Snyk file to scan (Python only)
+    type: string
+    required: false
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: Name of Snyk build artifact
+    type: string
+    required: false
+    default: sast-snyk-report
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Setup Node.js Environment
+      uses: actions/setup-node@v4.0.2
+
+    - name: Install Snyk CLI
+      shell: bash
+      run: npm install snyk -g
+
+    # Snyk returns exit code 1 if vulnerabilities are found
+    - name: Run Snyk Scan (Java)
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk test \
+          --package-manager=maven \
+          --maven-aggregate-project \
+          --severity-threshold=low \
+          --json \
+          --json-file-output=result.json || EXIT_CODE=$?
+        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
+    - name: Run Snyk Scan (Python)
+      if: ${{ inputs.language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk test \
+          --command=python \
+          --package-manager=${{ inputs.snyk-package-manager }} \
+          --severity-threshold=low \
+          --file=${{ inputs.snyk-file-to-scan }} \
+          --json \
+          --json-file-output=result.json || EXIT_CODE=$?
+        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
+    - name: Upload Snyk Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: ${{ inputs.path }}/result.json

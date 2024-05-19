@@ -53,10 +53,10 @@ jobs:
           ref: f2674669265a56a8ecaed3d0147f319ee136a231
           path: clearml
 
-      - name: Install Python 3.12
+      - name: Install Python 3.8
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: 3.12
+          python-version: 3.8
 
       - name: Install Pip Dependencies
         uses: ./main/.github/actions/python/install-pip-dependencies
