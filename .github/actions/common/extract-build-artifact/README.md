@@ -16,4 +16,6 @@ An action to extract a TAR build artifact.
 ```yaml
 - name: "Extract Build Artifact"
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/common/extract-build-artifact
+  with:
+    build-artifact-name: my-build-artifact
 ```

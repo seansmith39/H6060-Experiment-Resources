@@ -20,6 +20,9 @@ All result formats are uploaded as a build artifact.
 ```yaml
 - name: "Run OWASP Dependency Check SCA Scan"
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/owasp-dependency-check
+  with:
+    project-name: my-project
+    nvd-api-key: 11111111-2222-3333-4444-555555555555
 ```
 
 ## Note
