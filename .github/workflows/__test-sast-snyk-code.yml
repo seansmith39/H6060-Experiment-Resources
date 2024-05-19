@@ -1,0 +1,52 @@
+name: Test Snyk Code SAST Action
+
+on: push
+
+jobs:
+  test-action-mvn-job:
+    name: Test Snyk Code SAST Action (Maven)
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout XNIO
+        uses: actions/checkout@v4
+        with:
+          repository: xnio/xnio
+          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+          path: xnio
+
+      - name: "Run Snyk Code (SAST)"
+        uses: ./main/.github/actions/sast/snyk-code
+        with:
+          path: xnio
+          build-artifact-name: sast-snyk-code-report-maven
+
+  test-action-python-job:
+    name: Test Snyk Code SAST Action (Python)
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Clearml
+        uses: actions/checkout@v4
+        with:
+          repository: allegroai/clearml
+          ref: f2674669265a56a8ecaed3d0147f319ee136a231
+          path: clearml
+
+      - name: "Run Snyk Code (SAST)"
+        uses: ./main/.github/actions/sast/snyk-code
+        with:
+          path: clearml
+          build-artifact-name: sast-semgrep-report-python
