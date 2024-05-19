@@ -20,7 +20,7 @@ runs:
       working-directory: ${{ inputs.path }}
       run: tar -czf python-build.tgz build
 
-    - name: Upload Maven Build Repository
+    - name: Upload Python Build Repository
       uses: actions/upload-artifact@v4
       with:
         name: python-build

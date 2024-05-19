@@ -1,0 +1,39 @@
+name: 'Grype SCA Action'
+description: 'Run Grype SCA scan'
+
+inputs:
+  path:
+    description: 'Directory to run the action'
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: 'Name of Grype build artifact'
+    required: false
+    default: sca-grype-report
+
+runs:
+  using: 'composite'
+  steps:
+    - name: "Check For File Existence"
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Run Grype Scan
+      uses: anchore/scan-action@v3.6.4
+      id: scan
+      with:
+        path: ${{ inputs.path }}
+        by-cve: true
+        add-cpes-if-none: true
+        fail-build: false
+        output-format: json
+
+    - name: Upload Grype Report (JSON)
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: ${{ steps.scan.outputs.json }}
+        if-no-files-found: error

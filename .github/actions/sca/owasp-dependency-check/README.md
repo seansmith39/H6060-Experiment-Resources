@@ -4,7 +4,7 @@
 
 An action to configure and run a [OWASP Dependency Check](https://owasp.org/www-project-dependency-check/) SCA scan.
 
-HTML and JSON results are uploaded as a build artifact.
+All result formats are uploaded as a build artifact.
 
 ## Inputs
 
@@ -21,3 +21,7 @@ HTML and JSON results are uploaded as a build artifact.
 - name: "Run OWASP Dependency Check SCA Scan"
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/owasp-dependency-check
 ```
+
+## Note
+
+Due to limitations of the official [OWASP Dependency Check Git Action](https://github.com/jeremylong/DependencyCheck), which fails to scan Python application accurately, this action runs OWASP Dependency Check scan from source.

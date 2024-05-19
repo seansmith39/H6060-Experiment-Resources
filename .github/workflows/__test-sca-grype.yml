@@ -1,0 +1,77 @@
+name: Test Grype SCA Action
+
+on: push
+
+jobs:
+  test-action-mvn-job:
+    name: Test Grype SCA Action (Maven)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout XNIO
+        uses: actions/checkout@v4
+        with:
+          repository: xnio/xnio
+          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+          path: xnio
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: adopt
+          java-version: 8
+
+      - name: "Build and Upload Maven Package"
+        uses: ./main/.github/actions/maven/maven-build-upload
+        with:
+          build-command: -U -B -fae -DskipTests clean install
+          path: xnio
+
+      - name: "Run Grype (SCA)"
+        uses: ./main/.github/actions/sca/grype
+        with:
+          path: xnio
+          build-artifact-name: sca-grype-report-maven
+
+  test-action-python-job:
+    name: Test Grype SCA Action (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Clearml
+        uses: actions/checkout@v4
+        with:
+          repository: allegroai/clearml
+          ref: f2674669265a56a8ecaed3d0147f319ee136a231
+          path: clearml
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.12
+
+      - name: "Install Pip Dependencies"
+        uses: ./main/.github/actions/python/install-pip-dependencies
+        with:
+          requirement-file-name: requirements.txt
+          extra-pip-packages: setuptools
+          path: clearml
+
+      - name: "Build and Upload Python Package"
+        uses: ./main/.github/actions/python/python-build-upload
+        with:
+          path: clearml
+
+      - name: "Run Grype (SCA)"
+        uses: ./main/.github/actions/sca/grype
+        with:
+          path: clearml
+          build-artifact-name: sca-grype-report-python

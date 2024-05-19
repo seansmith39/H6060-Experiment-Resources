@@ -16,9 +16,9 @@ inputs:
     default: ${{ github.workspace }}
 
   build-artifact-name:
-    description: 'Name of Horusec build artifact'
+    description: 'Name of OWASP Dependency Check build artifact'
     required: false
-    default: sast-horusec-report
+    default: sca-owasp-dependency-check-report
 
 runs:
   using: 'composite'
