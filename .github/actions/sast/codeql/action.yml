@@ -26,20 +26,16 @@ runs:
         fail: true
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ inputs.language }}
-
-    - name: Autobuild Java Project
-      if: ${{ inputs.language == 'java' }}
-      uses: github/codeql-action/autobuild@v2
-      with:
-        working-directory: ${{ inputs.path }}
+        build-mode: autobuild
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         category: /language:${{ inputs.language }}
+        upload: never
         output: ${{ inputs.path }}/results
 
     - name: Upload CodeQL Report
