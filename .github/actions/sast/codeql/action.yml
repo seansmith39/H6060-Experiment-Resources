@@ -31,7 +31,12 @@ runs:
       with:
         source-root: ${{ inputs.path }}
         languages: ${{ inputs.language }}
-        build-mode: autobuild
+
+    - name: Autobuild Java Project
+      if: ${{ inputs.language == 'java' }}
+      uses: github/codeql-action/autobuild@v3
+      with:
+        working-directory: ${{ inputs.path }}
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

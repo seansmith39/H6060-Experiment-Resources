@@ -22,3 +22,7 @@ JSON and HTML results are uploaded as a build artifact.
   with:
     language: python
 ```
+
+## Note
+
+Python autobuild not supported by CodeQL.
