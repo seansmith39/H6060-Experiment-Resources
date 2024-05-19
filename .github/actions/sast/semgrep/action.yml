@@ -54,7 +54,7 @@ runs:
     - name: Run Prettier On JSON Report
       uses: creyD/prettier_action@v4.3
       with:
-        working-directory: ${{ inputs.path }}
+        working_directory: ${{ inputs.path }}
         prettier_options: --write result.json
 
     - name: Upload Semgrep Report
