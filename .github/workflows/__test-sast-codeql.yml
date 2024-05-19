@@ -4,7 +4,7 @@ on: push
 
 jobs:
   test-action-mvn-job:
-    name: Test Grype SCA Action (Maven)
+    name: Test CodeQL SAST Action (Maven)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,7 +27,7 @@ jobs:
           build-artifact-name: sast-codeql-report-maven
 
   test-action-python-job:
-    name: Test Grype SCA Action (Python)
+    name: Test CodeQL SAST Action (Python)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
