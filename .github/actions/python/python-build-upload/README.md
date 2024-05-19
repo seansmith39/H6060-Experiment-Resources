@@ -15,6 +15,6 @@ Resulting TAR is uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Build and Upload Python Package"
+- name: Build and Upload Python Package
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/python/python-build-upload
 ```

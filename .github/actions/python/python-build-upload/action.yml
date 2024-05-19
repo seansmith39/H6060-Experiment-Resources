@@ -5,6 +5,7 @@ author: sean.smith [B00158319@mytudublin.ie]
 inputs:
   path:
     description: Directory to run the action
+    type: string
     required: false
     default: ${{ github.workspace }}
 

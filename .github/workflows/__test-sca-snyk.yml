@@ -1,11 +1,13 @@
-name: Test OWASP Dependency Check SCA Action
+name: Test Snyk SCA Action
 
 on: push
 
 jobs:
   test-action-mvn-job:
-    name: Test OWASP Dependency Check SCA Action (Maven)
+    name: Test Snyk SCA Action (Maven)
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,17 +33,18 @@ jobs:
           build-command: -U -B -fae -DskipTests clean install
           path: xnio
 
-      - name: "Run OWASP Dependency Check (SCA)"
-        uses: ./main/.github/actions/sca/owasp-dependency-check
+      - name: Run Snyk (SCA)
+        uses: ./main/.github/actions/sca/snyk
         with:
-          project-name: xnio
-          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
+          language: java
           path: xnio
-          build-artifact-name: sca-owasp-dependency-check-report-maven
+          build-artifact-name: sast-snyk-report-maven
 
   test-action-python-job:
-    name: Test OWASP Dependency Check SCA Action (Python)
+    name: Test Snyk SCA Action (Python)
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,31 +54,31 @@ jobs:
       - name: Checkout Clearml
         uses: actions/checkout@v4
         with:
-          repository: allegroai/clearml
-          ref: f2674669265a56a8ecaed3d0147f319ee136a231
-          path: clearml
+          repository: dbcli/mycli
+          ref: 3bc201e4ceb62c81c2dc9ea9c0fa2cedecb8e851
+          path: mycli
 
-      - name: Install Python 3.8
+      - name: Install Python 3.12
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: 3.8
+          python-version: 3.12
 
       - name: Install Pip Dependencies
         uses: ./main/.github/actions/python/install-pip-dependencies
         with:
-          requirement-file-name: requirements.txt
-          extra-pip-packages: setuptools
-          path: clearml
+          requirement-file-name: requirements-dev.txt
+          path: mycli
 
       - name: Build and Upload Python Package
         uses: ./main/.github/actions/python/python-build-upload
         with:
-          path: clearml
+          path: mycli
 
-      - name: Run OWASP Dependency Check (SCA)
-        uses: ./main/.github/actions/sca/owasp-dependency-check
+      - name: Run Snyk (SCA)
+        uses: ./main/.github/actions/sca/snyk
         with:
-          project-name: clearml
-          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
-          path: clearml
-          build-artifact-name: sca-owasp-dependency-check-report-python
+          language: python
+          snyk-package-manager: pip
+          snyk-file-to-scan: requirements-dev.txt
+          path: mycli
+          build-artifact-name: sast-snyk-report-python

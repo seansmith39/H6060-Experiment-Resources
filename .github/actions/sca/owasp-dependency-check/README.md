@@ -18,7 +18,7 @@ All result formats are uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Run OWASP Dependency Check SCA Scan"
+- name: Run OWASP Dependency Check SCA Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/owasp-dependency-check
   with:
     project-name: my-project

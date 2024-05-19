@@ -5,11 +5,13 @@ author: sean.smith [B00158319@mytudublin.ie]
 inputs:
   path:
     description: Directory to run the action
+    type: string
     required: false
     default: ${{ github.workspace }}
 
   build-artifact-name:
     description: Name of Horusec build artifact
+    type: string
     required: false
     default: sast-horusec-report
 

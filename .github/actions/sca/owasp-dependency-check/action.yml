@@ -4,19 +4,23 @@ description: Run OWASP Dependency Check SCA scan
 inputs:
   project-name:
     description: The name of the project being scanned
+    type: string
     required: true
 
   nvd-api-key:
     description: The API Key to access the NVD API
+    type: string
     required: true
 
   path:
     description: Directory to run the action
+    type: string
     required: false
     default: ${{ github.workspace }}
 
   build-artifact-name:
     description: Name of OWASP Dependency Check build artifact
+    type: string
     required: false
     default: sca-owasp-dependency-check-report
 

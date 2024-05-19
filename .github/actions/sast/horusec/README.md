@@ -16,6 +16,6 @@ JSON result is uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Run Horusec SAST Scan"
+- name: Run Horusec SAST Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/horusec
 ```

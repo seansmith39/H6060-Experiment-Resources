@@ -16,7 +16,7 @@ JSON and HTML results are uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Run Insider SAST Scan"
+- name: Run Insider SAST Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/insider
 ```
 
