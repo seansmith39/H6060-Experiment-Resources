@@ -19,3 +19,7 @@ JSON and HTML results are uploaded as a build artifact.
 - name: "Run Insider SAST Scan"
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/insider
 ```
+
+## Note
+
+Insider has no support for Python.
