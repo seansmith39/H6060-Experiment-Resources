@@ -27,6 +27,12 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.12.0
+        with:
+          java-version: 17
+          maven-version: 3.9.6
+
       - name: "Build and Upload Maven Package"
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
