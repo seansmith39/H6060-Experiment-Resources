@@ -30,7 +30,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        semgrep ci \
+        semgrep scan \
           --config=p/ci \
           --config=p/java \
           --config=p/cwe-top-25 \
@@ -43,7 +43,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        semgrep ci \
+        semgrep scan \
           --config=p/ci \
           --config=p/python \
           --config=p/cwe-top-25 \
