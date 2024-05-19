@@ -70,6 +70,11 @@ jobs:
           extra-pip-packages: setuptools
           path: clearml
 
+      - name: "Build and Upload Python Package"
+        uses: ./main/.github/actions/python/python-build-upload
+        with:
+          path: clearml
+
       - name: "Run Snyk (SCA)"
         uses: ./main/.github/actions/sca/snyk
         with:
