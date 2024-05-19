@@ -51,6 +51,12 @@ runs:
           --json \
           --json-output=result.json
 
+    - name: Run Prettier On JSON Report
+      uses: creyD/prettier_action@v4.3
+      with:
+        working-directory: ${{ inputs.path }}
+        prettier_options: --write result.json
+
     - name: Upload Semgrep Report
       uses: actions/upload-artifact@v4
       with:
