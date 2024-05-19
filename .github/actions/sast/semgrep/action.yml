@@ -1,5 +1,6 @@
 name: Semgrep SAST Action
 description: Run Semgrep SAST scan
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   language:
@@ -50,7 +51,7 @@ runs:
           --config=p/owasp-top-ten \
           --json \
           --json-output=result.json
-          
+
     - name: Upload Semgrep Report
       uses: actions/upload-artifact@v4
       with:

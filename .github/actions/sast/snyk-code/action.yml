@@ -1,0 +1,53 @@
+name: Snyk Code SAST Action
+description: Run Snyk Code SAST scan
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  project-name:
+    description: Name of project in Snyk UI
+    required: true
+
+  path:
+    description: Directory to run the action
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: Name of Snyk Code build artifact
+    required: false
+    default: sast-snyk-code-report
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Setup Node.js Environment
+      uses: actions/setup-node@v4.0.2
+
+    - name: Install Snyk CLI
+      shell: bash
+      run: npm install snyk -g
+
+    # Snyk returns exit code 1 if vulnerabilities are found
+    - name: Run Snyk Code Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk code test \
+          --project-name=${{ inputs.project-name }} \
+          --severity-threshold=low \
+          --report \
+          --json \
+          --json-file-output=result.json || EXIT_CODE=$?
+        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
+    - name: Upload Snyk Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: ${{ inputs.path }}/result.json

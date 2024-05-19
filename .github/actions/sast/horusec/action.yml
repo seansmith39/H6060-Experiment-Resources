@@ -1,5 +1,6 @@
 name: Horusec SAST Action
 description: Run Horusec SAST scan
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   path:
