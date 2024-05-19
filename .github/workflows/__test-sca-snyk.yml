@@ -77,4 +77,4 @@ jobs:
           snyk-package-manager: pip
           snyk-file-to-scan: requirements.txt
           path: clearml
-          build-artifact-name: sast-semgrep-report-python
+          build-artifact-name: sast-snyk-report-python
