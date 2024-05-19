@@ -6,6 +6,8 @@ jobs:
   test-action-mvn-job:
     name: Test Snyk Code SAST Action (Maven)
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +31,8 @@ jobs:
   test-action-python-job:
     name: Test Snyk Code SAST Action (Python)
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
