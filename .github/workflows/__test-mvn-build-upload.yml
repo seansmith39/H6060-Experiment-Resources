@@ -25,7 +25,7 @@ jobs:
           distribution: adopt
           java-version: 8
 
-      - name: "Build and Upload Maven Package"
+      - name: Build and Upload Maven Package
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
           build-command: -U -B -fae -DskipTests clean install

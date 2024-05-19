@@ -9,37 +9,27 @@ jobs:
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          path: main
-
-      - name: Checkout TelegramBots
-        uses: actions/checkout@v4
-        with:
-          repository: rubenlagus/TelegramBots
-          ref: e9add4fd0d33f8b62b9d986b2716e7e5893cb817
-          path: telegrambots
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4.2.1
-        with:
-          distribution: temurin
-          java-version: 17
-
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.12.0
         with:
           java-version: 17
           maven-version: 3.9.6
+          checkout-repository: rubenlagus/TelegramBots
+          checkout-ref: e9add4fd0d33f8b62b9d986b2716e7e5893cb817
+          checkout-path: telegrambots
 
-      - name: "Build and Upload Maven Package"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Build and Upload Maven Package
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
           build-command: -U -B -fae -DskipTests clean install
           path: telegrambots
 
-      - name: "Run Snyk (SCA)"
+      - name: Run Snyk (SCA)
         uses: ./main/.github/actions/sca/snyk
         with:
           language: java
@@ -69,18 +59,18 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: "Install Pip Dependencies"
+      - name: Install Pip Dependencies
         uses: ./main/.github/actions/python/install-pip-dependencies
         with:
           requirement-file-name: requirements-dev.txt
           path: mycli
 
-      - name: "Build and Upload Python Package"
+      - name: Build and Upload Python Package
         uses: ./main/.github/actions/python/python-build-upload
         with:
           path: mycli
 
-      - name: "Run Snyk (SCA)"
+      - name: Run Snyk (SCA)
         uses: ./main/.github/actions/sca/snyk
         with:
           language: python
