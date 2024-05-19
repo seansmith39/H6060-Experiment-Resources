@@ -5,14 +5,17 @@ author: sean.smith [B00158319@mytudublin.ie]
 inputs:
   requirement-file-name:
     description: Name of pip requirements file
+    type: string
     required: false
 
   extra-pip-packages:
     description: Extra python packages to install
+    type: string
     required: false
 
   path:
     description: Directory to run the action
+    type: string
     required: false
     default: ${{ github.workspace }}
 

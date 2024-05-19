@@ -1,8 +1,18 @@
-name: Snyk Code SAST Action
-description: Run Snyk Code SAST scan
+name: Snyk SCA Action
+description: Run Snyk SCA scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  snyk-package-manager:
+    description: Snyk package manager (Python only)
+    type: string
+    required: false
+
+  snyk-file-to-scan:
+    description: Snyk file to scan (Python only)
+    type: string
+    required: false
+
   path:
     description: Directory to run the action
     type: string
@@ -10,10 +20,10 @@ inputs:
     default: ${{ github.workspace }}
 
   build-artifact-name:
-    description: Name of Snyk Code build artifact
+    description: Name of Snyk build artifact
     type: string
     required: false
-    default: sast-snyk-code-report
+    default: sast-snyk-report
 
 runs:
   using: composite
@@ -32,12 +42,29 @@ runs:
       run: npm install snyk -g
 
     # Snyk returns exit code 1 if vulnerabilities are found
-    - name: Run Snyk Code Scan
+    - name: Run Snyk Scan (Java)
+      if: ${{ inputs.language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        snyk code test \
+        snyk test \
+          --package-manager=maven \
+          --maven-aggregate-project \
           --severity-threshold=low \
+          --json \
+          --json-file-output=result.json || EXIT_CODE=$?
+        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
+    - name: Run Snyk Scan (Python)
+      if: ${{ inputs.language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk test \
+          --package-manager=${{ inputs.snyk-package-manager }} \
+          --severity-threshold=low \
+          --skip-unresolved=false \
+          --file=${{ inputs.snyk-file-to-scan }} \
           --json \
           --json-file-output=result.json || EXIT_CODE=$?
         if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
