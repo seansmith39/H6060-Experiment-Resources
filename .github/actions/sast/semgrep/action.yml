@@ -29,7 +29,7 @@ runs:
       if: ${{ inputs.language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: semgrep scan \
+      run: semgrep ci \
             --config=p/ci \
             --config=p/java \
             --config=p/cwe-top-25 \
@@ -41,7 +41,7 @@ runs:
       if: ${{ inputs.language == 'python' }}
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: semgrep scan \
+      run: semgrep ci \
             --config=p/ci \
             --config=p/python \
             --config=p/cwe-top-25 \
