@@ -66,9 +66,9 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         snyk test \
+          --command=python3 \
           --package-manager=${{ inputs.snyk-package-manager }} \
           --severity-threshold=low \
-          --skip-unresolved=false \
           --file=${{ inputs.snyk-file-to-scan }} \
           --json \
           --json-file-output=result.json || EXIT_CODE=$?
