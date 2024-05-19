@@ -26,7 +26,7 @@ jobs:
       - name: Build and Upload Maven Package
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
-          build-command: -U -B -fae -DskipTests clean install
+          build-command: clean install
           path: telegrambots
 
       - name: Run Snyk (SCA)
