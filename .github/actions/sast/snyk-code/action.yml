@@ -3,10 +3,6 @@ description: Run Snyk Code SAST scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  project-name:
-    description: Name of project in Snyk UI
-    required: true
-
   path:
     description: Directory to run the action
     required: false
@@ -39,9 +35,7 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         snyk code test \
-          --project-name=${{ inputs.project-name }} \
           --severity-threshold=low \
-          --report \
           --json \
           --json-file-output=result.json || EXIT_CODE=$?
         if [ $EXIT_CODE -eq 1 ]; then exit 0; fi

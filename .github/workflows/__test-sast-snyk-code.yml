@@ -24,7 +24,6 @@ jobs:
       - name: "Run Snyk Code (SAST)"
         uses: ./main/.github/actions/sast/snyk-code
         with:
-          project-name: action-test-maven-xnio
           path: xnio
           build-artifact-name: sast-snyk-code-report-maven
 
@@ -49,6 +48,5 @@ jobs:
       - name: "Run Snyk Code (SAST)"
         uses: ./main/.github/actions/sast/snyk-code
         with:
-          project-name: action-test-python-clearml
           path: clearml
           build-artifact-name: sast-semgrep-report-python
