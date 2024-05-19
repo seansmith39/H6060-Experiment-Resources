@@ -1,22 +1,23 @@
-name: 'Install Pip Dependencies Action'
-description: 'Install pip dependencies for a project'
+name: Install Pip Dependencies Action
+description: Install pip dependencies for a project
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   requirement-file-name:
-    description: 'Name of pip requirements file'
+    description: Name of pip requirements file
     required: false
 
   extra-pip-packages:
-    description: 'Extra python packages to install'
+    description: Extra python packages to install
     required: false
 
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Install Pip
       shell: bash

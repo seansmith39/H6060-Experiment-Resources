@@ -1,0 +1,53 @@
+name: Test CodeQL SAST Action
+
+on: push
+
+permissions:
+  security-events: write
+
+jobs:
+  test-action-mvn-job:
+    name: Test CodeQL SAST Action (Maven)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout XNIO
+        uses: actions/checkout@v4
+        with:
+          repository: xnio/xnio
+          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+          path: xnio
+
+      - name: "Run CodeQL (SAST)"
+        uses: ./main/.github/actions/sast/codeql
+        with:
+          language: java
+          path: xnio
+          build-artifact-name: sast-codeql-report-maven
+
+  test-action-python-job:
+    name: Test CodeQL SAST Action (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Clearml
+        uses: actions/checkout@v4
+        with:
+          repository: allegroai/clearml
+          ref: f2674669265a56a8ecaed3d0147f319ee136a231
+          path: clearml
+
+      - name: "Run CodeQL (SAST)"
+        uses: ./main/.github/actions/sast/codeql
+        with:
+          language: python
+          path: clearml
+          build-artifact-name: sast-codeql-report-python

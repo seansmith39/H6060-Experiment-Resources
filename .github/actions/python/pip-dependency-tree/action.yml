@@ -1,14 +1,15 @@
-name: 'Pip Dependency Tree Action'
-description: 'Generate a pip dependency tree for a project'
+name: Pip Dependency Tree Action
+description: Generate a pip dependency tree for a project
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Install Python Package
       shell: bash

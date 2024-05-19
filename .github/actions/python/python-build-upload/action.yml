@@ -1,14 +1,15 @@
-name: 'Python Build And Upload Action'
-description: 'Build a Python project and upload as a build artifact'
+name: Python Build And Upload Action
+description: Build a Python project and upload as a build artifact
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Build Python Package
       shell: bash
