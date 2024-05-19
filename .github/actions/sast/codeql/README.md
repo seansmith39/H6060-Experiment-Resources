@@ -4,7 +4,7 @@
 
 An action to configure and run a [CodeQL](https://github.com/github/codeql) SAST scan.
 
-JSON and HTML results are uploaded as a build artifact.
+SARIF results are uploaded as a build artifact.
 
 ## Inputs
 
