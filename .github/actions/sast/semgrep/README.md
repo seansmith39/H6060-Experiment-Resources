@@ -17,7 +17,7 @@ JSON result is uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Run Semgrep SAST Scan"
+- name: Run Semgrep SAST Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/semgrep
   with:
     language: python

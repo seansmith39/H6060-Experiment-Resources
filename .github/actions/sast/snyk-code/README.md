@@ -16,7 +16,7 @@ JSON result is uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Run Snyk Code SAST Scan"
+- name: Run Snyk Code SAST Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/snyk-code
 ```
 

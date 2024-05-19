@@ -3,6 +3,11 @@ description: Run Snyk SCA scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  language:
+    description: Programming language to run Snyk scan against
+    type: string
+    required: true
+
   snyk-package-manager:
     description: Snyk package manager (Python only)
     type: string
