@@ -55,5 +55,5 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.build-artifact-name }}
-        path: ${{ github.workspace }}/result.json
+        path: ${{ inputs.path }}/result.json
         if-no-files-found: error
