@@ -80,7 +80,13 @@ jobs:
 
       - name: Run Semgrep Scan
         shell: bash
-        run: semgrep scan --config=p/ci --config=p/default --config=p/python --config=p/secrets --config=p/cwe-top-25 --config=p/owasp-top-ten --sarif > semgrep.sarif
+        run: semgrep scan --config=p/ci
+         --config=p/default
+         --config=p/python
+         --config=p/secrets
+         --config=p/cwe-top-25
+         --config=p/owasp-top-ten
+         --sarif > semgrep.sarif
 
       - name: Upload Semgrep Result To GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3

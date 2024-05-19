@@ -1,0 +1,58 @@
+name: Test Semgrep SAST Action
+
+on: push
+
+jobs:
+  test-action-mvn-job:
+    name: Test Semgrep SAST Action (Maven)
+    runs-on: ubuntu-latest
+    env:
+      SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout XNIO
+        uses: actions/checkout@v4
+        with:
+          repository: xnio/xnio
+          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
+          path: xnio
+
+      - name: "Run Semgrep (SAST)"
+        uses: ./main/.github/actions/sast/semgrep
+        with:
+          language: java
+          path: xnio
+          build-artifact-name: sast-semgrep-report-maven
+
+  test-action-python-job:
+    name: Test Semgrep SAST Action (Python)
+    runs-on: ubuntu-latest
+    env:
+      SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Clearml
+        uses: actions/checkout@v4
+        with:
+          repository: allegroai/clearml
+          ref: f2674669265a56a8ecaed3d0147f319ee136a231
+          path: clearml
+
+      - name: "Run Semgrep (SAST)"
+        uses: ./main/.github/actions/sast/semgrep
+        with:
+          language: python
+          path: clearml
+          build-artifact-name: sast-semgrep-report-python
