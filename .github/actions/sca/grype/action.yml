@@ -28,6 +28,7 @@ runs:
         path: ${{ inputs.path }}
         by-cve: true
         add-cpes-if-none: true
+        severity-cutoff: critical
         fail-build: false
         output-format: json
 
