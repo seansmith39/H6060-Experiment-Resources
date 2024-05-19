@@ -1,21 +1,22 @@
-name: 'Grype SCA Action'
-description: 'Run Grype SCA scan'
+name: Grype SCA Action
+description: Run Grype SCA scan
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
   build-artifact-name:
-    description: 'Name of Grype build artifact'
+    description: Name of Grype build artifact
     required: false
     default: sca-grype-report
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
-    - name: "Check For File Existence"
+    - name: Check For File Existence
       uses: andstor/file-existence-action@v3
       with:
         files: ${{ inputs.path }}

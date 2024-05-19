@@ -1,29 +1,29 @@
-name: 'OWASP Dependency Check SCA Action'
-description: 'Run OWASP Dependency Check SCA scan'
+name: OWASP Dependency Check SCA Action
+description: Run OWASP Dependency Check SCA scan
 
 inputs:
   project-name:
-    description: 'The name of the project being scanned'
+    description: The name of the project being scanned
     required: true
 
   nvd-api-key:
-    description: The API Key to access the NVD API'
+    description: The API Key to access the NVD API
     required: true
 
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
   build-artifact-name:
-    description: 'Name of OWASP Dependency Check build artifact'
+    description: Name of OWASP Dependency Check build artifact
     required: false
     default: sca-owasp-dependency-check-report
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
-    - name: "Check For File Existence"
+    - name: Check For File Existence
       uses: andstor/file-existence-action@v3
       with:
         files: ${{ inputs.path }}

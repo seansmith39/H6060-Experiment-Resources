@@ -1,14 +1,15 @@
-name: 'Maven Dependency Tree Action'
-description: "Generate a Maven dependency tree for a project"
+name: Maven Dependency Tree Action
+description: Generate a Maven dependency tree for a project
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Generate Maven Dependency Tree
       shell: bash

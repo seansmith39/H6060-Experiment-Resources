@@ -1,19 +1,20 @@
-name: 'Maven Build And Upload Action'
-description: 'Build a Maven project and upload as a build artifact'
+name: Maven Build And Upload Action
+description: Build a Maven project and upload as a build artifact
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   build-command:
-    description: 'Maven build command'
+    description: Maven build command
     required: false
     default: clean install
 
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Build Maven Application
       shell: bash

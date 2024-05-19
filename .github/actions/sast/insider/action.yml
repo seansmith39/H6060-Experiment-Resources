@@ -1,21 +1,22 @@
-name: 'Insider SAST Action'
-description: 'Setup and run Insider SAST scan'
+name: Insider SAST Action
+description: Setup and run Insider SAST scan
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
   build-artifact-name:
-    description: 'Name of Insider build artifact'
+    description: Name of Insider build artifact
     required: false
     default: sast-insider-report
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
-    - name: "Check For File Existence"
+    - name: Check For File Existence
       uses: andstor/file-existence-action@v3
       with:
         files: ${{ inputs.path }}

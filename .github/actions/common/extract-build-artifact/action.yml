@@ -1,18 +1,19 @@
-name: 'Extract Build Artifact Action'
-description: 'Extract a build artifact'
+name: Extract Build Artifact Action
+description: Extract a build artifact
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   build-artifact-name:
-    description: 'Name of build artifact to extract'
+    description: Name of build artifact to extract
     required: true
 
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Extract Build Artifact
       shell: bash

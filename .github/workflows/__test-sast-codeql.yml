@@ -2,6 +2,9 @@ name: Test CodeQL SAST Action
 
 on: push
 
+permissions:
+  security-events: write
+
 jobs:
   test-action-mvn-job:
     name: Test CodeQL SAST Action (Maven)

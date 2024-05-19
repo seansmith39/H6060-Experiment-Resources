@@ -1,25 +1,26 @@
-name: 'CodeQL SAST Action'
-description: 'Setup and run CodeQL SAST scan'
+name: CodeQL SAST Action
+description: Setup and run CodeQL SAST scan
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   language:
-    description: 'Programming language to initialise with CodeQL'
+    description: Programming language to initialise with CodeQL
     required: true
 
   path:
-    description: 'Directory to run the action'
+    description: Directory to run the action
     required: false
     default: ${{ github.workspace }}
 
   build-artifact-name:
-    description: 'Name of CodeQL build artifact'
+    description: Name of CodeQL build artifact
     required: false
     default: sast-codeql-report
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
-    - name: "Check For File Existence"
+    - name: Check For File Existence
       uses: andstor/file-existence-action@v3
       with:
         files: ${{ inputs.path }}
@@ -28,12 +29,14 @@ runs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
+        source-root: ${{ inputs.path }}
         languages: ${{ inputs.language }}
         build-mode: autobuild
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
+        checkout_path: ${{ inputs.path }}
         category: /language:${{ inputs.language }}
         upload: never
         output: ${{ inputs.path }}/results
