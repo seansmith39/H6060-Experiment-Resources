@@ -15,5 +15,5 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: "Create Pip Dependency Tree"
+      - name: Create Pip Dependency Tree
         uses: ./.github/actions/python/pip-dependency-tree

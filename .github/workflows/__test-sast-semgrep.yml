@@ -23,7 +23,7 @@ jobs:
           ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
           path: xnio
 
-      - name: "Run Semgrep (SAST)"
+      - name: Run Semgrep (SAST)
         uses: ./main/.github/actions/sast/semgrep
         with:
           language: java
@@ -50,7 +50,7 @@ jobs:
           ref: f2674669265a56a8ecaed3d0147f319ee136a231
           path: clearml
 
-      - name: "Run Semgrep (SAST)"
+      - name: Run Semgrep (SAST)
         uses: ./main/.github/actions/sast/semgrep
         with:
           language: python

@@ -15,6 +15,6 @@ Resulting JSON is uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Create Pip Dependency Tree"
+- name: Create Pip Dependency Tree
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/python/pip-dependency-tree
 ```

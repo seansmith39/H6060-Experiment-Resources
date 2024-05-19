@@ -16,6 +16,6 @@ Resulting TAR is uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Build and Upload Maven Package"
+- name: Build and Upload Maven Package
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/maven/maven-build-upload
 ```

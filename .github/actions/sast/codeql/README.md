@@ -17,7 +17,7 @@ SARIF results are uploaded as a build artifact.
 ## Example Execution
 
 ```yaml
-- name: "Run CodeQL SAST Scan"
+- name: Run CodeQL SAST Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/codeql
   with:
     language: python

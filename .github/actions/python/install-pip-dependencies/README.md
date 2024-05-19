@@ -15,6 +15,6 @@ An action to install Pip dependencies for Python.
 ## Example Execution
 
 ```yaml
-- name: "Install Pip Dependencies"
+- name: Install Pip Dependencies
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/python/install-pip-dependencies
 ```

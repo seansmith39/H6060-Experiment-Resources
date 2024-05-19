@@ -19,7 +19,7 @@ jobs:
           ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
           path: xnio
 
-      - name: "Run Insider (SAST)"
+      - name: Run Insider (SAST)
         uses: ./main/.github/actions/sast/insider
         with:
           path: xnio

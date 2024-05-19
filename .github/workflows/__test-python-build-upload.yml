@@ -24,14 +24,14 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: "Install Pip Dependencies"
+      - name: Install Pip Dependencies
         uses: ./main/.github/actions/python/install-pip-dependencies
         with:
           requirement-file-name: requirements.txt
           extra-pip-packages: setuptools
           path: clearml
 
-      - name: "Build and Upload Python Package"
+      - name: Build and Upload Python Package
         uses: ./main/.github/actions/python/python-build-upload
         with:
           path: clearml
