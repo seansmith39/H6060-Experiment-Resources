@@ -14,30 +14,30 @@ jobs:
         with:
           path: main
 
-      - name: Checkout XNIO
+      - name: Checkout TelegramBots
         uses: actions/checkout@v4
         with:
-          repository: xnio/xnio
-          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
-          path: xnio
+          repository: rubenlagus/TelegramBots
+          ref: e9add4fd0d33f8b62b9d986b2716e7e5893cb817
+          path: telegrambots
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
         with:
-          distribution: adopt
-          java-version: 8
+          distribution: temurin
+          java-version: 17
 
       - name: "Build and Upload Maven Package"
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
-          build-command: -U -B -fae -DskipTests clean install
-          path: xnio
+          build-command: clean install
+          path: telegrambots
 
       - name: "Run Snyk (SCA)"
         uses: ./main/.github/actions/sca/snyk
         with:
           language: java
-          path: xnio
+          path: telegrambots
           build-artifact-name: sast-snyk-report-maven
 
   test-action-python-job:
