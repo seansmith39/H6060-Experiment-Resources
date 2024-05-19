@@ -21,6 +21,18 @@ jobs:
           ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
           path: xnio
 
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: adopt
+          java-version: 8
+
+      - name: "Build and Upload Maven Package"
+        uses: ./main/.github/actions/maven/maven-build-upload
+        with:
+          build-command: -U -B -fae -DskipTests clean install
+          path: xnio
+
       - name: "Run Snyk (SCA)"
         uses: ./main/.github/actions/sca/snyk
         with:
@@ -44,6 +56,18 @@ jobs:
         with:
           repository: allegroai/clearml
           ref: f2674669265a56a8ecaed3d0147f319ee136a231
+          path: clearml
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.12
+
+      - name: "Install Pip Dependencies"
+        uses: ./main/.github/actions/python/install-pip-dependencies
+        with:
+          requirement-file-name: requirements.txt
+          extra-pip-packages: setuptools
           path: clearml
 
       - name: "Run Snyk (SCA)"
