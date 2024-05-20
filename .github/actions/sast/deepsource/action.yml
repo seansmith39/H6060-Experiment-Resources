@@ -1,0 +1,49 @@
+name: DeepSource SAST Action
+description: Run DeepSource SAST scan
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  language:
+    description: Programming language for DeepSource scan
+    type: string
+    required: true
+
+  coverage-file:
+    description: Name of test coverage file
+    type: string
+    required: true
+
+  deepsource-analyzer:
+    description: Name of analyzer defined in .deepsource.toml
+    type: string
+    required: false
+    default: test-coverage
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Install DeepSource CLI
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: curl https://deepsource.io/cli | sh
+
+    - name: Run DeepSource Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        ./bin/deepsource report \
+          --analyzer ${{ inputs.deepsource-analyzer }} \
+          --key ${{ inputs.language }} \
+          --value-file ${{ inputs.coverage-file }}
