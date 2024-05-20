@@ -36,13 +36,14 @@ runs:
 
     - name: Install DeepSource CLI
       shell: bash
-      run: BINDIR=~/.local/bin curl https://deepsource.io/cli | sh
+      working-directory: ${{ inputs.path }}
+      run: curl https://deepsource.io/cli | sh
 
     - name: Run DeepSource Scan
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        deepsource report \
+        ./bin/deepsource report \
           --analyzer ${{ inputs.deepsource-analyzer }} \
           --key ${{ inputs.language }} \
           --value-file ${{ inputs.coverage-file }}
