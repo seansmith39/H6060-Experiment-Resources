@@ -70,8 +70,7 @@ jobs:
       - name: Install Pip Dependencies
         uses: ./main/.github/actions/python/install-pip-dependencies
         with:
-          requirement-file-name: requirements.txt
-          extra-pip-packages: setuptools
+          requirement-file-name: requirements-dev.txt
           path: mycli
 
       - name: Wait For MySQL Connection
