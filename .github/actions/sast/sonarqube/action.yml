@@ -28,6 +28,11 @@ inputs:
     type: string
     required: true
 
+  sonar-project-name:
+    description: Name of project being scanned
+    type: string
+    required: true
+
   path:
     description: Directory to run the action
     type: string
@@ -63,8 +68,8 @@ runs:
         mvn sonar:sonar \
           -Dsonar.token=${{ inputs.sonar-token }} \
           -Dsonar.host.url=${{ inputs.sonar-host-url }} \
-          -Dsonar.projectKey=${{ inputs.sonarqube-project-name }} \
-          -Dsonar.projectName=${{ inputs.sonarqube-project-name }}
+          -Dsonar.projectKey=${{ inputs.sonar-project-name }} \
+          -Dsonar.projectName=${{ inputs.sonar-project-name }}
 
     - name: Run SonarQube Scan (Python)
       if: ${{ inputs.language == 'python' }}
@@ -75,15 +80,15 @@ runs:
       with:
         projectBaseDir: ${{ inputs.path }}
         args: >
-          -Dsonar.projectKey=${{ inputs.sonarqube-project-name }}
-          -Dsonar.projectName=${{ inputs.sonarqube-project-name }}
+          -Dsonar.projectKey=${{ inputs.sonar-project-name }}
+          -Dsonar.projectName=${{ inputs.sonar-project-name }}
 
     - name: Download SonarQube CNES Report
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         curl --user ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
-          ${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonarqube-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator \
+          ${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator \
           --output cnes-report.zip
 
     - name: Upload SonarQube Report

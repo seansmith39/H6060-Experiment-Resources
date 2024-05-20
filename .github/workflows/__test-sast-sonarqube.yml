@@ -27,6 +27,7 @@ jobs:
           sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
           sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
           sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
+          sonar-project-name: test-maven
           path: xnio
           build-artifact-name: sast-sonarqube-report-maven
 
@@ -54,5 +55,6 @@ jobs:
           sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
           sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
           sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
+          sonar-project-name: test-python
           path: clearml
           build-artifact-name: sast-sonarqube-report-python

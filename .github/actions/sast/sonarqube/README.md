@@ -15,6 +15,7 @@ JSON result is uploaded as a build artifact.
 | sonar-host-url      | true     | string |                         | Hostname of SonarQube                          |
 | sonar-username      | true     | string |                         | Username for logging into SonarQube            |
 | sonar-password      | true     | string |                         | Password for logging into SonarQube            |
+| sonar-project-name  | true     | string |                         | Name of project being scanned by SonarQube     |
 | path                | false    | string | ${{ github.workspace }} | Path to run the SonarQube scan                 |
 | build-artifact-name | false    | string | sast-sonarqube-report   | Name of SonarQube build artifact               |
 
@@ -29,6 +30,7 @@ JSON result is uploaded as a build artifact.
     sonar-host-url: https://my-sonarqube-instance.com
     sonar-username: my-username
     sonar-password: my-password
+    sonar-project-name: my-project
 ```
 
 ## Note
