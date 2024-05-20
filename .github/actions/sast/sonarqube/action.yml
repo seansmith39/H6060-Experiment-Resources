@@ -66,7 +66,7 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         mvn sonar:sonar \
-          -Dsonar.token=${{ inputs.sonar-token }} \
+          -Dsonar.login=${{ inputs.sonar-token }} \
           -Dsonar.host.url=${{ inputs.sonar-host-url }} \
           -Dsonar.projectKey=${{ inputs.sonar-project-name }} \
           -Dsonar.projectName=${{ inputs.sonar-project-name }}
@@ -87,9 +87,9 @@ runs:
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        curl --user ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
-          ${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator \
-          --remote-name cnes-report.zip
+        curl -u ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
+          -O cnes-report.zip \
+          ${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator
 
     - name: Upload SonarQube Report
       uses: actions/upload-artifact@v4
