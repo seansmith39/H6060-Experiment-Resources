@@ -88,7 +88,7 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         curl -u ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
-          -O cnes-report.zip \
+          -o cnes-report.zip \
           ${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator
 
     - name: Upload SonarQube Report
