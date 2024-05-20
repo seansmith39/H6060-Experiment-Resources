@@ -19,7 +19,7 @@ jobs:
           ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
           path: xnio
 
-      - name: "Run Horusec (SAST)"
+      - name: Run Horusec (SAST)
         uses: ./main/.github/actions/sast/horusec
         with:
           path: xnio
@@ -41,7 +41,7 @@ jobs:
           ref: f2674669265a56a8ecaed3d0147f319ee136a231
           path: clearml
 
-      - name: "Run Horusec (SAST)"
+      - name: Run Horusec (SAST)
         uses: ./main/.github/actions/sast/horusec
         with:
           path: clearml

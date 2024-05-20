@@ -16,7 +16,7 @@ jobs:
           touch sample.txt
           tar -czf build-artifact.tgz sample.txt
 
-      - name: "Extract Build Artifact"
+      - name: Extract Build Artifact
         uses: ./.github/actions/common/extract-build-artifact
         with:
           build-artifact-name: build-artifact

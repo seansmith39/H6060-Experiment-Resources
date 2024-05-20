@@ -31,7 +31,7 @@ jobs:
           build-command: -U -B -fae -DskipTests clean install
           path: xnio
 
-      - name: "Run OWASP Dependency Check (SCA)"
+      - name: Run OWASP Dependency Check (SCA)
         uses: ./main/.github/actions/sca/owasp-dependency-check
         with:
           project-name: xnio

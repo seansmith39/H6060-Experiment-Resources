@@ -1,0 +1,99 @@
+name: SonarQube SAST Action
+description: Run SonarQube SAST scan
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  language:
+    description: Programming language for SonarQube scanner
+    type: string
+    required: true
+
+  sonar-token:
+    description: Token used to authenticate access to SonarQube
+    type: string
+    required: true
+
+  sonar-host-url:
+    description: Hostname of SonarQube
+    type: string
+    required: true
+
+  sonar-username:
+    description: Username for logging into SonarQube
+    type: string
+    required: true
+
+  sonar-password:
+    description: Password for logging into SonarQube
+    type: string
+    required: true
+
+  sonar-project-name:
+    description: Name of project being scanned
+    type: string
+    required: true
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: Name of SonarQube build artifact
+    type: string
+    required: false
+    default: sast-sonarqube-report
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.2.1
+      with:
+        distribution: temurin
+        java-version: 17
+
+    - name: Run SonarQube Scan (Maven)
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mvn sonar:sonar \
+          -Dsonar.login=${{ inputs.sonar-token }} \
+          -Dsonar.host.url=${{ inputs.sonar-host-url }} \
+          -Dsonar.projectKey=${{ inputs.sonar-project-name }} \
+          -Dsonar.projectName=${{ inputs.sonar-project-name }}
+
+    - name: Run SonarQube Scan (Python)
+      if: ${{ inputs.language == 'python' }}
+      uses: SonarSource/sonarqube-scan-action@v2.0.2
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+        SONAR_HOST_URL: ${{ inputs.sonar-host-url }}
+      with:
+        projectBaseDir: ${{ inputs.path }}
+        args: >
+          -Dsonar.projectKey=${{ inputs.sonar-project-name }}
+          -Dsonar.projectName=${{ inputs.sonar-project-name }}
+
+    - name: Download SonarQube CNES Report
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        curl -k -u ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
+          -o cnes-report.zip \
+          '${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator'
+
+    - name: Upload SonarQube Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: ${{ inputs.path }}/cnes-report.zip
+        if-no-files-found: error

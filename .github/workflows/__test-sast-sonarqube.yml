@@ -1,10 +1,10 @@
-name: Test Grype SCA Action
+name: Test SonarQube SAST Action
 
 on: push
 
 jobs:
   test-action-mvn-job:
-    name: Test Grype SCA Action (Maven)
+    name: Test SonarQube SAST Action (Maven)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,14 +31,20 @@ jobs:
           build-command: -U -B -fae -DskipTests clean install
           path: xnio
 
-      - name: Run Grype (SCA)
-        uses: ./main/.github/actions/sca/grype
+      - name: Run SonarQube (SAST)
+        uses: ./main/.github/actions/sast/sonarqube
         with:
+          language: java
+          sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
+          sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
+          sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
+          sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
+          sonar-project-name: test-maven
           path: xnio
-          build-artifact-name: sca-grype-report-maven
+          build-artifact-name: sast-sonarqube-report-maven
 
   test-action-python-job:
-    name: Test Grype SCA Action (Python)
+    name: Test SonarQube SAST Action (Python)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,25 +59,14 @@ jobs:
           ref: f2674669265a56a8ecaed3d0147f319ee136a231
           path: clearml
 
-      - name: Install Python 3.8
-        uses: actions/setup-python@v5.1.0
+      - name: Run SonarQube (SAST)
+        uses: ./main/.github/actions/sast/sonarqube
         with:
-          python-version: 3.8
-
-      - name: Install Pip Dependencies
-        uses: ./main/.github/actions/python/install-pip-dependencies
-        with:
-          requirement-file-name: requirements.txt
-          extra-pip-packages: setuptools
+          language: python
+          sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
+          sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
+          sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
+          sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
+          sonar-project-name: test-python
           path: clearml
-
-      - name: Build and Upload Python Package
-        uses: ./main/.github/actions/python/python-build-upload
-        with:
-          path: clearml
-
-      - name: Run Grype (SCA)
-        uses: ./main/.github/actions/sca/grype
-        with:
-          path: clearml
-          build-artifact-name: sca-grype-report-python
+          build-artifact-name: sast-sonarqube-report-python
