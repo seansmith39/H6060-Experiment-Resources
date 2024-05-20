@@ -49,4 +49,4 @@ jobs:
         uses: ./main/.github/actions/sast/snyk-code
         with:
           path: clearml
-          build-artifact-name: sast-semgrep-report-python
+          build-artifact-name: sast-snyk-code-report-python

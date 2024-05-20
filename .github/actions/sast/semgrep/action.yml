@@ -5,6 +5,7 @@ author: sean.smith [B00158319@mytudublin.ie]
 inputs:
   language:
     description: Programming language for Semgrep ruleset
+    type: string
     required: true
 
   path:
