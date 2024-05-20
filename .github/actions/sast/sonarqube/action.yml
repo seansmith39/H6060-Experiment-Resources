@@ -89,7 +89,7 @@ runs:
       run: |
         curl --user ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
           ${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator \
-          --output cnes-report.zip
+          --remote-name cnes-report.zip
 
     - name: Upload SonarQube Report
       uses: actions/upload-artifact@v4
