@@ -1,0 +1,105 @@
+name: Test DeepSource SAST Action
+
+on: push
+
+jobs:
+  test-action-mvn-job:
+    name: Test DeepSource SAST Action (Maven)
+    runs-on: ubuntu-latest
+    env:
+      DEEPSOURCE_DSN: ${{ secrets.TEST_DEEPSOURCE_DSN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout XNIO
+        uses: actions/checkout@v4
+        with:
+          repository: seansmith39/H6060-xnio
+          ref: cfadd9734129dbac5c17d72753a6b964512a8050
+          path: xnio
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: adopt
+          java-version: 8
+
+      - name: Run Maven Tests
+        shell: bash
+        working-directory: xnio
+        run: mvn clean test
+
+      - name: Run DeepSource (SAST)
+        uses: ./main/.github/actions/sast/deepsource
+        with:
+          language: java
+          coverage-file: nio-impl/target/site/jacoco/jacoco.xml
+          path: xnio
+
+  test-action-python-job:
+    name: Test DeepSource SAST Action (Python)
+    runs-on: ubuntu-latest
+    env:
+      DEEPSOURCE_DSN: ${{ secrets.TEST_DEEPSOURCE_DSN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Clearml
+        uses: actions/checkout@v4
+        with:
+          repository: seansmith39/H6060-mycli
+          ref: 2f024ed0b6b8a99d0d0ae1611c2f834cc236b725
+          path: mycli
+
+      - name: Install Python 3.8
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.8
+
+      - name: Start MySQL For Testing
+        shell: bash
+        working-directory: mycli
+        run: sudo /etc/init.d/mysql start
+
+      - name: Install Pip Dependencies
+        uses: ./main/.github/actions/python/install-pip-dependencies
+        with:
+          requirement-file-name: requirements.txt
+          extra-pip-packages: setuptools
+          path: mycli
+
+      - name: Wait For MySQL Connection
+        shell: bash
+        working-directory: mycli
+        run: |
+          while ! mysqladmin ping --host=localhost --port=3306 --user=root --password=root --silent; do
+            sleep 5
+          done
+
+      - name: Build and Upload Python Package
+        uses: ./main/.github/actions/python/python-build-upload
+        with:
+          path: mycli
+
+      - name: Run Python Tests
+        shell: bash
+        working-directory: mycli
+        env:
+          PYTEST_PASSWORD: root
+          PYTEST_HOST: 127.0.0.1
+        run: |
+          python setup.py test --pytest-args="--cov-report= --cov=mycli"
+          coverage xml
+
+      - name: Run DeepSource (SAST)
+        uses: ./main/.github/actions/sast/deepsource
+        with:
+          language: python
+          coverage-file: coverage.xml
+          path: mycli
