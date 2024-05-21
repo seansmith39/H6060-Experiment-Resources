@@ -38,6 +38,7 @@ NVD_API_KEY = "11111111-2222-3333-4444-555555555555"
 OPENCVE_USERNAME = "username"
 OPENCVE_PASSWORD = "password"
 CVE_ID_NVD = "CVE-2016-2510"
+CVE_ID_GRYPE = "CVE-2024-34062"
 CWE_ID_HORUSEC = "CWE-798"
 CWE_ID_INSIDER = "CWE-330"
 CWE_ID_OWASP_DEPENDENCY_CHECK = "CWE-19"
@@ -95,7 +96,7 @@ def mocked_nvd_response(*args, **kwargs):
         def json(self):
             return JSON.loads(self.text)
 
-    if CVE_ID_NVD in args[1]:
+    if CVE_ID_NVD in args[1] or CVE_ID_GRYPE in args[1]:
         return MockResponse(RESPONSE_NVDCVE, 200)
     else:
         return None
@@ -371,9 +372,9 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 "--sast-snyk-code-report-filename",
                 REPORT_SAST_SNYK_CODE,
                 "--sca-grype-report-filename",
-                REPORT_SCA_ECLIPSE_STEADY,
-                "--sca-eclipse-steady-report-filename",
                 REPORT_SCA_GRYPE,
+                "--sca-eclipse-steady-report-filename",
+                REPORT_SCA_ECLIPSE_STEADY,
                 "--sca-owasp-dependency-check-report-filename",
                 REPORT_SCA_OWASP_DEPENDENCY_CHECK,
                 "--sca-snyk-report-filename",

@@ -39,5 +39,6 @@ jobs:
           sast-semgrep-report-filename: resources/report-sast-semgrep.json
           sast-snyk-code-report-filename: resources/report-sast-snyk-code.json
           sca-eclipse-steady-report-filename: resources/report-sca-eclipse-steady.json
+          sca-grype-report-filename: resources/report-sca-grype.json
           sca-owasp-dependency-check-report-filename: resources/report-sca-owasp-dependency-check.json
           sca-snyk-report-filename: resources/report-sca-snyk.json
