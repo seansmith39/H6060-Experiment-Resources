@@ -36,5 +36,6 @@ JSON result is uploaded as a build artifact.
 - Due to difficulties in Eclipse Steady profile maintenance for Maven projects, the Eclipse Steady plugin for Maven was configured at runtime.
 - If application is not starting, run the following steps:
   1. SSH into EC2 instance hosting Eclipse Steady.
-  2. Stop `steady-rest-backend` docker container.
+  2. Stop all docker containers by running `docker stop $(docker ps -a -q)`
   3. Run `setup-steady.sh` and select `a`.
+- In other cases, Eclipse Steady may not start due to docker space issues. In that scenario, increase the volume size attached to the EC2 instance hosting Eclipse Steady and restart the EC2 instance.
