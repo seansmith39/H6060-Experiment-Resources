@@ -41,33 +41,86 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
     parser.add_argument(
         "--opencve-username",
         action="store",
-        required=False,
+        required=True,
         help="OpenCVE registered username.",
     )
     parser.add_argument(
         "--opencve-password",
         action="store",
-        required=False,
+        required=True,
         help="OpenCVE registered password.",
     )
+
     parser.add_argument(
-        "--horusec-report-filename",
+        "--sast-codeql-report-filename",
+        action="store",
+        required=False,
+        help="Name of CodeQL JSON report to parse",
+    )
+
+    parser.add_argument(
+        "--sast-deepsource-report-filename",
+        action="store",
+        required=False,
+        help="Name of Deepsource JSON report to parse",
+    )
+
+    parser.add_argument(
+        "--sast-horusec-report-filename",
         action="store",
         required=False,
         help="Name of Horusec JSON report to parse",
     )
+
     parser.add_argument(
-        "--insider-report-filename",
+        "--sast-insider-report-filename",
         action="store",
         required=False,
         help="Name of Insider JSON report to parse",
     )
+
     parser.add_argument(
-        "--owasp-dependency-check-filename",
+        "--sast-semgrep-report-filename",
+        action="store",
+        required=False,
+        help="Name of Semgrep JSON report to parse",
+    )
+
+    parser.add_argument(
+        "--sast-snyk-code-report-filename",
+        action="store",
+        required=False,
+        help="Name of Snyk Code JSON report to parse",
+    )
+
+    parser.add_argument(
+        "--sca-eclipse-steady-report-filename",
+        action="store",
+        required=False,
+        help="Name of Eclipse Steady report to parse",
+    )
+
+    parser.add_argument(
+        "--sca-grype-report-filename",
+        action="store",
+        required=False,
+        help="Name of Grype report to parse",
+    )
+
+    parser.add_argument(
+        "--sca-owasp-dependency-check-report-filename",
         action="store",
         required=False,
         help="Name of OWASP Dependency Check JSON report to parse",
     )
+
+    parser.add_argument(
+        "--sca-snyk-report-filename",
+        action="store",
+        required=False,
+        help="Name of Snyk report to parse",
+    )
+
     return parser.parse_args(args)
 
 
@@ -486,20 +539,22 @@ def search_mitre_top_25(cwe_id: str) -> str:
 
 
 def parse_horusec_data(
-    opencve_username: str, opencve_password: str, horusec_report_filename: str
+    opencve_username: str,
+    opencve_password: str,
+    sast_horusec_report_filename: str,
 ) -> list:
     """Parse Horusec SAST JSON report and write data to output file
 
     :parameter
         opencve_username:str -- OpenCVE username
         opencve_password:str -- OpenCVE password
-        horusec_report_filename:str -- Name of Horusec JSON report to parse
+        sast_horusec_report_filename:str -- Name of Horusec JSON report to parse
 
     :return
         list -- CSV data to write to output file
     """
-    log.info(f"Parsing Horusec report: {horusec_report_filename}")
-    with open(horusec_report_filename, "r") as f:
+    log.info(f"Parsing Horusec report: {sast_horusec_report_filename}")
+    with open(sast_horusec_report_filename, "r") as f:
         data = json.load(f)
     unique_cwe = []
     csv_rows = []
@@ -552,20 +607,22 @@ def parse_horusec_data(
 
 
 def parse_insider_data(
-    opencve_username: str, opencve_password: str, insider_report_filename: str
+    opencve_username: str,
+    opencve_password: str,
+    sast_insider_report_filename: str,
 ) -> list:
     """Parse Insider SAST JSON report and write data to output file
 
     :parameter
         opencve_username:str -- OpenCVE username
         opencve_password:str -- OpenCVE password
-        insider_report_filename:str -- Name of Insider JSON report to parse
+        sast_insider_report_filename:str -- Name of Insider JSON report to parse
 
     :return
         list -- CSV data to write to output file
     """
-    log.info(f"Parsing Insider report: {insider_report_filename}")
-    with open(insider_report_filename, "r") as f:
+    log.info(f"Parsing Insider report: {sast_insider_report_filename}")
+    with open(sast_insider_report_filename, "r") as f:
         data = json.load(f)
     unique_cwe = []
     csv_rows = []
@@ -611,22 +668,22 @@ def parse_owasp_dependency_check_data(
     nvd_api_key: str,
     opencve_username: str,
     opencve_password: str,
-    owasp_dependency_check_filename: str,
+    sca_owasp_dependency_check_report_filename: str,
 ) -> list:
     """Parse OWASP Dependency Check SCA JSON report and write data to output file
 
     :parameter
         opencve_username:str -- OpenCVE username
         opencve_password:str -- OpenCVE password
-        owasp_dependency_check_filename:str -- Name of OWASP Dependency Check JSON report to parse
+        sca_owasp_dependency_check_report_filename:str -- Name of OWASP Dependency Check JSON report to parse
 
     :return
         list -- CSV data to write to output file
     """
     log.info(
-        f"Parsing OWASP Dependency Check report: {owasp_dependency_check_filename}"
+        f"Parsing OWASP Dependency Check report: {sca_owasp_dependency_check_report_filename}"
     )
-    with open(owasp_dependency_check_filename, "r") as f:
+    with open(sca_owasp_dependency_check_report_filename, "r") as f:
         data = json.load(f)
     unique_cve = []
     csv_rows = []
@@ -1018,17 +1075,14 @@ def get_csv_column_entries(
     ]
 
 
-def write_to_csv_report(
-    csv_filename: str, product_name: str, product_data: list
-) -> None:
+def write_to_csv_report(csv_filename: str, product_data: list) -> None:
     """Write parsed product report to CSV
 
     :parameter
         csv_filename:str -- Name of CSV file to write to
-        product_name:str -- Name of product to use in report title
         product_data:list -- Parsed data from product report
     """
-    log.info(f"Writing {product_name} results to report: {csv_filename}")
+    log.info(f"Writing results to report: {csv_filename}")
 
     with open(csv_filename, "a") as csv_file:
         writer = csv.writer(csv_file)
@@ -1042,33 +1096,31 @@ def main(args: argparse.Namespace) -> None:
     :parameter
         args:argparse.Namespace -- Parsed arguments supplied to script
     """
-    csv_report_filename = "experiment_1_results.csv"
+    csv_report_filename = "experiment_1_security_testing_tool_results.csv"
     create_csv_report(csv_report_filename)
 
-    if args.horusec_report_filename is not None:  # pragma: no cover
-        csv_rows = parse_horusec_data(
-            args.opencve_username,
-            args.opencve_password,
-            args.horusec_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, "horusec", csv_rows)
-    if args.insider_report_filename is not None:  # pragma: no cover
+    if args.sast_insider_report_filename:  # pragma: no cover
         csv_rows = parse_insider_data(
             args.opencve_username,
             args.opencve_password,
-            args.insider_report_filename,
+            args.sast_insider_report_filename,
         )
-        write_to_csv_report(csv_report_filename, "insider", csv_rows)
-    if args.owasp_dependency_check_filename is not None:  # pragma: no cover
+        write_to_csv_report(csv_report_filename, csv_rows)
+    if args.sast_horusec_report_filename:  # pragma: no cover
+        csv_rows = parse_horusec_data(
+            args.opencve_username,
+            args.opencve_password,
+            args.sast_horusec_report_filename,
+        )
+        write_to_csv_report(csv_report_filename, csv_rows)
+    if args.sca_owasp_dependency_check_report_filename:  # pragma: no cover
         csv_rows = parse_owasp_dependency_check_data(
             args.nvd_api_key,
             args.opencve_username,
             args.opencve_password,
-            args.owasp_dependency_check_filename,
+            args.sca_owasp_dependency_check_report_filename,
         )
-        write_to_csv_report(
-            csv_report_filename, "owasp_dependency_check", csv_rows
-        )
+        write_to_csv_report(csv_report_filename, csv_rows)
     return None
 
 

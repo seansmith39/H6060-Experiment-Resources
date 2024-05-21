@@ -16,13 +16,24 @@ TEST_DIRECTORY_RESOURCES = (
 )
 RESPONSE_NVDCVE = TEST_DIRECTORY_RESOURCES + "response-nvdcve.json"
 RESPONSE_OPENCVE = TEST_DIRECTORY_RESOURCES + "response-opencve.json"
-REPORT_HORUSEC = TEST_DIRECTORY_RESOURCES + "report-sast-horusec.json"
-REPORT_INSIDER = TEST_DIRECTORY_RESOURCES + "report-sast-insider.json"
-REPORT_OWASP_DEPENDENCY_CHECK = (
+REPORT_SAST_CODEQL = TEST_DIRECTORY_RESOURCES + "report-sast-codeql.json"
+REPORT_SAST_DEEPSOURCE = (
+    TEST_DIRECTORY_RESOURCES + "report-sast-deepsource.json"
+)
+REPORT_SAST_HORUSEC = TEST_DIRECTORY_RESOURCES + "report-sast-horusec.json"
+REPORT_SAST_INSIDER = TEST_DIRECTORY_RESOURCES + "report-sast-insider.json"
+REPORT_SAST_SEMGREP = TEST_DIRECTORY_RESOURCES + "report-sast-semgrep.json"
+REPORT_SAST_SNYK_CODE = TEST_DIRECTORY_RESOURCES + "report-sast-snyk-code.json"
+REPORT_SCA_ECLIPSE_STEADY = (
+    TEST_DIRECTORY_RESOURCES + "report-sca-eclipse-steady.json"
+)
+REPORT_SCA_GRYPE = TEST_DIRECTORY_RESOURCES + "report-sca-grype.json"
+REPORT_SCA_OWASP_DEPENDENCY_CHECK = (
     TEST_DIRECTORY_RESOURCES + "report-sca-owasp-dependency-check.json"
 )
+REPORT_SCA_SNYK = TEST_DIRECTORY_RESOURCES + "report-sca-snyk.json"
 
-DEFAULT_CSV_REPORT_FILENAME = "experiment_1_results.csv"
+DEFAULT_CSV_REPORT_FILENAME = "experiment_1_security_testing_tool_results.csv"
 NVD_API_KEY = "11111111-2222-3333-4444-555555555555"
 OPENCVE_USERNAME = "username"
 OPENCVE_PASSWORD = "password"
@@ -113,26 +124,53 @@ class TestExperiment1GenerateReport(unittest.TestCase):
 
     def __mock_args(
         nvd_api_key: str,
-        product_name: str,
-        horusec_report_filename: str,
-        insider_report_filename: str,
+        opencve_username: str,
+        opencve_password: str,
+        sast_codeql_report_filename: str,
+        sast_deepsource_report_filename: str,
+        sast_horusec_report_filename: str,
+        sast_insider_report_filename: str,
+        sast_semgrep_report_filename: str,
+        sast_snyk_code_report_filename: str,
+        sca_eclipse_steady_report_filename: str,
+        sca_grype_report_filename: str,
+        sca_owasp_dependency_check_report_filename: str,
+        sca_snyk_report_filename: str,
     ) -> Namespace:
         """Mock arguments in argparse.Namespace type
 
         :parameter
             nvd_api_key:str -- NVD API Key to be mocked in the arguments
-            product_name:str -- Name of the product to be mocked in the arguments
-            horusec_report_filename:str -- Name of the Horusec report to parse data from
-            insider_report_filename:str -- Name of the Insider report to parse data from
+            opencve_username:str -- OpenCVE username to be mocked in the arguments
+            opencve_password:str -- OpenCVE password to be mocked in the arguments
+            sast_codeql_report_filename:str -- Name of the SAST CodeQL report to parse data from
+            sast_deepsource_report_filename:str -- Name of the SAST Deepsource report to parse data from
+            sast_horusec_report_filename:str -- Name of the SAST Horusec report to parse data from
+            sast_insider_report_filename:str -- Name of the SAST Insider report to parse data from
+            sast_semgrep_report_filename:str -- Name of the SAST Semgrep report to parse data from
+            sast_snyk_code_report_filename:str -- Name of the SAST Snyk Code report to parse data from
+            sca_eclipse_steady_report_filename:str -- Name of the SCA Eclipse Steady report to parse data from
+            sca_grype_report_filename:str -- Name of the SCA Grype report to parse data from
+            sca_owasp_dependency_check_report_filename:str -- Name of the SCA OWASP Dependency Check report to parse data from
+            sca_snyk_report_filename:str -- Name of the SCA Snyk report to parse data from
 
         :return
             argparse.Namespace -- Mocked arguments
         """
         return Namespace(
             nvd_api_key=nvd_api_key,
-            product_name=product_name,
-            horusec_report_filename=horusec_report_filename,
-            insider_report_filename=insider_report_filename,
+            opencve_username=opencve_username,
+            opencve_password=opencve_password,
+            sast_codeql_report_filename=sast_codeql_report_filename,
+            sast_deepsource_report_filename=sast_deepsource_report_filename,
+            sast_horusec_report_filename=sast_horusec_report_filename,
+            sast_insider_report_filename=sast_insider_report_filename,
+            sast_semgrep_report_filename=sast_semgrep_report_filename,
+            sast_snyk_code_report_filename=sast_snyk_code_report_filename,
+            sca_eclipse_steady_report_filename=sca_eclipse_steady_report_filename,
+            sca_grype_report_filename=sca_grype_report_filename,
+            sca_owasp_dependency_check_report_filename=sca_owasp_dependency_check_report_filename,
+            sca_snyk_report_filename=sca_snyk_report_filename,
         )
 
     def test_get_mitre_top_25_cwe(self):
@@ -198,7 +236,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     )
     def test_parse_horusec_data(self, mock_response):
         csv_rows = experiment_1_generate_report.parse_horusec_data(
-            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_HORUSEC
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_SAST_HORUSEC
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
@@ -229,7 +267,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     )
     def test_parse_insider_data(self, mock_response):
         csv_rows = experiment_1_generate_report.parse_insider_data(
-            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_INSIDER
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_SAST_INSIDER
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
@@ -263,7 +301,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 NVD_API_KEY,
                 OPENCVE_USERNAME,
                 OPENCVE_PASSWORD,
-                REPORT_OWASP_DEPENDENCY_CHECK,
+                REPORT_SCA_OWASP_DEPENDENCY_CHECK,
             )
         )
         self.assertTrue(len(csv_rows) > 0)
@@ -320,12 +358,26 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 OPENCVE_USERNAME,
                 "--opencve-password",
                 OPENCVE_PASSWORD,
-                "--horusec-report-filename",
-                REPORT_HORUSEC,
-                "--insider-report-filename",
-                REPORT_INSIDER,
-                "--owasp-dependency-check-filename",
-                REPORT_OWASP_DEPENDENCY_CHECK,
+                "--sast-codeql-report-filename",
+                REPORT_SAST_CODEQL,
+                "--sast-deepsource-report-filename",
+                REPORT_SAST_DEEPSOURCE,
+                "--sast-horusec-report-filename",
+                REPORT_SAST_HORUSEC,
+                "--sast-insider-report-filename",
+                REPORT_SAST_INSIDER,
+                "--sast-semgrep-report-filename",
+                REPORT_SAST_SEMGREP,
+                "--sast-snyk-code-report-filename",
+                REPORT_SAST_SNYK_CODE,
+                "--sca-grype-report-filename",
+                REPORT_SCA_ECLIPSE_STEADY,
+                "--sca-eclipse-steady-report-filename",
+                REPORT_SCA_GRYPE,
+                "--sca-owasp-dependency-check-report-filename",
+                REPORT_SCA_OWASP_DEPENDENCY_CHECK,
+                "--sca-snyk-report-filename",
+                REPORT_SCA_SNYK,
             ]
         )
         result = experiment_1_generate_report.main(args)

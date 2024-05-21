@@ -1,0 +1,43 @@
+name: Test Security Testing Tool CSV Report Action
+
+on: push
+
+jobs:
+  test-action-security-testing-tool-csv-report-partial:
+    name: Test Security Testing Tool CSV Report (Partial)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Security Testing Tool Report
+        uses: ./.github/actions/common/security-testing-tool-csv-report
+        with:
+          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
+          opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
+          opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
+          sast-insider-report-filename: resources/report-sast-insider.json
+          sca-owasp-dependency-check-report-filename: resources/report-sca-owasp-dependency-check.json
+
+  test-action-security-testing-tool-csv-report-full:
+    name: Test Security Testing Tool CSV Report (Full)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Security Testing Tool Report
+        uses: ./.github/actions/common/security-testing-tool-csv-report
+        with:
+          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
+          opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
+          opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
+          sast-codeql-report-filename: resources/report-sast-codeql.json
+          sast-deepsource-report-filename: resources/report-sast-deepsource.json
+          sast-horusec-report-filename: resources/report-sast-horusec.json
+          sast-insider-report-filename: resources/report-sast-insider.json
+          sast-semgrep-report-filename: resources/report-sast-semgrep.json
+          sast-snyk-code-report-filename: resources/report-sast-snyk-code.json
+          sca-eclipse-steady-report-filename: resources/report-sca-eclipse-steady.json
+          sca-owasp-dependency-check-report-filename: resources/report-sca-owasp-dependency-check.json
+          sca-snyk-report-filename: resources/report-sca-snyk.json

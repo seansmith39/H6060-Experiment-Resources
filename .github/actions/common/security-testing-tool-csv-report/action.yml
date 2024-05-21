@@ -1,0 +1,113 @@
+name: Security Testing Tool CSV Report Action
+description: Create a CSV report for security testing tools
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  nvd-api-key:
+    description: API Key to access the NVD API
+    type: string
+    required: true
+
+  opencve-username:
+    description: Username to query OpenCVE API
+    type: string
+    required: true
+
+  opencve-password:
+    description: Password to query OpenCVE API
+    type: string
+    required: true
+
+  sast-codeql-report-filename:
+    description: Name of CodeQL report filename
+    type: string
+    required: false
+    default: ''
+
+  sast-deepsource-report-filename:
+    description: Name of Deepsource report filename
+    type: string
+    required: false
+    default: ''
+
+  sast-horusec-report-filename:
+    description: Name of Snyk report filename
+    type: string
+    required: false
+    default: ''
+
+  sast-insider-report-filename:
+    description: Name of Insider report filename
+    type: string
+    required: false
+    default: ''
+
+  sast-semgrep-report-filename:
+    description: Name of Semgrep report filename
+    type: string
+    required: false
+    default: ''
+
+  sast-snyk-code-report-filename:
+    description: Name of Snyk Code report filename
+    type: string
+    required: false
+
+  sca-eclipse-steady-report-filename:
+    description: Name of Eclipse Steady report filename
+    type: string
+    required: false
+    default: ''
+
+  sca-grype-report-filename:
+    description: Name of Grype report filename
+    type: string
+    required: false
+    default: ''
+
+  sca-owasp-dependency-check-report-filename:
+    description: Name of OWASP Dependency Check report filename
+    type: string
+    required: false
+    default: ''
+
+  sca-snyk-report-filename:
+    description: Name of Snyk report filename
+    type: string
+    required: false
+    default: ''
+
+  build-artifact-name:
+    description: Name of resulting CSV report
+    type: string
+    required: false
+    default: experiment-1-security-testing-tool-results
+
+runs:
+  using: composite
+  steps:
+    - name: Create Security Testing Tool Report
+      shell: bash
+      working-directory: ${{ github.action_path }}/src/main/python3
+      run: |
+        python3 experiment_1_generate_report.py \
+          --nvd-api-key ${{ inputs.nvd-api-key }}
+          --opencve-username ${{ inputs.opencve-username }}
+          --opencve-password ${{ inputs.opencve-password }}
+          --sast-codeql-report-filename ${{ inputs.sast-codeql-report-filename }} \
+          --sast-deepsource-report-filename ${{ inputs.sast-deepsource-report-filename }} \
+          --sast-horusec-report-filename ${{ inputs.sast-horusec-report-filename }} \
+          --sast-insider-report-filename ${{ inputs.sast-insider-report-filename }} \
+          --sast-semgrep-report-filename ${{ inputs.sast-semgrep-report-filename }} \
+          --sast-snyk-code-report-filename ${{ inputs.sast-snyk-code-report-filename }} \
+          --sca-eclipse-steady-report-filename ${{ inputs.sca-eclipse-steady-report-filename }} \
+          --sca-grype-report-filename ${{ inputs.sca-grype-report-filename }} \
+          --sca-owasp-dependency-check-report-filename ${{ inputs.sca-owasp-dependency-check-report-filename }} \
+          --sca-snyk-report-filename ${{ inputs.sca-snyk-report-filename }}
+
+    - name: Upload Security Testing Tool Report (CSV)
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: ${{ github.action_path }}/src/main/python3/experiment_1_security_testing_tool_results.csv
+        if-no-files-found: error
