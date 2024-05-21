@@ -53,7 +53,7 @@ runs:
       with:
         java-version: 17
         distribution: temurin
-ƒ
+
     - name: Setup Rsync
       uses: GuillaumeFalourd/setup-rsync@v1.2
 
