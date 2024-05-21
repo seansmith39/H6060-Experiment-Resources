@@ -928,16 +928,17 @@ def get_csv_column_entries(
     """List of CSV column values
 
     :parameter
-        tool_type:str -- Type of security testing tool
-        tool_name:str -- Name of security testing tool
-        tool_classification:str -- Classification of security testing tool
-        severity:str -- Severity of reported vulnerability
-        confidence:str -- Confidence of vulnerability accuracy by security testing tool
+        tool_type:str -- type of security testing tool
+        tool_name:str -- name of security testing tool
+        tool_classification:str -- classification of security testing tool
+        severity:str -- severity of reported vulnerability
+        confidence:str -- confidence of vulnerability accuracy by security testing tool
         cve_id:str -- CVE ID
         cve_source_identifier:str -- organisation who reported CVE
         cve_published_date:str -- date CVE was published
         cve_last_modified_date:str -- date CVE was last modified
         cve_description:str -- CVE description
+        cve_vulnerability_status:str -- current status of vulnerability
         cvss_version:str -- version of CVSS metrics
         cvss_source:str -- organisation who calculated CVSS
         cvss_base_score:str -- base score of CWE

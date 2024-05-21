@@ -14,23 +14,22 @@ from main.python3 import experiment_1_generate_report
 TEST_DIRECTORY_RESOURCES = (
     os.path.dirname(os.path.realpath(__file__)) + "/resources/"
 )
-NIST_CVE_ID_RESPONSE = TEST_DIRECTORY_RESOURCES + "nist-cve-information.json"
-OPENCVE_CWE_RESPONSE = TEST_DIRECTORY_RESOURCES + "opencve-cwe.json"
-HORUSEC_JSON_REPORT = TEST_DIRECTORY_RESOURCES + "horusec-report.json"
-INSIDER_JSON_REPORT = TEST_DIRECTORY_RESOURCES + "insider-report.json"
-OWASP_DEPENDENCY_CHECK_JSON_REPORT = (
-    TEST_DIRECTORY_RESOURCES + "owasp-dependency-check-report.json"
+RESPONSE_NVDCVE = TEST_DIRECTORY_RESOURCES + "response-nvdcve.json"
+RESPONSE_OPENCVE = TEST_DIRECTORY_RESOURCES + "response-opencve.json"
+REPORT_HORUSEC = TEST_DIRECTORY_RESOURCES + "report-sast-horusec.json"
+REPORT_INSIDER = TEST_DIRECTORY_RESOURCES + "report-sast-insider.json"
+REPORT_OWASP_DEPENDENCY_CHECK = (
+    TEST_DIRECTORY_RESOURCES + "report-sca-owasp-dependency-check.json"
 )
 
-DEFAULT_PRODUCT_NAME = "horusec"
 DEFAULT_CSV_REPORT_FILENAME = "experiment_1_results.csv"
 NVD_API_KEY = "11111111-2222-3333-4444-555555555555"
 OPENCVE_USERNAME = "username"
 OPENCVE_PASSWORD = "password"
-NIST_CVE_ID = "CVE-2016-2510"
-HORUSEC_CWE_ID = "CWE-798"
-INSIDER_CWE_ID = "CWE-330"
-OWASP_DEPENDENCY_CHECK_CWE_ID = "CWE-19"
+CVE_ID_NVD = "CVE-2016-2510"
+CWE_ID_HORUSEC = "CWE-798"
+CWE_ID_INSIDER = "CWE-330"
+CWE_ID_OWASP_DEPENDENCY_CHECK = "CWE-19"
 
 
 def mocked_response(*args, **kwargs):
@@ -55,11 +54,11 @@ def mocked_response(*args, **kwargs):
             return JSON.loads(self.text)
 
     if (
-        HORUSEC_CWE_ID in args[2]
-        or INSIDER_CWE_ID in args[2]
-        or OWASP_DEPENDENCY_CHECK_CWE_ID in args[2]
+        CWE_ID_HORUSEC in args[2]
+        or CWE_ID_INSIDER in args[2]
+        or CWE_ID_OWASP_DEPENDENCY_CHECK in args[2]
     ):
-        return MockResponse(OPENCVE_CWE_RESPONSE, 200)
+        return MockResponse(RESPONSE_OPENCVE, 200)
     else:
         return None
 
@@ -85,8 +84,8 @@ def mocked_nvd_response(*args, **kwargs):
         def json(self):
             return JSON.loads(self.text)
 
-    if NIST_CVE_ID in args[1]:
-        return MockResponse(NIST_CVE_ID_RESPONSE, 200)
+    if CVE_ID_NVD in args[1]:
+        return MockResponse(RESPONSE_NVDCVE, 200)
     else:
         return None
 
@@ -152,11 +151,11 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         side_effect=mocked_nvd_response,
     )
     def test_get_cve_information_from_nvd(self, mock_response):
-        with open(NIST_CVE_ID_RESPONSE, "r") as f:
+        with open(RESPONSE_NVDCVE, "r") as f:
             expected_cve_information = JSON.load(f)
         nist_cve_response = (
             experiment_1_generate_report.get_cve_information_from_nvd(
-                NVD_API_KEY, NIST_CVE_ID
+                NVD_API_KEY, CVE_ID_NVD
             )
         )
         self.assertEqual(
@@ -168,10 +167,10 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         side_effect=mocked_response,
     )
     def test_get_opencve_cwe_details(self, mock_response):
-        with open(OPENCVE_CWE_RESPONSE, "r") as f:
+        with open(RESPONSE_OPENCVE, "r") as f:
             expected_opencve_information = JSON.load(f)
         response = experiment_1_generate_report.get_opencve_cwe_details(
-            OPENCVE_USERNAME, OPENCVE_PASSWORD, HORUSEC_CWE_ID
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, CWE_ID_HORUSEC
         )
         self.assertEqual(
             response.json()["name"], expected_opencve_information["name"]
@@ -182,7 +181,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
 
     def test_get_cve_id_year(self):
-        cve_year = experiment_1_generate_report.get_cve_id_year(NIST_CVE_ID)
+        cve_year = experiment_1_generate_report.get_cve_id_year(CVE_ID_NVD)
         self.assertEqual(cve_year, 2016)
         cve_year = experiment_1_generate_report.get_cve_id_year("TEST")
         self.assertEqual(cve_year, None)
@@ -199,7 +198,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     )
     def test_parse_horusec_data(self, mock_response):
         csv_rows = experiment_1_generate_report.parse_horusec_data(
-            OPENCVE_USERNAME, OPENCVE_PASSWORD, HORUSEC_JSON_REPORT
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_HORUSEC
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
@@ -207,7 +206,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         self.assertEqual(csv_rows[0][2], "Syntax-based")
         self.assertEqual(csv_rows[0][3], "CRITICAL")
         self.assertEqual(csv_rows[0][4], "MEDIUM")
-        self.assertEqual(csv_rows[0][31], HORUSEC_CWE_ID)
+        self.assertEqual(csv_rows[0][31], CWE_ID_HORUSEC)
         self.assertEqual(csv_rows[0][32], "Use of Hard-coded Credentials")
         self.assertEqual(
             csv_rows[0][33],
@@ -230,13 +229,13 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     )
     def test_parse_insider_data(self, mock_response):
         csv_rows = experiment_1_generate_report.parse_insider_data(
-            OPENCVE_USERNAME, OPENCVE_PASSWORD, INSIDER_JSON_REPORT
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_INSIDER
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
         self.assertEqual(csv_rows[0][1], "Insider")
         self.assertEqual(csv_rows[0][2], "Syntax-based")
-        self.assertEqual(csv_rows[0][31], INSIDER_CWE_ID)
+        self.assertEqual(csv_rows[0][31], CWE_ID_INSIDER)
         self.assertEqual(csv_rows[0][32], "Use of Hard-coded Credentials")
         self.assertEqual(
             csv_rows[0][33],
@@ -264,7 +263,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 NVD_API_KEY,
                 OPENCVE_USERNAME,
                 OPENCVE_PASSWORD,
-                OWASP_DEPENDENCY_CHECK_JSON_REPORT,
+                REPORT_OWASP_DEPENDENCY_CHECK,
             )
         )
         self.assertTrue(len(csv_rows) > 0)
@@ -294,7 +293,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         self.assertEqual(csv_rows[0][21], "HIGH")
         self.assertEqual(csv_rows[0][22], "HIGH")
         self.assertEqual(csv_rows[0][23], "HIGH")
-        self.assertEqual(csv_rows[0][31], OWASP_DEPENDENCY_CHECK_CWE_ID)
+        self.assertEqual(csv_rows[0][31], CWE_ID_OWASP_DEPENDENCY_CHECK)
         self.assertEqual(csv_rows[0][32], "Use of Hard-coded Credentials")
         self.assertEqual(
             csv_rows[0][33],
@@ -322,11 +321,11 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 "--opencve-password",
                 OPENCVE_PASSWORD,
                 "--horusec-report-filename",
-                HORUSEC_JSON_REPORT,
+                REPORT_HORUSEC,
                 "--insider-report-filename",
-                INSIDER_JSON_REPORT,
+                REPORT_INSIDER,
                 "--owasp-dependency-check-filename",
-                OWASP_DEPENDENCY_CHECK_JSON_REPORT,
+                REPORT_OWASP_DEPENDENCY_CHECK,
             ]
         )
         result = experiment_1_generate_report.main(args)
@@ -335,8 +334,9 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         sys.stdout = sys.__stdout__
-        if os.path.isfile(DEFAULT_CSV_REPORT_FILENAME):
-            os.remove(DEFAULT_CSV_REPORT_FILENAME)
+        # TODO: Uncomment when finished development
+        # if os.path.isfile(DEFAULT_CSV_REPORT_FILENAME):
+        #     os.remove(DEFAULT_CSV_REPORT_FILENAME)
 
 
 if __name__ == "__main__":
