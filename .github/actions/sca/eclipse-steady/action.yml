@@ -53,7 +53,7 @@ runs:
       with:
         java-version: 17
         distribution: temurin
-
+ƒ
     - name: Setup Rsync
       uses: GuillaumeFalourd/setup-rsync@v1.2
 
@@ -119,6 +119,6 @@ runs:
       with:
         name: ${{ inputs.build-artifact-name }}
         path: |
-          ${{ inputs.path }}/vulas/report/vulas-report.json
-          ${{ inputs.path }}/vulas/report/vulas-report.html
+          ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.json
+          ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.html
         if-no-files-found: error
