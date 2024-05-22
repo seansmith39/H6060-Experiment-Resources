@@ -4,10 +4,12 @@ import re
 import csv
 import sys
 import json
-import argparse
-import logging
 import time
 import random
+import logging
+import argparse
+import itertools
+from cvss import CVSS3
 from requests import get
 from requests.auth import HTTPBasicAuth
 
@@ -558,7 +560,6 @@ def parse_horusec_data(
     log.info(f"Parsing Horusec report: {sast_horusec_report_filename}")
     with open(sast_horusec_report_filename, "r") as f:
         data = json.load(f)
-    unique_cwe = []
     csv_rows = []
     for vulnerabilities in data["analysisVulnerabilities"]:
         vulnerability_index = vulnerabilities["vulnerabilities"]
@@ -586,25 +587,23 @@ def parse_horusec_data(
                 cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
                 cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-                if cwe_id not in unique_cwe:
-                    unique_cwe.append(cwe_id)
-                    horusec_data = get_csv_column_entries(
-                        tool_type="SAST",
-                        tool_name=cwe_security_tool,
-                        tool_classification="Syntax-based",
-                        severity=cwe_severity,
-                        confidence=cwe_confidence,
-                        cwe_id=cwe_id,
-                        cwe_name=cwe_name,
-                        cwe_description=cwe_description,
-                        owasp_top_10=cwe_owasp_top_10,
-                        mitre_top_25=cwe_mitre_top_25,
-                        rule_id=cwe_rule_id,
-                        language=cwe_language,
-                        classname=cwe_class,
-                    )
-                    log.info("Horusec parsed data: " + str(horusec_data))
-                    csv_rows.append(horusec_data)
+                horusec_data = get_csv_column_entries(
+                    tool_type="SAST",
+                    tool_name=cwe_security_tool,
+                    tool_classification="Syntax-based",
+                    severity=cwe_severity,
+                    confidence=cwe_confidence,
+                    cwe_id=cwe_id,
+                    cwe_name=cwe_name,
+                    cwe_description=cwe_description,
+                    owasp_top_10=cwe_owasp_top_10,
+                    mitre_top_25=cwe_mitre_top_25,
+                    rule_id=cwe_rule_id,
+                    language=cwe_language,
+                    classname=cwe_class,
+                )
+                log.info("Horusec parsed data: " + str(horusec_data))
+                csv_rows.append(horusec_data)
     return csv_rows
 
 
@@ -626,7 +625,6 @@ def parse_insider_data(
     log.info(f"Parsing Insider report: {sast_insider_report_filename}")
     with open(sast_insider_report_filename, "r") as f:
         data = json.load(f)
-    unique_cwe = []
     csv_rows = []
     for vulnerability in data["vulnerabilities"]:
         match = re.search(get_cwe_pattern(), vulnerability["cwe"])
@@ -648,21 +646,19 @@ def parse_insider_data(
             cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
             cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-            if cwe_id not in unique_cwe:
-                unique_cwe.append(cwe_id)
-                insider_data = get_csv_column_entries(
-                    tool_type="SAST",
-                    tool_name="Insider",
-                    tool_classification="Syntax-based",
-                    cwe_id=cwe_id,
-                    cwe_name=cwe_name,
-                    cwe_description=cwe_description,
-                    owasp_top_10=cwe_owasp_top_10,
-                    mitre_top_25=cwe_mitre_top_25,
-                    classname=cwe_class,
-                )
-                log.info("Insider parsed data: " + str(insider_data))
-                csv_rows.append(insider_data)
+            insider_data = get_csv_column_entries(
+                tool_type="SAST",
+                tool_name="Insider",
+                tool_classification="Syntax-based",
+                cwe_id=cwe_id,
+                cwe_name=cwe_name,
+                cwe_description=cwe_description,
+                owasp_top_10=cwe_owasp_top_10,
+                mitre_top_25=cwe_mitre_top_25,
+                classname=cwe_class,
+            )
+            log.info("Insider parsed data: " + str(insider_data))
+            csv_rows.append(insider_data)
     return csv_rows
 
 
@@ -686,7 +682,6 @@ def parse_grype_data(
     log.info(f"Parsing Grype report: {sca_grype_report_filename}")
     with open(sca_grype_report_filename, "r") as f:
         data = json.load(f)
-    unique_cve = []
     csv_rows = []
     for vulnerability in data["matches"]:
         vulnerability_index = vulnerability["vulnerability"]
@@ -813,68 +808,66 @@ def parse_grype_data(
                     for cwe in cve_info["weaknesses"][0]["description"]:
                         cwe_list.append(cwe["value"])
 
-            if cve_id not in unique_cve:  # pragma: no cover
-                unique_cve.append(cve_id)
-                if len(cwe_list) > 0:
-                    for cwe_id in cwe_list:
-                        opencve_cwe_details = get_opencve_cwe_details(
-                            opencve_username, opencve_password, cwe_id
-                        )
+            if len(cwe_list) > 0:
+                for cwe_id in cwe_list:
+                    opencve_cwe_details = get_opencve_cwe_details(
+                        opencve_username, opencve_password, cwe_id
+                    )
 
-                        cwe_name = default_column_value
-                        cwe_description = default_column_value
+                    cwe_name = default_column_value
+                    cwe_description = default_column_value
 
-                        if opencve_cwe_details:
-                            cwe_name = opencve_cwe_details.json()["name"]
-                            cwe_description = opencve_cwe_details.json()[
-                                "description"
-                            ]
+                    if opencve_cwe_details:
+                        cwe_name = opencve_cwe_details.json()["name"]
+                        cwe_description = opencve_cwe_details.json()[
+                            "description"
+                        ]
 
-                        cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
-                        cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+                    cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+                    cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-                        grype_data = get_csv_column_entries(
-                            tool_type="SCA",
-                            tool_name="Grype",
-                            tool_classification="Metadata-based",
-                            severity=cve_severity,
-                            cve_id=cve_id,
-                            cve_source_identifier=cve_source,
-                            cve_published_date=cve_published,
-                            cve_last_modified_date=cve_last_modified,
-                            cve_vulnerability_status=cve_vulnerability_status,
-                            cve_description=cve_description,
-                            cvss_version=cvss_version,
-                            cvss_source=cvss_source,
-                            cvss_base_score=cvss_base_score,
-                            cvss_scope=cvss_scope,
-                            cvss_exploitable_score=cvss_exploitability_score,
-                            cvss_impact_score=cvss_impact_score,
-                            cvss_attack_vector=cvss_attack_vector,
-                            cvss_attack_complexity=cvss_attack_complexity,
-                            cvss_privileges_required=cvss_privileges_required,
-                            cvss_user_interaction=cvss_user_interaction,
-                            cvss_confidentiality_impact=cvss_confidentiality_impact,
-                            cvss_integrity_impact=cvss_integrity_impact,
-                            cvss_availability_impact=cvss_availability_impact,
-                            cvss_access_vector=cvss_access_vector,
-                            cvss_access_complexity=cvss_access_complexity,
-                            cvss_authentication=cvss_authentication,
-                            cvss_insufficient_info=cvss_insufficient_info,
-                            cvss_obtain_all_privilege=cvss_obtain_all_privilege,
-                            cvss_obtain_user_privilege=cvss_obtain_user_privilege,
-                            cvss_obtain_other_privilege=cvss_obtain_other_privilege,
-                            cwe_id=cwe_id,
-                            cwe_name=cwe_name,
-                            cwe_description=cwe_description,
-                            owasp_top_10=cwe_owasp_top_10,
-                            mitre_top_25=cwe_mitre_top_25,
-                            dependency=dependency_name,
-                            language=language,
-                            classname=classname,
-                        )
-                        log.info("Grype parsed data: " + str(grype_data))
-                        csv_rows.append(grype_data)
+                    grype_data = get_csv_column_entries(
+                        tool_type="SCA",
+                        tool_name="Grype",
+                        tool_classification="Metadata-based",
+                        severity=cve_severity,
+                        cve_id=cve_id,
+                        cve_source_identifier=cve_source,
+                        cve_published_date=cve_published,
+                        cve_last_modified_date=cve_last_modified,
+                        cve_vulnerability_status=cve_vulnerability_status,
+                        cve_description=cve_description,
+                        cvss_version=cvss_version,
+                        cvss_source=cvss_source,
+                        cvss_base_score=cvss_base_score,
+                        cvss_scope=cvss_scope,
+                        cvss_exploitable_score=cvss_exploitability_score,
+                        cvss_impact_score=cvss_impact_score,
+                        cvss_attack_vector=cvss_attack_vector,
+                        cvss_attack_complexity=cvss_attack_complexity,
+                        cvss_privileges_required=cvss_privileges_required,
+                        cvss_user_interaction=cvss_user_interaction,
+                        cvss_confidentiality_impact=cvss_confidentiality_impact,
+                        cvss_integrity_impact=cvss_integrity_impact,
+                        cvss_availability_impact=cvss_availability_impact,
+                        cvss_access_vector=cvss_access_vector,
+                        cvss_access_complexity=cvss_access_complexity,
+                        cvss_authentication=cvss_authentication,
+                        cvss_insufficient_info=cvss_insufficient_info,
+                        cvss_obtain_all_privilege=cvss_obtain_all_privilege,
+                        cvss_obtain_user_privilege=cvss_obtain_user_privilege,
+                        cvss_obtain_other_privilege=cvss_obtain_other_privilege,
+                        cwe_id=cwe_id,
+                        cwe_name=cwe_name,
+                        cwe_description=cwe_description,
+                        owasp_top_10=cwe_owasp_top_10,
+                        mitre_top_25=cwe_mitre_top_25,
+                        dependency_name=dependency_name,
+                        language=language,
+                        classname=classname,
+                    )
+                    log.info("Grype parsed data: " + str(grype_data))
+                    csv_rows.append(grype_data)
                 else:
                     grype_data = get_csv_column_entries(
                         tool_type="SCA",
@@ -907,7 +900,7 @@ def parse_grype_data(
                         cvss_obtain_all_privilege=cvss_obtain_all_privilege,
                         cvss_obtain_user_privilege=cvss_obtain_user_privilege,
                         cvss_obtain_other_privilege=cvss_obtain_other_privilege,
-                        dependency=dependency_name,
+                        dependency_name=dependency_name,
                         language=language,
                         classname=classname,
                     )
@@ -930,15 +923,8 @@ def parse_snyk_code_data(
     log.info(f"Parsing Snyk Code report: {sast_snyk_code_report_filename}")
     with open(sast_snyk_code_report_filename, "r") as f:
         data = json.load(f)
-    unique_cwe = []
     csv_rows = []
     for vulnerability in data["runs"]:
-        cwe_name = default_column_value
-        cwe_description = default_column_value
-        cwe_confidence = default_column_value
-        cwe_rule_id = default_column_value
-        cwe_language = default_column_value
-
         for snyk_code_rule in vulnerability["tool"]["driver"]["rules"]:
             cwe_name = snyk_code_rule["name"]
             cwe_description = snyk_code_rule["shortDescription"]["text"]
@@ -953,25 +939,21 @@ def parse_snyk_code_data(
                     cwe_owasp_top_10 = search_owasp_top_10(cwe)
                     cwe_mitre_top_25 = search_mitre_top_25(cwe)
 
-                    if cwe not in unique_cwe:  # pragma: no cover
-                        unique_cwe.append(cwe)
-                        snyk_code_data = get_csv_column_entries(
-                            tool_type="SAST",
-                            tool_name="Snyk Code",
-                            tool_classification="Semantic-based",
-                            confidence=cwe_confidence,
-                            cwe_id=cwe,
-                            cwe_name=cwe_name,
-                            cwe_description=cwe_description,
-                            owasp_top_10=cwe_owasp_top_10,
-                            mitre_top_25=cwe_mitre_top_25,
-                            rule_id=cwe_rule_id,
-                            language=cwe_language,
-                        )
-                        log.info(
-                            "Snyk Code parsed data: " + str(snyk_code_data)
-                        )
-                        csv_rows.append(snyk_code_data)
+                    snyk_code_data = get_csv_column_entries(
+                        tool_type="SAST",
+                        tool_name="Snyk Code",
+                        tool_classification="Semantic-based",
+                        confidence=cwe_confidence,
+                        cwe_id=cwe,
+                        cwe_name=cwe_name,
+                        cwe_description=cwe_description,
+                        owasp_top_10=cwe_owasp_top_10,
+                        mitre_top_25=cwe_mitre_top_25,
+                        rule_id=cwe_rule_id,
+                        language=cwe_language,
+                    )
+                    log.info("Snyk Code parsed data: " + str(snyk_code_data))
+                    csv_rows.append(snyk_code_data)
     return csv_rows
 
 
@@ -984,6 +966,7 @@ def parse_owasp_dependency_check_data(
     """Parse OWASP Dependency Check SCA JSON report and write data to output file
 
     :parameter
+        nvd_api_key:str -- NIST API key
         opencve_username:str -- OpenCVE username
         opencve_password:str -- OpenCVE password
         sca_owasp_dependency_check_report_filename:str -- Name of OWASP Dependency Check JSON report to parse
@@ -996,212 +979,333 @@ def parse_owasp_dependency_check_data(
     )
     with open(sca_owasp_dependency_check_report_filename, "r") as f:
         data = json.load(f)
-    unique_cve = []
     csv_rows = []
     for dependency in data["dependencies"]:
         if (
             "vulnerabilityIds" in dependency
             and "vulnerabilities" in dependency
         ):
-            confidence = dependency["vulnerabilityIds"][0]["confidence"]
-            dependency_name = dependency["vulnerabilityIds"][0]["id"]
+            confidence = dependency["packages"][0]["confidence"]
+            dependency_name = dependency["packages"][0]["id"]
 
             for vulnerability in dependency["vulnerabilities"]:
                 if "cwes" in vulnerability:  # pragma: no cover
+                    for cwe_id in vulnerability["cwes"]:
+                        cve_id = vulnerability["name"]
+                        cve_severity = vulnerability["severity"]
+                        cve_source = vulnerability["source"]
+                        cve_description = vulnerability["description"]
+
+                        cve_published = default_column_value
+                        cve_last_modified = default_column_value
+                        cve_vulnerability_status = default_column_value
+                        cvss_version = default_column_value
+                        cvss_source = default_column_value
+                        cvss_base_score = default_column_value
+                        cvss_scope = default_column_value
+                        cvss_exploitability_score = default_column_value
+                        cvss_impact_score = default_column_value
+                        cvss_attack_vector = default_column_value
+                        cvss_attack_complexity = default_column_value
+                        cvss_privileges_required = default_column_value
+                        cvss_user_interaction = default_column_value
+                        cvss_confidentiality_impact = default_column_value
+                        cvss_integrity_impact = default_column_value
+                        cvss_availability_impact = default_column_value
+                        cvss_access_vector = default_column_value
+                        cvss_access_complexity = default_column_value
+                        cvss_authentication = default_column_value
+                        cvss_confidentiality_impact = default_column_value
+                        cvss_insufficient_info = default_column_value
+                        cvss_obtain_all_privilege = default_column_value
+                        cvss_obtain_user_privilege = default_column_value
+                        cvss_obtain_other_privilege = default_column_value
+                        cwe_name = default_column_value
+                        cwe_description = default_column_value
+                        cwe_owasp_top_10 = default_column_value
+                        cwe_mitre_top_25 = default_column_value
+
+                        nvd_cve_info = get_cve_information_from_nvd(
+                            nvd_api_key, cve_id
+                        )
+                        if nvd_cve_info:
+                            cve_info = nvd_cve_info.json()["vulnerabilities"][
+                                0
+                            ]["cve"]
+
+                            cve_published = cve_info["published"]
+                            cve_last_modified = cve_info["lastModified"]
+                            cve_vulnerability_status = cve_info["vulnStatus"]
+
+                            cve_metrics = cve_info["metrics"]
+                            nvd_cvss_metrics_key = "cvssMetricV2"
+                            if "cvssMetricV31" in cve_metrics:
+                                nvd_cvss_metrics_key = "cvssMetricV31"
+                            elif (
+                                "cvssMetricV30" in cve_metrics
+                            ):  # pragma: no cover
+                                nvd_cvss_metrics_key = "cvssMetricV30"
+                            cvss_source = cve_metrics[nvd_cvss_metrics_key][0][
+                                "source"
+                            ]
+
+                        if "cvssv3" in vulnerability:
+                            cvssv3 = vulnerability["cvssv3"]
+
+                            cvss_version = cvssv3["version"]
+                            cvss_base_score = cvssv3["baseScore"]
+                            cvss_scope = cvssv3["scope"]
+                            cvss_exploitability_score = cvssv3[
+                                "exploitabilityScore"
+                            ]
+                            cvss_impact_score = cvssv3["impactScore"]
+                            cvss_attack_vector = cvssv3["attackVector"]
+                            cvss_attack_complexity = cvssv3["attackComplexity"]
+                            cvss_privileges_required = cvssv3[
+                                "privilegesRequired"
+                            ]
+                            cvss_user_interaction = cvssv3["userInteraction"]
+                            cvss_confidentiality_impact = cvssv3[
+                                "confidentialityImpact"
+                            ]
+                            cvss_integrity_impact = cvssv3["integrityImpact"]
+                            cvss_availability_impact = cvssv3[
+                                "availabilityImpact"
+                            ]
+                        elif "cvssv2" in vulnerability:
+                            cvssv2 = vulnerability["cvssv2"]
+
+                            cvss_version = cvssv2["version"]
+                            cvss_base_score = cvssv2["score"]
+                            cvss_exploitability_score = cvssv2[
+                                "exploitabilityScore"
+                            ]
+                            cvss_impact_score = cvssv2["impactScore"]
+                            cvss_access_vector = cvssv2["accessVector"]
+                            cvss_access_complexity = cvssv2["accessComplexity"]
+                            cvss_authentication = cvssv2["authenticationr"]
+                            cvss_confidentiality_impact = cvssv2[
+                                "confidentialityImpact"
+                            ]
+                            cvss_integrity_impact = cvssv2["integrityImpact"]
+                            cvss_availability_impact = cvssv2[
+                                "availabilityImpact"
+                            ]
+                            cvss_insufficient_info = (
+                                cvssv2["acInsufInfo"]
+                                if "acInsufInfo" in cvssv2
+                                else "False"
+                            )
+                            cvss_obtain_all_privilege = (
+                                cvssv2["obtainAllPrivilege"]
+                                if "obtainAllPrivilege" in cvssv2
+                                else "False"
+                            )
+                            cvss_obtain_user_privilege = (
+                                cvssv2["obtainUserPrivilege"]
+                                if "obtainUserPrivilege" in cvssv2
+                                else "False"
+                            )
+                            cvss_obtain_other_privilege = (
+                                cvssv2["obtainOtherPrivilege"]
+                                if "obtainOtherPrivilege" in cvssv2
+                                else "False"
+                            )
+
                     if (
-                        "NVD-CWE-noinfo" not in vulnerability["cwes"]
-                        and "NVD-CWE-Other" not in vulnerability["cwes"]
+                        cwe_id.upper() != "NVD-CWE-NOINFO"
+                        and cwe_id.upper() != "NVD-CWE-OTHER"
                     ):
-                        for cwe_id in vulnerability["cwes"]:
-                            cve_id = vulnerability["name"]
-                            cve_severity = vulnerability["severity"]
-                            cve_source = vulnerability["source"]
-                            cve_description = vulnerability["description"]
+                        opencve_cwe_details = get_opencve_cwe_details(
+                            opencve_username, opencve_password, cwe_id
+                        )
+                        if opencve_cwe_details:
+                            cwe_name = opencve_cwe_details.json()["name"]
+                            cwe_description = opencve_cwe_details.json()[
+                                "description"
+                            ]
 
-                            cve_published = default_column_value
-                            cve_last_modified = default_column_value
-                            cve_vulnerability_status = default_column_value
-                            cvss_version = default_column_value
-                            cvss_source = default_column_value
-                            cvss_base_score = default_column_value
-                            cvss_scope = default_column_value
-                            cvss_exploitability_score = default_column_value
-                            cvss_impact_score = default_column_value
-                            cvss_attack_vector = default_column_value
-                            cvss_attack_complexity = default_column_value
-                            cvss_privileges_required = default_column_value
-                            cvss_user_interaction = default_column_value
-                            cvss_confidentiality_impact = default_column_value
-                            cvss_integrity_impact = default_column_value
-                            cvss_availability_impact = default_column_value
-                            cvss_access_vector = default_column_value
-                            cvss_access_complexity = default_column_value
-                            cvss_authentication = default_column_value
-                            cvss_confidentiality_impact = default_column_value
-                            cvss_insufficient_info = default_column_value
-                            cvss_obtain_all_privilege = default_column_value
-                            cvss_obtain_user_privilege = default_column_value
-                            cvss_obtain_other_privilege = default_column_value
-                            cwe_name = default_column_value
-                            cwe_description = default_column_value
+                        cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+                        cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-                            nvd_cve_info = get_cve_information_from_nvd(
-                                nvd_api_key, cve_id
-                            )
-                            if nvd_cve_info:
-                                cve_info = nvd_cve_info.json()[
-                                    "vulnerabilities"
-                                ][0]["cve"]
+                    owasp_dependency_check_data = get_csv_column_entries(
+                        tool_type="SCA",
+                        tool_name="OWASP Dependency Check",
+                        tool_classification="Metadata-based",
+                        severity=cve_severity,
+                        confidence=confidence,
+                        cve_id=cve_id,
+                        cve_source_identifier=cve_source,
+                        cve_published_date=cve_published,
+                        cve_last_modified_date=cve_last_modified,
+                        cve_vulnerability_status=cve_vulnerability_status,
+                        cve_description=cve_description,
+                        cvss_version=cvss_version,
+                        cvss_source=cvss_source,
+                        cvss_base_score=cvss_base_score,
+                        cvss_scope=cvss_scope,
+                        cvss_exploitable_score=cvss_exploitability_score,
+                        cvss_impact_score=cvss_impact_score,
+                        cvss_attack_vector=cvss_attack_vector,
+                        cvss_attack_complexity=cvss_attack_complexity,
+                        cvss_privileges_required=cvss_privileges_required,
+                        cvss_user_interaction=cvss_user_interaction,
+                        cvss_confidentiality_impact=cvss_confidentiality_impact,
+                        cvss_integrity_impact=cvss_integrity_impact,
+                        cvss_availability_impact=cvss_availability_impact,
+                        cvss_access_vector=cvss_access_vector,
+                        cvss_access_complexity=cvss_access_complexity,
+                        cvss_authentication=cvss_authentication,
+                        cvss_insufficient_info=cvss_insufficient_info,
+                        cvss_obtain_all_privilege=cvss_obtain_all_privilege,
+                        cvss_obtain_user_privilege=cvss_obtain_user_privilege,
+                        cvss_obtain_other_privilege=cvss_obtain_other_privilege,
+                        cwe_id=cwe_id,
+                        cwe_name=cwe_name,
+                        cwe_description=cwe_description,
+                        owasp_top_10=cwe_owasp_top_10,
+                        mitre_top_25=cwe_mitre_top_25,
+                        dependency_name=dependency_name,
+                    )
+                    log.info(
+                        "OWASP Dependency Check parsed data: "
+                        + str(owasp_dependency_check_data)
+                    )
+                    csv_rows.append(owasp_dependency_check_data)
+    return csv_rows
 
-                                cve_published = cve_info["published"]
-                                cve_last_modified = cve_info["lastModified"]
-                                cve_vulnerability_status = cve_info[
-                                    "vulnStatus"
-                                ]
 
-                                cve_metrics = cve_info["metrics"]
-                                nvd_cvss_metrics_key = "cvssMetricV2"
-                                if "cvssMetricV31" in cve_metrics:
-                                    nvd_cvss_metrics_key = "cvssMetricV31"
-                                elif (
-                                    "cvssMetricV30" in cve_metrics
-                                ):  # pragma: no cover
-                                    nvd_cvss_metrics_key = "cvssMetricV30"
-                                cvss_source = cve_metrics[
-                                    nvd_cvss_metrics_key
-                                ][0]["source"]
+def parse_snyk_data(
+    nvd_api_key: str,
+    opencve_username: str,
+    opencve_password: str,
+    sca_snyk_report_filename: str,
+) -> list:
+    """Parse Snyk SCA JSON report and write data to output file
 
-                            if "cvssv3" in vulnerability:
-                                cvssv3 = vulnerability["cvssv3"]
+    :parameter
+        nvd_api_key:str -- NIST API key
+        opencve_username:str -- OpenCVE username
+        opencve_password:str -- OpenCVE password
+        sca_snyk_report_filename:str -- Name of Snyk JSON report to parse
 
-                                cvss_version = cvssv3["version"]
-                                cvss_base_score = cvssv3["baseScore"]
-                                cvss_scope = cvssv3["scope"]
-                                cvss_exploitability_score = cvssv3[
-                                    "exploitabilityScore"
-                                ]
-                                cvss_impact_score = cvssv3["impactScore"]
-                                cvss_attack_vector = cvssv3["attackVector"]
-                                cvss_attack_complexity = cvssv3[
-                                    "attackComplexity"
-                                ]
-                                cvss_privileges_required = cvssv3[
-                                    "privilegesRequired"
-                                ]
-                                cvss_user_interaction = cvssv3[
-                                    "userInteraction"
-                                ]
-                                cvss_confidentiality_impact = cvssv3[
-                                    "confidentialityImpact"
-                                ]
-                                cvss_integrity_impact = cvssv3[
-                                    "integrityImpact"
-                                ]
-                                cvss_availability_impact = cvssv3[
-                                    "availabilityImpact"
-                                ]
-                            elif "cvssv2" in vulnerability:
-                                cvssv2 = vulnerability["cvssv2"]
+    :return
+        list -- CSV data to write to output file
+    """
+    log.info(f"Parsing Snyk report: {sca_snyk_report_filename}")
+    with open(sca_snyk_report_filename, "r") as f:
+        data = json.load(f)
+    csv_rows = []
 
-                                cvss_version = cvssv2["version"]
-                                cvss_base_score = cvssv2["score"]
-                                cvss_exploitability_score = cvssv2[
-                                    "exploitabilityScore"
-                                ]
-                                cvss_impact_score = cvssv2["impactScore"]
-                                cvss_access_vector = cvssv2["accessVector"]
-                                cvss_access_complexity = cvssv2[
-                                    "accessComplexity"
-                                ]
-                                cvss_authentication = cvssv2["authenticationr"]
-                                cvss_confidentiality_impact = cvssv2[
-                                    "confidentialityImpact"
-                                ]
-                                cvss_integrity_impact = cvssv2[
-                                    "integrityImpact"
-                                ]
-                                cvss_availability_impact = cvssv2[
-                                    "availabilityImpact"
-                                ]
-                                cvss_insufficient_info = (
-                                    cvssv2["acInsufInfo"]
-                                    if "acInsufInfo" in cvssv2
-                                    else "False"
-                                )
-                                cvss_obtain_all_privilege = (
-                                    cvssv2["obtainAllPrivilege"]
-                                    if "obtainAllPrivilege" in cvssv2
-                                    else "False"
-                                )
-                                cvss_obtain_user_privilege = (
-                                    cvssv2["obtainUserPrivilege"]
-                                    if "obtainUserPrivilege" in cvssv2
-                                    else "False"
-                                )
-                                cvss_obtain_other_privilege = (
-                                    cvssv2["obtainOtherPrivilege"]
-                                    if "obtainOtherPrivilege" in cvssv2
-                                    else "False"
-                                )
+    for vulnerability in data["vulnerabilities"]:
+        cwe_name = default_column_value
+        cwe_description = default_column_value
+        cve_published = default_column_value
+        cve_vulnerability_status = default_column_value
+        cwe_owasp_top_10 = default_column_value
+        cwe_mitre_top_25 = default_column_value
 
-                            opencve_cwe_details = get_opencve_cwe_details(
-                                opencve_username, opencve_password, cwe_id
-                            )
-                            if opencve_cwe_details:
-                                cwe_name = opencve_cwe_details.json()["name"]
-                                cwe_description = opencve_cwe_details.json()[
-                                    "description"
-                                ]
+        for cwe_id in vulnerability["identifiers"]["CWE"]:
+            for cve_id in vulnerability["identifiers"]["CVE"]:
+                rule_id = vulnerability["id"]
+                cve_description = vulnerability["title"]
+                cve_language = vulnerability["language"]
+                cve_severity = vulnerability["severity"]
+                cve_published = vulnerability["publicationTime"]
+                cve_last_modified = vulnerability["modificationTime"]
+                cve_malicious = vulnerability["malicious"]
+                cve_disputed = vulnerability["isDisputed"]
+                dependency_name = (
+                    vulnerability["name"] + "@" + vulnerability["version"]
+                )
+                dependency_scope = "DIRECT"
+                if len(vulnerability["from"]) > 2:
+                    dependency_scope = "TRANSITIVE"
+                dependency_upgradable = vulnerability["isUpgradable"]
+                dependency_patchable = vulnerability["isPatchable"]
 
-                            cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
-                            cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+                cvss_details = vulnerability["cvssDetails"][0]
+                cve_last_modified = cvss_details["modificationTime"]
+                cvss_source = cvss_details["assigner"]
 
-                            if cve_id not in unique_cve:
-                                unique_cve.append(cve_id)
-                                owasp_dependency_check_data = get_csv_column_entries(
-                                    tool_type="SCA",
-                                    tool_name="OWASP Dependency Check",
-                                    tool_classification="Metadata-based",
-                                    severity=cve_severity,
-                                    confidence=confidence,
-                                    cve_id=cve_id,
-                                    cve_source_identifier=cve_source,
-                                    cve_published_date=cve_published,
-                                    cve_last_modified_date=cve_last_modified,
-                                    cve_vulnerability_status=cve_vulnerability_status,
-                                    cve_description=cve_description,
-                                    cvss_version=cvss_version,
-                                    cvss_source=cvss_source,
-                                    cvss_base_score=cvss_base_score,
-                                    cvss_scope=cvss_scope,
-                                    cvss_exploitable_score=cvss_exploitability_score,
-                                    cvss_impact_score=cvss_impact_score,
-                                    cvss_attack_vector=cvss_attack_vector,
-                                    cvss_attack_complexity=cvss_attack_complexity,
-                                    cvss_privileges_required=cvss_privileges_required,
-                                    cvss_user_interaction=cvss_user_interaction,
-                                    cvss_confidentiality_impact=cvss_confidentiality_impact,
-                                    cvss_integrity_impact=cvss_integrity_impact,
-                                    cvss_availability_impact=cvss_availability_impact,
-                                    cvss_access_vector=cvss_access_vector,
-                                    cvss_access_complexity=cvss_access_complexity,
-                                    cvss_authentication=cvss_authentication,
-                                    cvss_insufficient_info=cvss_insufficient_info,
-                                    cvss_obtain_all_privilege=cvss_obtain_all_privilege,
-                                    cvss_obtain_user_privilege=cvss_obtain_user_privilege,
-                                    cvss_obtain_other_privilege=cvss_obtain_other_privilege,
-                                    cwe_id=cwe_id,
-                                    cwe_name=cwe_name,
-                                    cwe_description=cwe_description,
-                                    owasp_top_10=cwe_owasp_top_10,
-                                    mitre_top_25=cwe_mitre_top_25,
-                                    dependency=dependency_name,
-                                )
-                                log.info(
-                                    "OWASP Dependency Check parsed data: "
-                                    + str(owasp_dependency_check_data)
-                                )
-                                csv_rows.append(owasp_dependency_check_data)
+                if cvss_source == "NVD":
+                    nvd_cve_info = get_cve_information_from_nvd(
+                        nvd_api_key, cve_id
+                    )
+                    if nvd_cve_info:  # pragma: no cover
+                        cve_info = nvd_cve_info.json()["vulnerabilities"][0][
+                            "cve"
+                        ]
+                        cve_published = cve_info["published"]
+                        cve_vulnerability_status = cve_info["vulnStatus"]
+
+                cvss_vector = cvss_details["cvssV3Vector"]
+                cvss = CVSS3(cvss_vector).as_json()
+                cvss_version = cvss.get("version")
+                cvss_base_score = cvss.get("baseScore")
+                cvss_scope = cvss.get("scope")
+                cvss_attack_vector = cvss.get("attackVector")
+                cvss_attack_complexity = cvss.get("attackComplexity")
+                cvss_privileges_required = cvss.get("privilegesRequired")
+                cvss_user_interaction = cvss.get("userInteraction")
+                cvss_confidentiality_impact = cvss.get("confidentialityImpact")
+                cvss_integrity_impact = cvss.get("integrityImpact")
+                cvss_availability_impact = cvss.get("availabilityImpact")
+
+                if (
+                    cwe_id.upper() != "NVD-CWE-NOINFO"
+                    and cwe_id.upper() != "NVD-CWE-OTHER"
+                ):
+                    opencve_cwe_details = get_opencve_cwe_details(
+                        opencve_username, opencve_password, cwe_id
+                    )
+                    if opencve_cwe_details:
+                        cwe_name = opencve_cwe_details.json()["name"]
+                        cwe_description = opencve_cwe_details.json()[
+                            "description"
+                        ]
+
+                    cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+                    cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+
+                snyk_check_data = get_csv_column_entries(
+                    tool_type="SCA",
+                    tool_name="Snyk",
+                    tool_classification="Metadata-based",
+                    severity=cve_severity,
+                    cve_id=cve_id,
+                    cve_published_date=cve_published,
+                    cve_last_modified_date=cve_last_modified,
+                    cve_vulnerability_status=cve_vulnerability_status,
+                    cve_description=cve_description,
+                    cve_malicious=cve_malicious,
+                    cve_disputed=cve_disputed,
+                    cvss_version=cvss_version,
+                    cvss_source=cvss_source,
+                    cvss_base_score=cvss_base_score,
+                    cvss_scope=cvss_scope,
+                    cvss_attack_vector=cvss_attack_vector,
+                    cvss_attack_complexity=cvss_attack_complexity,
+                    cvss_privileges_required=cvss_privileges_required,
+                    cvss_user_interaction=cvss_user_interaction,
+                    cvss_confidentiality_impact=cvss_confidentiality_impact,
+                    cvss_integrity_impact=cvss_integrity_impact,
+                    cvss_availability_impact=cvss_availability_impact,
+                    cwe_id=cwe_id,
+                    cwe_name=cwe_name,
+                    cwe_description=cwe_description,
+                    owasp_top_10=cwe_owasp_top_10,
+                    mitre_top_25=cwe_mitre_top_25,
+                    dependency_name=dependency_name,
+                    dependency_scope=dependency_scope,
+                    dependency_upgradable=dependency_upgradable,
+                    dependency_patchable=dependency_patchable,
+                    rule_id=rule_id,
+                    language=cve_language,
+                )
+                log.info("Snyk parsed data: " + str(snyk_check_data))
+                csv_rows.append(snyk_check_data)
+
     return csv_rows
 
 
@@ -1225,6 +1329,8 @@ def create_csv_report(csv_filename: str) -> None:
         "CVE Last Modified Date",
         "CVE Vulnerability Status",
         "CVE Description",
+        "CVE Malicious",
+        "CVE Disputed",
         "CVSS Version",
         "CVSS Source",
         "CVSS Base Score",
@@ -1250,8 +1356,10 @@ def create_csv_report(csv_filename: str) -> None:
         "CWE Description",
         "OWASP Top 10",
         "MITRE Top 25",
+        "Dependency Name",
         "Dependency Scope",
-        "Dependency",
+        "Dependency Upgradable",
+        "Dependency Patchable",
         "Rule ID",
         "Language",
         "Class",
@@ -1275,6 +1383,8 @@ def get_csv_column_entries(
     cve_last_modified_date: str = default_column_value,
     cve_vulnerability_status: str = default_column_value,
     cve_description: str = default_column_value,
+    cve_malicious: str = default_column_value,
+    cve_disputed: str = default_column_value,
     cvss_version: str = default_column_value,
     cvss_source: str = default_column_value,
     cvss_base_score: str = default_column_value,
@@ -1300,8 +1410,10 @@ def get_csv_column_entries(
     cwe_description: str = default_column_value,
     owasp_top_10: str = default_column_value,
     mitre_top_25: str = default_column_value,
+    dependency_name: str = default_column_value,
     dependency_scope: str = default_column_value,
-    dependency: str = default_column_value,
+    dependency_upgradable: str = default_column_value,
+    dependency_patchable: str = default_column_value,
     rule_id: str = default_column_value,
     language: str = default_column_value,
     classname: str = default_column_value,
@@ -1318,8 +1430,10 @@ def get_csv_column_entries(
         cve_source_identifier:str -- organisation who reported CVE
         cve_published_date:str -- date CVE was published
         cve_last_modified_date:str -- date CVE was last modified
-        cve_description:str -- CVE description
         cve_vulnerability_status:str -- current status of vulnerability
+        cve_description:str -- CVE description
+        cve_malicious:str -- whether CVE is malicious
+        cve_disputed:str -- whether CVE is disupted
         cvss_version:str -- version of CVSS metrics
         cvss_source:str -- organisation who calculated CVSS
         cvss_base_score:str -- base score of CWE
@@ -1345,8 +1459,10 @@ def get_csv_column_entries(
         cwe_description:str -- CWE description
         owasp_top_10:str -- category of OWASP top 10 for CWE ID
         mitre_top_25:str -- index of MITRE top 25 for CWE ID
+        dependency_name:str -- dependency name associated with vulnerability
         dependency_scope:str -- dependency scope (direct/transitive) associated with vulnerability
-        dependency:str -- dependency name associated with vulnerability
+        dependency_upgradable:str -- whether dependency is upgradable
+        dependency_patchable:str -- whether dependency is patchable
         rule_id:str -- rule id associated with vulnerability
         language:str -- language associated with vulnerability
         classname:str -- class name corresponding to CWE detection
@@ -1366,6 +1482,8 @@ def get_csv_column_entries(
         cve_last_modified_date,
         cve_vulnerability_status.upper(),
         cve_description,
+        str(cve_malicious).upper(),
+        str(cve_disputed).upper(),
         cvss_version,
         cvss_source,
         cvss_base_score,
@@ -1391,8 +1509,10 @@ def get_csv_column_entries(
         cwe_description,
         owasp_top_10,
         mitre_top_25,
+        dependency_name,
         dependency_scope,
-        dependency,
+        str(dependency_upgradable).upper(),
+        str(dependency_patchable).upper(),
         rule_id,
         language.upper(),
         classname,
@@ -1406,6 +1526,9 @@ def write_to_csv_report(csv_filename: str, product_data: list) -> None:
         csv_filename:str -- Name of CSV file to write to
         product_data:list -- Parsed data from product report
     """
+    product_data.sort()
+    product_data = list(item for item, _ in itertools.groupby(product_data))
+
     log.info(f"Writing results to report: {csv_filename}")
 
     with open(csv_filename, "a") as csv_file:
@@ -1456,6 +1579,15 @@ def main(args: argparse.Namespace) -> None:
             args.sca_owasp_dependency_check_report_filename,
         )
         write_to_csv_report(csv_report_filename, csv_rows)
+    if args.sca_snyk_report_filename:  # pragma: no cover
+        csv_rows = parse_snyk_data(
+            args.nvd_api_key,
+            args.opencve_username,
+            args.opencve_password,
+            args.sca_snyk_report_filename,
+        )
+        write_to_csv_report(csv_report_filename, csv_rows)
+
     return None
 
 

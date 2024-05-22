@@ -66,6 +66,8 @@ The following report columns are populated
 | CVE Last Modified Date      | Date CVE was last modified                                                                                               |               |
 | CVE Vulnerability Status    | Current status of vulnerability                                                                                          |               |
 | CVE Description             | CVE description                                                                                                          |               |
+| CVE Malicious               | Whether CVE is malicious                                                                                                 |               |
+| CVE Disputed                | Whether CVE is disputed                                                                                                  |               |
 | CVSS Version                | Version of CVSS metrics                                                                                                  |               |
 | CVSS Source                 | Organisation who calculated CVSS                                                                                         |               |
 | CVSS Base Score             | Base score of CWE                                                                                                        |               |
@@ -91,8 +93,10 @@ The following report columns are populated
 | CWE Description             | CWE Description                                                                                                          |               |
 | OWASP Top 10                | Category of OWASP top 10 for CWE ID                                                                                      |               |
 | MITRE Top 25                | Index of MITRE top 25 for CWE ID                                                                                         |               |
+| Dependency Name             | Dependency name associated with vulnerability                                                                            |               |
 | Dependency Scope            | Dependency scope (direct/transitive) associated with vulnerability                                                       |               |
-| Dependency                  | Dependency name associated with vulnerability                                                                            |               |
+| Dependency Upgradable       | Whether dependency is upgradable                                                                                         |               |
+| Dependency Patchable        | Whether dependency is patchable                                                                                          |               |
 | Rule ID                     | Rule id associated with vulnerability                                                                                    |               |
 | Language                    | Language associated with vulnerability                                                                                   |               |
 | Class                       | Class name corresponding to CWE detection                                                                                |               |

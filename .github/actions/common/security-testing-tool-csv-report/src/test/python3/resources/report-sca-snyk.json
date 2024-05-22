@@ -1,0 +1,795 @@
+{
+  "vulnerabilities": [
+    {
+      "id": "SNYK-PYTHON-CRYPTOGRAPHY-6913422",
+      "title": "Uncontrolled Resource Consumption",
+      "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+      "credit": [
+        "Unknown"
+      ],
+      "semver": {
+        "vulnerable": [
+          "[0,]"
+        ]
+      },
+      "exploit": "Not Defined",
+      "fixedIn": [],
+      "patches": [],
+      "insights": {
+        "triageAdvice": null
+      },
+      "language": "python",
+      "severity": "low",
+      "cvssScore": 3.7,
+      "functions": [],
+      "malicious": false,
+      "isDisputed": false,
+      "moduleName": "cryptography",
+      "references": [
+        {
+          "url": "https://github.com/openssl/openssl/commit/85ccbab216da245cf9a6503dd327072f21950d9b",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397",
+          "title": "GitHub Commit 3.0"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d",
+          "title": "GitHub Commit 3.1"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740",
+          "title": "GitHub Commit 3.2"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e",
+          "title": "GitHub Commit 3.3"
+        },
+        {
+          "url": "https://github.com/pyca/cryptography/commit/38852224f455af1915a628542b930ad11d2a884c",
+          "title": "GitHub Commit cryptography"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/pull/24346",
+          "title": "GitHub PR"
+        },
+        {
+          "url": "https://www.openssl.org/news/secadv/20240516.txt",
+          "title": "OpenSSL advisory"
+        }
+      ],
+      "cvssDetails": [
+        {
+          "assigner": "Red Hat",
+          "severity": "medium",
+          "cvssV3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "cvssV3BaseScore": 5.3,
+          "modificationTime": "2024-05-18T13:33:51.382424Z"
+        }
+      ],
+      "description": "## Overview\n\nAffected versions of this package are vulnerable to Uncontrolled Resource Consumption due to improper user input validation in the `EVP_PKEY_param_check` or `EVP_PKEY_public_check` functions. An attacker can cause a denial of service by supplying excessively long DSA keys or parameters obtained from an untrusted source.\n\n**Note:**\n\nOpenSSL does not call these functions on untrusted DSA keys, so only applications that directly call these functions may be vulnerable.\n\nAlso vulnerable are the OpenSSL `pkey` and `pkeyparam` command line applications when using the \"-check\" option.\n## Remediation\nA fix was pushed into the `master` branch but not yet published.\n## References\n- [GitHub Commit](https://github.com/openssl/openssl/commit/85ccbab216da245cf9a6503dd327072f21950d9b)\n- [GitHub Commit 3.0](https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397)\n- [GitHub Commit 3.1](https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d)\n- [GitHub Commit 3.2](https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740)\n- [GitHub Commit 3.3](https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e)\n- [GitHub Commit cryptography](https://github.com/pyca/cryptography/commit/38852224f455af1915a628542b930ad11d2a884c)\n- [GitHub PR](https://github.com/openssl/openssl/pull/24346)\n- [OpenSSL advisory](https://www.openssl.org/news/secadv/20240516.txt)\n",
+      "epssDetails": {
+        "percentile": "0.14814",
+        "probability": "0.00045",
+        "modelVersion": "v2023.03.01"
+      },
+      "identifiers": {
+        "CVE": [
+          "CVE-2024-4603"
+        ],
+        "CWE": [
+          "CWE-400"
+        ]
+      },
+      "packageName": "cryptography",
+      "proprietary": false,
+      "creationTime": "2024-05-19T10:46:05.567794Z",
+      "functions_new": [],
+      "alternativeIds": [],
+      "disclosureTime": "2024-05-16T00:00:00Z",
+      "packageManager": "pip",
+      "publicationTime": "2024-05-19T10:46:05.728350Z",
+      "modificationTime": "2024-05-19T10:46:06.262960Z",
+      "socialTrendAlert": false,
+      "severityWithCritical": "low",
+      "from": [
+        "mycli@0.0.0",
+        "paramiko@2.11.0",
+        "cryptography@42.0.7"
+      ],
+      "upgradePath": [],
+      "isUpgradable": false,
+      "isPatchable": false,
+      "name": "cryptography",
+      "version": "42.0.7"
+    },
+    {
+      "id": "SNYK-PYTHON-CRYPTOGRAPHY-6913422",
+      "title": "Uncontrolled Resource Consumption",
+      "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+      "credit": [
+        "Unknown"
+      ],
+      "semver": {
+        "vulnerable": [
+          "[0,]"
+        ]
+      },
+      "exploit": "Not Defined",
+      "fixedIn": [],
+      "patches": [],
+      "insights": {
+        "triageAdvice": null
+      },
+      "language": "python",
+      "severity": "low",
+      "cvssScore": 3.7,
+      "functions": [],
+      "malicious": false,
+      "isDisputed": false,
+      "moduleName": "cryptography",
+      "references": [
+        {
+          "url": "https://github.com/openssl/openssl/commit/85ccbab216da245cf9a6503dd327072f21950d9b",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397",
+          "title": "GitHub Commit 3.0"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d",
+          "title": "GitHub Commit 3.1"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740",
+          "title": "GitHub Commit 3.2"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e",
+          "title": "GitHub Commit 3.3"
+        },
+        {
+          "url": "https://github.com/pyca/cryptography/commit/38852224f455af1915a628542b930ad11d2a884c",
+          "title": "GitHub Commit cryptography"
+        },
+        {
+          "url": "https://github.com/openssl/openssl/pull/24346",
+          "title": "GitHub PR"
+        },
+        {
+          "url": "https://www.openssl.org/news/secadv/20240516.txt",
+          "title": "OpenSSL advisory"
+        }
+      ],
+      "cvssDetails": [
+        {
+          "assigner": "Red Hat",
+          "severity": "medium",
+          "cvssV3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "cvssV3BaseScore": 5.3,
+          "modificationTime": "2024-05-18T13:33:51.382424Z"
+        }
+      ],
+      "description": "## Overview\n\nAffected versions of this package are vulnerable to Uncontrolled Resource Consumption due to improper user input validation in the `EVP_PKEY_param_check` or `EVP_PKEY_public_check` functions. An attacker can cause a denial of service by supplying excessively long DSA keys or parameters obtained from an untrusted source.\n\n**Note:**\n\nOpenSSL does not call these functions on untrusted DSA keys, so only applications that directly call these functions may be vulnerable.\n\nAlso vulnerable are the OpenSSL `pkey` and `pkeyparam` command line applications when using the \"-check\" option.\n## Remediation\nA fix was pushed into the `master` branch but not yet published.\n## References\n- [GitHub Commit](https://github.com/openssl/openssl/commit/85ccbab216da245cf9a6503dd327072f21950d9b)\n- [GitHub Commit 3.0](https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397)\n- [GitHub Commit 3.1](https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d)\n- [GitHub Commit 3.2](https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740)\n- [GitHub Commit 3.3](https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e)\n- [GitHub Commit cryptography](https://github.com/pyca/cryptography/commit/38852224f455af1915a628542b930ad11d2a884c)\n- [GitHub PR](https://github.com/openssl/openssl/pull/24346)\n- [OpenSSL advisory](https://www.openssl.org/news/secadv/20240516.txt)\n",
+      "epssDetails": {
+        "percentile": "0.14814",
+        "probability": "0.00045",
+        "modelVersion": "v2023.03.01"
+      },
+      "identifiers": {
+        "CVE": [
+          "CVE-2024-4603"
+        ],
+        "CWE": [
+          "CWE-400"
+        ]
+      },
+      "packageName": "cryptography",
+      "proprietary": false,
+      "creationTime": "2024-05-19T10:46:05.567794Z",
+      "functions_new": [],
+      "alternativeIds": [],
+      "disclosureTime": "2024-05-16T00:00:00Z",
+      "packageManager": "pip",
+      "publicationTime": "2024-05-19T10:46:05.728350Z",
+      "modificationTime": "2024-05-19T10:46:06.262960Z",
+      "socialTrendAlert": false,
+      "severityWithCritical": "low",
+      "from": [
+        "mycli@0.0.0",
+        "twine@5.1.0",
+        "keyring@25.2.1",
+        "secretstorage@3.3.3",
+        "cryptography@42.0.7"
+      ],
+      "upgradePath": [],
+      "isUpgradable": false,
+      "isPatchable": false,
+      "name": "cryptography",
+      "version": "42.0.7"
+    },
+    {
+      "id": "SNYK-PYTHON-PARAMIKO-6130887",
+      "title": "Authentication Bypass by Capture-replay",
+      "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N/E:P",
+      "credit": [
+        "Fabian Bäumer",
+        "Marcus Brinkmann",
+        "Jörg Schwenk"
+      ],
+      "semver": {
+        "vulnerable": [
+          "[,3.4.0)"
+        ]
+      },
+      "exploit": "Proof of Concept",
+      "fixedIn": [
+        "3.4.0"
+      ],
+      "patches": [],
+      "insights": {
+        "triageAdvice": null
+      },
+      "language": "python",
+      "severity": "medium",
+      "cvssScore": 5.9,
+      "functions": [],
+      "malicious": false,
+      "isDisputed": false,
+      "moduleName": "paramiko",
+      "references": [
+        {
+          "url": "https://terrapin-attack.com/",
+          "title": "Attack Information"
+        },
+        {
+          "url": "https://github.com/golang/crypto/commit/9d2ee975ef9fe627bf0a6f01c1f69e8ef1d4f05d",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/libssh2/libssh2/pull/1291/commits/ab44b0906d7f8a296e995ccd661b0e98d01a3742",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/mkj/dropbear/commit/6e43be5c7b99dbee49dc72b6f989f29fdd7e9356",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/mwiede/jsch/commit/6214da974286a8b94a95f4cf6cec96e972ffd370",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/openssh/openssh-portable/commit/1edb00c58f8a6875fad6a497aa2bacf37f9e6cd5",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/ronf/asyncssh/commit/0bc73254f41acb140187e0c89606311f88de5b7b",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/ronf/asyncssh/commit/69f5a41b458b29367a65fe469c2b0255b5db210a",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/sshtools/maverick-synergy/commit/3cd7fd156c0d1091e303824807be038b4eead2cd",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/sshtools/maverick-synergy/commit/aadec4c3a5051fd99ad4791c80eeac271d56c859",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/TeraTermProject/teraterm/commit/7279fbd6ef4d0c8bdd6a90af4ada2899d786eec0",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/warp-tech/russh/commit/a355c62d11352cf93c3f9fda7499e03753a938ae",
+          "title": "GitHub Commit"
+        },
+        {
+          "url": "https://github.com/paramiko/paramiko/issues/2337",
+          "title": "GitHub Issue"
+        },
+        {
+          "url": "https://go.dev/issue/64784",
+          "title": "GitHub Issue"
+        },
+        {
+          "url": "https://github.com/jenkinsci/jenkins/pull/9089",
+          "title": "GitHub PR"
+        },
+        {
+          "url": "https://go.dev/cl/550715",
+          "title": "Go Forum"
+        },
+        {
+          "url": "https://groups.google.com/g/golang-announce/c/qA3XtxvMUyg",
+          "title": "Google Groups Forum"
+        },
+        {
+          "url": "https://www.jenkins.io/security/advisory/2024-04-17/%23SECURITY-3386",
+          "title": "Jenkins Advisory"
+        },
+        {
+          "url": "https://www.openssh.com/txt/release-9.6",
+          "title": "Security Release"
+        },
+        {
+          "url": "https://github.com/projectdiscovery/nuclei-templates/blob/master/javascript/cves/2023/CVE-2023-48795.yaml",
+          "title": "Nuclei Templates"
+        }
+      ],
+      "cvssDetails": [
+        {
+          "assigner": "NVD",
+          "severity": "medium",
+          "cvssV3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N",
+          "cvssV3BaseScore": 5.9,
+          "modificationTime": "2024-03-11T09:45:32.503659Z"
+        },
+        {
+          "assigner": "Red Hat",
+          "severity": "medium",
+          "cvssV3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N",
+          "cvssV3BaseScore": 5.9,
+          "modificationTime": "2024-03-11T09:54:12.732947Z"
+        },
+        {
+          "assigner": "SUSE",
+          "severity": "medium",
+          "cvssV3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N",
+          "cvssV3BaseScore": 5.9,
+          "modificationTime": "2024-03-11T09:54:13.267401Z"
+        }
+      ],
+      "description": "## Overview\n[paramiko](https://pypi.org/project/paramiko/) is a library for making SSH2 connections (client or server).\n\nAffected versions of this package are vulnerable to Authentication Bypass by Capture-replay during the establishment of the secure channel. An attacker can manipulate handshake sequence numbers to delete messages sent immediately after the channel is established.\r\n\r\n**Note:**\r\n\r\n1) Sequence numbers are only validated once the channel is established and arbitrary messages are allowed during the handshake, allowing them to manipulate the sequence numbers.\r\n\r\n2) The potential consequences of the general Terrapin attack are dependent on the messages exchanged after the handshake concludes. If you are using a custom SSH service and do not resort to the authentication protocol, you should check that dropping the first few messages of a connection does not yield security risks.\r\n\r\n**Impact:** \r\n\r\nWhile cryptographically novel, there is no discernable impact on the integrity of SSH traffic beyond giving the attacker the ability to delete the message that enables some features related to keystroke timing obfuscation. To successfully carry out the exploitation, the connection needs to be protected using either the `ChaCha20-Poly1305` or `CBC` with `Encrypt-then-MAC` encryption methods. The attacker must also be able to intercept and modify the connection's traffic. \r\n\r\n## Workaround\r\n\r\nTemporarily disable the affected `chacha20-poly1305@openssh.com` encryption and `*-etm@openssh.com` MAC algorithms in the affected configuration, and use unaffected algorithms like `AES-GCM` instead.\n## Remediation\nUpgrade `paramiko` to version 3.4.0 or higher.\n## References\n- [Attack Information](https://terrapin-attack.com/)\n- [GitHub Commit](https://github.com/golang/crypto/commit/9d2ee975ef9fe627bf0a6f01c1f69e8ef1d4f05d)\n- [GitHub Commit](https://github.com/libssh2/libssh2/pull/1291/commits/ab44b0906d7f8a296e995ccd661b0e98d01a3742)\n- [GitHub Commit](https://github.com/mkj/dropbear/commit/6e43be5c7b99dbee49dc72b6f989f29fdd7e9356)\n- [GitHub Commit](https://github.com/mwiede/jsch/commit/6214da974286a8b94a95f4cf6cec96e972ffd370)\n- [GitHub Commit](https://github.com/openssh/openssh-portable/commit/1edb00c58f8a6875fad6a497aa2bacf37f9e6cd5)\n- [GitHub Commit](https://github.com/ronf/asyncssh/commit/0bc73254f41acb140187e0c89606311f88de5b7b)\n- [GitHub Commit](https://github.com/ronf/asyncssh/commit/69f5a41b458b29367a65fe469c2b0255b5db210a)\n- [GitHub Commit](https://github.com/sshtools/maverick-synergy/commit/3cd7fd156c0d1091e303824807be038b4eead2cd)\n- [GitHub Commit](https://github.com/sshtools/maverick-synergy/commit/aadec4c3a5051fd99ad4791c80eeac271d56c859)\n- [GitHub Commit](https://github.com/TeraTermProject/teraterm/commit/7279fbd6ef4d0c8bdd6a90af4ada2899d786eec0)\n- [GitHub Commit](https://github.com/warp-tech/russh/commit/a355c62d11352cf93c3f9fda7499e03753a938ae)\n- [GitHub Issue](https://github.com/paramiko/paramiko/issues/2337)\n- [GitHub Issue](https://go.dev/issue/64784)\n- [GitHub PR](https://github.com/jenkinsci/jenkins/pull/9089)\n- [Go Forum](https://go.dev/cl/550715)\n- [Google Groups Forum](https://groups.google.com/g/golang-announce/c/qA3XtxvMUyg)\n- [Jenkins Advisory](https://www.jenkins.io/security/advisory/2024-04-17/#SECURITY-3386)\n- [Security Release](https://www.openssh.com/txt/release-9.6)\n- [Nuclei Templates](https://github.com/projectdiscovery/nuclei-templates/blob/master/javascript/cves/2023/CVE-2023-48795.yaml)\n",
+      "epssDetails": {
+        "percentile": "0.99502",
+        "probability": "0.96225",
+        "modelVersion": "v2023.03.01"
+      },
+      "identifiers": {
+        "GO": [
+          "GO-2023-2402"
+        ],
+        "CVE": [
+          "CVE-2023-48795"
+        ],
+        "CWE": [
+          "CWE-294",
+          "NVD-CWE-NOINFO"
+        ]
+      },
+      "packageName": "paramiko",
+      "proprietary": false,
+      "creationTime": "2023-12-19T09:28:44.268831Z",
+      "functions_new": [],
+      "alternativeIds": [],
+      "disclosureTime": "2023-12-18T21:18:26Z",
+      "packageManager": "pip",
+      "publicationTime": "2023-12-19T10:31:06.557057Z",
+      "modificationTime": "2024-05-15T11:24:13.740464Z",
+      "socialTrendAlert": false,
+      "severityWithCritical": "medium",
+      "from": [
+        "mycli@0.0.0",
+        "paramiko@2.11.0"
+      ],
+      "upgradePath": [],
+      "isUpgradable": false,
+      "isPatchable": false,
+      "name": "paramiko",
+      "version": "2.11.0"
+    }
+  ],
+  "ok": false,
+  "dependencyCount": 60,
+  "org": "seansmith39",
+  "policy": "# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.\nversion: v1.25.1\nignore: {}\npatch: {}\n",
+  "isPrivate": true,
+  "licensesPolicy": {
+    "severities": {},
+    "orgLicenseRules": {
+      "AGPL-1.0": {
+        "licenseType": "AGPL-1.0",
+        "severity": "high",
+        "instructions": ""
+      },
+      "AGPL-3.0": {
+        "licenseType": "AGPL-3.0",
+        "severity": "high",
+        "instructions": ""
+      },
+      "Artistic-1.0": {
+        "licenseType": "Artistic-1.0",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "Artistic-2.0": {
+        "licenseType": "Artistic-2.0",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "CDDL-1.0": {
+        "licenseType": "CDDL-1.0",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "CPOL-1.02": {
+        "licenseType": "CPOL-1.02",
+        "severity": "high",
+        "instructions": ""
+      },
+      "EPL-1.0": {
+        "licenseType": "EPL-1.0",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "GPL-2.0": {
+        "licenseType": "GPL-2.0",
+        "severity": "high",
+        "instructions": ""
+      },
+      "GPL-3.0": {
+        "licenseType": "GPL-3.0",
+        "severity": "high",
+        "instructions": ""
+      },
+      "LGPL-2.0": {
+        "licenseType": "LGPL-2.0",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "LGPL-2.1": {
+        "licenseType": "LGPL-2.1",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "LGPL-3.0": {
+        "licenseType": "LGPL-3.0",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "MPL-1.1": {
+        "licenseType": "MPL-1.1",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "MPL-2.0": {
+        "licenseType": "MPL-2.0",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "MS-RL": {
+        "licenseType": "MS-RL",
+        "severity": "medium",
+        "instructions": ""
+      },
+      "SimPL-2.0": {
+        "licenseType": "SimPL-2.0",
+        "severity": "high",
+        "instructions": ""
+      }
+    }
+  },
+  "packageManager": "pip",
+  "ignoreSettings": {
+    "adminOnly": false,
+    "reasonRequired": false,
+    "disregardFilesystemIgnores": false
+  },
+  "summary": "3 vulnerable dependency paths",
+  "remediation": {
+    "unresolved": [
+      {
+        "id": "SNYK-PYTHON-CRYPTOGRAPHY-6913422",
+        "title": "Uncontrolled Resource Consumption",
+        "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "credit": [
+          "Unknown"
+        ],
+        "semver": {
+          "vulnerable": [
+            "[0,]"
+          ]
+        },
+        "exploit": "Not Defined",
+        "fixedIn": [],
+        "patches": [],
+        "insights": {
+          "triageAdvice": null
+        },
+        "language": "python",
+        "severity": "low",
+        "cvssScore": 3.7,
+        "functions": [],
+        "malicious": false,
+        "isDisputed": false,
+        "moduleName": "cryptography",
+        "references": [
+          {
+            "url": "https://github.com/openssl/openssl/commit/85ccbab216da245cf9a6503dd327072f21950d9b",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397",
+            "title": "GitHub Commit 3.0"
+          },
+          {
+            "url": "https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d",
+            "title": "GitHub Commit 3.1"
+          },
+          {
+            "url": "https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740",
+            "title": "GitHub Commit 3.2"
+          },
+          {
+            "url": "https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e",
+            "title": "GitHub Commit 3.3"
+          },
+          {
+            "url": "https://github.com/pyca/cryptography/commit/38852224f455af1915a628542b930ad11d2a884c",
+            "title": "GitHub Commit cryptography"
+          },
+          {
+            "url": "https://github.com/openssl/openssl/pull/24346",
+            "title": "GitHub PR"
+          },
+          {
+            "url": "https://www.openssl.org/news/secadv/20240516.txt",
+            "title": "OpenSSL advisory"
+          }
+        ],
+        "cvssDetails": [
+          {
+            "assigner": "Red Hat",
+            "severity": "medium",
+            "cvssV3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "cvssV3BaseScore": 5.3,
+            "modificationTime": "2024-05-18T13:33:51.382424Z"
+          }
+        ],
+        "description": "## Overview\n\nAffected versions of this package are vulnerable to Uncontrolled Resource Consumption due to improper user input validation in the `EVP_PKEY_param_check` or `EVP_PKEY_public_check` functions. An attacker can cause a denial of service by supplying excessively long DSA keys or parameters obtained from an untrusted source.\n\n**Note:**\n\nOpenSSL does not call these functions on untrusted DSA keys, so only applications that directly call these functions may be vulnerable.\n\nAlso vulnerable are the OpenSSL `pkey` and `pkeyparam` command line applications when using the \"-check\" option.\n## Remediation\nA fix was pushed into the `master` branch but not yet published.\n## References\n- [GitHub Commit](https://github.com/openssl/openssl/commit/85ccbab216da245cf9a6503dd327072f21950d9b)\n- [GitHub Commit 3.0](https://github.com/openssl/openssl/commit/3559e868e58005d15c6013a0c1fd832e51c73397)\n- [GitHub Commit 3.1](https://github.com/openssl/openssl/commit/9c39b3858091c152f52513c066ff2c5a47969f0d)\n- [GitHub Commit 3.2](https://github.com/openssl/openssl/commit/da343d0605c826ef197aceedc67e8e04f065f740)\n- [GitHub Commit 3.3](https://github.com/openssl/openssl/commit/53ea06486d296b890d565fb971b2764fcd826e7e)\n- [GitHub Commit cryptography](https://github.com/pyca/cryptography/commit/38852224f455af1915a628542b930ad11d2a884c)\n- [GitHub PR](https://github.com/openssl/openssl/pull/24346)\n- [OpenSSL advisory](https://www.openssl.org/news/secadv/20240516.txt)\n",
+        "epssDetails": {
+          "percentile": "0.14814",
+          "probability": "0.00045",
+          "modelVersion": "v2023.03.01"
+        },
+        "identifiers": {
+          "CVE": [
+            "CVE-2024-4603"
+          ],
+          "CWE": [
+            "CWE-400"
+          ]
+        },
+        "packageName": "cryptography",
+        "proprietary": false,
+        "creationTime": "2024-05-19T10:46:05.567794Z",
+        "functions_new": [],
+        "alternativeIds": [],
+        "disclosureTime": "2024-05-16T00:00:00Z",
+        "packageManager": "pip",
+        "publicationTime": "2024-05-19T10:46:05.728350Z",
+        "modificationTime": "2024-05-19T10:46:06.262960Z",
+        "socialTrendAlert": false,
+        "packagePopularityRank": 99,
+        "from": [
+          "mycli@0.0.0",
+          "twine@5.1.0",
+          "keyring@25.2.1",
+          "secretstorage@3.3.3",
+          "cryptography@42.0.7"
+        ],
+        "upgradePath": [],
+        "isUpgradable": false,
+        "isPatchable": false,
+        "isPinnable": false,
+        "isRuntime": false,
+        "name": "cryptography",
+        "version": "42.0.7",
+        "severityWithCritical": "low"
+      },
+      {
+        "id": "SNYK-PYTHON-PARAMIKO-6130887",
+        "title": "Authentication Bypass by Capture-replay",
+        "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N/E:P",
+        "credit": [
+          "Fabian Bäumer",
+          "Marcus Brinkmann",
+          "Jörg Schwenk"
+        ],
+        "semver": {
+          "vulnerable": [
+            "[,3.4.0)"
+          ]
+        },
+        "exploit": "Proof of Concept",
+        "fixedIn": [
+          "3.4.0"
+        ],
+        "patches": [],
+        "insights": {
+          "triageAdvice": null
+        },
+        "language": "python",
+        "severity": "medium",
+        "cvssScore": 5.9,
+        "functions": [],
+        "malicious": false,
+        "isDisputed": false,
+        "moduleName": "paramiko",
+        "references": [
+          {
+            "url": "https://terrapin-attack.com/",
+            "title": "Attack Information"
+          },
+          {
+            "url": "https://github.com/golang/crypto/commit/9d2ee975ef9fe627bf0a6f01c1f69e8ef1d4f05d",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/libssh2/libssh2/pull/1291/commits/ab44b0906d7f8a296e995ccd661b0e98d01a3742",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/mkj/dropbear/commit/6e43be5c7b99dbee49dc72b6f989f29fdd7e9356",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/mwiede/jsch/commit/6214da974286a8b94a95f4cf6cec96e972ffd370",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/openssh/openssh-portable/commit/1edb00c58f8a6875fad6a497aa2bacf37f9e6cd5",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/ronf/asyncssh/commit/0bc73254f41acb140187e0c89606311f88de5b7b",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/ronf/asyncssh/commit/69f5a41b458b29367a65fe469c2b0255b5db210a",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/sshtools/maverick-synergy/commit/3cd7fd156c0d1091e303824807be038b4eead2cd",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/sshtools/maverick-synergy/commit/aadec4c3a5051fd99ad4791c80eeac271d56c859",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/TeraTermProject/teraterm/commit/7279fbd6ef4d0c8bdd6a90af4ada2899d786eec0",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/warp-tech/russh/commit/a355c62d11352cf93c3f9fda7499e03753a938ae",
+            "title": "GitHub Commit"
+          },
+          {
+            "url": "https://github.com/paramiko/paramiko/issues/2337",
+            "title": "GitHub Issue"
+          },
+          {
+            "url": "https://go.dev/issue/64784",
+            "title": "GitHub Issue"
+          },
+          {
+            "url": "https://github.com/jenkinsci/jenkins/pull/9089",
+            "title": "GitHub PR"
+          },
+          {
+            "url": "https://go.dev/cl/550715",
+            "title": "Go Forum"
+          },
+          {
+            "url": "https://groups.google.com/g/golang-announce/c/qA3XtxvMUyg",
+            "title": "Google Groups Forum"
+          },
+          {
+            "url": "https://www.jenkins.io/security/advisory/2024-04-17/%23SECURITY-3386",
+            "title": "Jenkins Advisory"
+          },
+          {
+            "url": "https://www.openssh.com/txt/release-9.6",
+            "title": "Security Release"
+          },
+          {
+            "url": "https://github.com/projectdiscovery/nuclei-templates/blob/master/javascript/cves/2023/CVE-2023-48795.yaml",
+            "title": "Nuclei Templates"
+          }
+        ],
+        "cvssDetails": [
+          {
+            "assigner": "NVD",
+            "severity": "medium",
+            "cvssV3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N",
+            "cvssV3BaseScore": 5.9,
+            "modificationTime": "2024-03-11T09:45:32.503659Z"
+          },
+          {
+            "assigner": "Red Hat",
+            "severity": "medium",
+            "cvssV3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N",
+            "cvssV3BaseScore": 5.9,
+            "modificationTime": "2024-03-11T09:54:12.732947Z"
+          },
+          {
+            "assigner": "SUSE",
+            "severity": "medium",
+            "cvssV3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N",
+            "cvssV3BaseScore": 5.9,
+            "modificationTime": "2024-03-11T09:54:13.267401Z"
+          }
+        ],
+        "description": "## Overview\n[paramiko](https://pypi.org/project/paramiko/) is a library for making SSH2 connections (client or server).\n\nAffected versions of this package are vulnerable to Authentication Bypass by Capture-replay during the establishment of the secure channel. An attacker can manipulate handshake sequence numbers to delete messages sent immediately after the channel is established.\r\n\r\n**Note:**\r\n\r\n1) Sequence numbers are only validated once the channel is established and arbitrary messages are allowed during the handshake, allowing them to manipulate the sequence numbers.\r\n\r\n2) The potential consequences of the general Terrapin attack are dependent on the messages exchanged after the handshake concludes. If you are using a custom SSH service and do not resort to the authentication protocol, you should check that dropping the first few messages of a connection does not yield security risks.\r\n\r\n**Impact:** \r\n\r\nWhile cryptographically novel, there is no discernable impact on the integrity of SSH traffic beyond giving the attacker the ability to delete the message that enables some features related to keystroke timing obfuscation. To successfully carry out the exploitation, the connection needs to be protected using either the `ChaCha20-Poly1305` or `CBC` with `Encrypt-then-MAC` encryption methods. The attacker must also be able to intercept and modify the connection's traffic. \r\n\r\n## Workaround\r\n\r\nTemporarily disable the affected `chacha20-poly1305@openssh.com` encryption and `*-etm@openssh.com` MAC algorithms in the affected configuration, and use unaffected algorithms like `AES-GCM` instead.\n## Remediation\nUpgrade `paramiko` to version 3.4.0 or higher.\n## References\n- [Attack Information](https://terrapin-attack.com/)\n- [GitHub Commit](https://github.com/golang/crypto/commit/9d2ee975ef9fe627bf0a6f01c1f69e8ef1d4f05d)\n- [GitHub Commit](https://github.com/libssh2/libssh2/pull/1291/commits/ab44b0906d7f8a296e995ccd661b0e98d01a3742)\n- [GitHub Commit](https://github.com/mkj/dropbear/commit/6e43be5c7b99dbee49dc72b6f989f29fdd7e9356)\n- [GitHub Commit](https://github.com/mwiede/jsch/commit/6214da974286a8b94a95f4cf6cec96e972ffd370)\n- [GitHub Commit](https://github.com/openssh/openssh-portable/commit/1edb00c58f8a6875fad6a497aa2bacf37f9e6cd5)\n- [GitHub Commit](https://github.com/ronf/asyncssh/commit/0bc73254f41acb140187e0c89606311f88de5b7b)\n- [GitHub Commit](https://github.com/ronf/asyncssh/commit/69f5a41b458b29367a65fe469c2b0255b5db210a)\n- [GitHub Commit](https://github.com/sshtools/maverick-synergy/commit/3cd7fd156c0d1091e303824807be038b4eead2cd)\n- [GitHub Commit](https://github.com/sshtools/maverick-synergy/commit/aadec4c3a5051fd99ad4791c80eeac271d56c859)\n- [GitHub Commit](https://github.com/TeraTermProject/teraterm/commit/7279fbd6ef4d0c8bdd6a90af4ada2899d786eec0)\n- [GitHub Commit](https://github.com/warp-tech/russh/commit/a355c62d11352cf93c3f9fda7499e03753a938ae)\n- [GitHub Issue](https://github.com/paramiko/paramiko/issues/2337)\n- [GitHub Issue](https://go.dev/issue/64784)\n- [GitHub PR](https://github.com/jenkinsci/jenkins/pull/9089)\n- [Go Forum](https://go.dev/cl/550715)\n- [Google Groups Forum](https://groups.google.com/g/golang-announce/c/qA3XtxvMUyg)\n- [Jenkins Advisory](https://www.jenkins.io/security/advisory/2024-04-17/#SECURITY-3386)\n- [Security Release](https://www.openssh.com/txt/release-9.6)\n- [Nuclei Templates](https://github.com/projectdiscovery/nuclei-templates/blob/master/javascript/cves/2023/CVE-2023-48795.yaml)\n",
+        "epssDetails": {
+          "percentile": "0.99502",
+          "probability": "0.96225",
+          "modelVersion": "v2023.03.01"
+        },
+        "identifiers": {
+          "GO": [
+            "GO-2023-2402"
+          ],
+          "CVE": [
+            "CVE-2023-48795"
+          ],
+          "CWE": [
+            "CWE-294",
+            "NVD-CWE-NOINFO"
+          ]
+        },
+        "packageName": "paramiko",
+        "proprietary": false,
+        "creationTime": "2023-12-19T09:28:44.268831Z",
+        "functions_new": [],
+        "alternativeIds": [],
+        "disclosureTime": "2023-12-18T21:18:26Z",
+        "packageManager": "pip",
+        "publicationTime": "2023-12-19T10:31:06.557057Z",
+        "modificationTime": "2024-05-15T11:24:13.740464Z",
+        "socialTrendAlert": false,
+        "packagePopularityRank": 99,
+        "from": [
+          "mycli@0.0.0",
+          "paramiko@2.11.0"
+        ],
+        "upgradePath": [],
+        "isUpgradable": false,
+        "isPatchable": false,
+        "isPinnable": true,
+        "isRuntime": false,
+        "name": "paramiko",
+        "version": "2.11.0",
+        "severityWithCritical": "medium"
+      }
+    ],
+    "upgrade": {},
+    "patch": {},
+    "ignore": {},
+    "pin": {
+      "paramiko@2.11.0": {
+        "upgradeTo": "paramiko@3.4.0",
+        "vulns": [
+          "SNYK-PYTHON-PARAMIKO-6130887"
+        ],
+        "isTransitive": false
+      }
+    }
+  },
+  "filesystemPolicy": false,
+  "filtered": {
+    "ignore": [],
+    "patch": []
+  },
+  "uniqueCount": 2,
+  "projectName": "mycli",
+  "displayTargetFile": "requirements-dev.txt",
+  "hasUnknownVersions": false,
+  "path": "/home/runner/work/H6060-Experiment-Resources/H6060-Experiment-Resources/mycli"
+}
