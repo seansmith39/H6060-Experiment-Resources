@@ -42,6 +42,7 @@ CVE_ID_GRYPE = "CVE-2024-34062"
 CVE_ID_SNYK = "CVE-2024-4603"
 CWE_ID_HORUSEC = "CWE-798"
 CWE_ID_INSIDER = "CWE-330"
+CWE_ID_SEMGREP = "CWE-327"
 CWE_ID_SNYK_CODE = "CWE-22"
 CWE_ID_OWASP_DEPENDENCY_CHECK = "CWE-19"
 CWE_ID_GRYPE = "CWE-19"
@@ -72,6 +73,7 @@ def mocked_response(*args, **kwargs):
     if (
         CWE_ID_HORUSEC in args[2]
         or CWE_ID_INSIDER in args[2]
+        or CWE_ID_SEMGREP in args[2]
         or CWE_ID_SNYK in args[2]
         or CWE_ID_SNYK_CODE in args[2]
         or CWE_ID_OWASP_DEPENDENCY_CHECK in args[2]
@@ -262,13 +264,13 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
         )
         self.assertEqual(
-            csv_rows[0][36], "A07 Identification and Authentication Failures"
+            csv_rows[0][38], "A07 Identification and Authentication Failures"
         )
-        self.assertEqual(csv_rows[0][37], "18")
-        self.assertEqual(csv_rows[0][42], "HS-LEAKS-26")
-        self.assertEqual(csv_rows[0][43], "LEAKS")
+        self.assertEqual(csv_rows[0][39], "18")
+        self.assertEqual(csv_rows[0][44], "HS-LEAKS-26")
+        self.assertEqual(csv_rows[0][45], "LEAKS")
         self.assertEqual(
-            csv_rows[0][44],
+            csv_rows[0][46],
             "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
         )
 
@@ -290,10 +292,40 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             csv_rows[0][35],
             "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
         )
-        self.assertEqual(csv_rows[0][36], "A02 Cryptographic Failures")
+        self.assertEqual(csv_rows[0][38], "A02 Cryptographic Failures")
         self.assertEqual(
-            csv_rows[0][44],
+            csv_rows[0][46],
             "api/src/main/java/org/xnio/IoUtils.java",
+        )
+
+    @patch(
+        "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
+        side_effect=mocked_response,
+    )
+    def test_parse_semgrep_data(self, mock_response):
+        csv_rows = experiment_1_generate_report.parse_semgrep_data(
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_SAST_SEMGREP
+        )
+        self.assertTrue(len(csv_rows) > 0)
+        self.assertEqual(csv_rows[0][0], "SAST")
+        self.assertEqual(csv_rows[0][1], "Semgrep")
+        self.assertEqual(csv_rows[0][2], "Semantic-based")
+        self.assertEqual(csv_rows[0][3], "WARNING")
+        self.assertEqual(csv_rows[0][4], "MEDIUM")
+        self.assertEqual(csv_rows[0][33], CWE_ID_SEMGREP)
+        self.assertEqual(csv_rows[0][34], "Use of Hard-coded Credentials")
+        self.assertEqual(
+            csv_rows[0][35],
+            "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
+        )
+        self.assertEqual(csv_rows[0][36], "MEDIUM")
+        self.assertEqual(csv_rows[0][37], "LOW")
+        self.assertEqual(csv_rows[0][38], "A02 Cryptographic Failures")
+        self.assertEqual(csv_rows[0][44], "PeU2e2")
+        self.assertEqual(csv_rows[0][45], "PYTHON")
+        self.assertEqual(
+            csv_rows[0][46],
+            "clearml/automation/job.py",
         )
 
     def test_parse_snyk_code_data(self):
@@ -310,10 +342,10 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             csv_rows[0][35],
             "Arbitrary File Write via Archive Extraction (Tar Slip)",
         )
-        self.assertEqual(csv_rows[0][36], "A01 Broken Access Control")
-        self.assertEqual(csv_rows[0][37], "8")
-        self.assertEqual(csv_rows[0][42], "python/TarSlip")
-        self.assertEqual(csv_rows[0][43], "PYTHON")
+        self.assertEqual(csv_rows[0][38], "A01 Broken Access Control")
+        self.assertEqual(csv_rows[0][39], "8")
+        self.assertEqual(csv_rows[0][44], "python/TarSlip")
+        self.assertEqual(csv_rows[0][45], "PYTHON")
 
     @patch(
         "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
@@ -362,9 +394,9 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             csv_rows[0][35],
             "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
         )
-        self.assertEqual(csv_rows[0][38], "pkg:pypi/tqdm@4.64.1")
-        self.assertEqual(csv_rows[0][43], "PYTHON")
-        self.assertEqual(csv_rows[0][44], "/examples/cicd/requirements.txt")
+        self.assertEqual(csv_rows[0][40], "pkg:pypi/tqdm@4.64.1")
+        self.assertEqual(csv_rows[0][45], "PYTHON")
+        self.assertEqual(csv_rows[0][46], "/examples/cicd/requirements.txt")
 
     @patch(
         "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
@@ -418,7 +450,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             csv_rows[0][35],
             "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
         )
-        self.assertEqual(csv_rows[0][38], "pkg:maven/org.beanshell/bsh@2.0b4")
+        self.assertEqual(csv_rows[0][40], "pkg:maven/org.beanshell/bsh@2.0b4")
 
     @patch(
         "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
@@ -462,12 +494,12 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         self.assertEqual(csv_rows[0][24], "NONE")
         self.assertEqual(csv_rows[0][25], "LOW")
         self.assertEqual(csv_rows[0][33], CWE_ID_SNYK)
-        self.assertEqual(csv_rows[0][38], "cryptography@42.0.7")
-        self.assertEqual(csv_rows[0][39], "TRANSITIVE")
-        self.assertEqual(csv_rows[0][40], "FALSE")
-        self.assertEqual(csv_rows[0][41], "FALSE")
-        self.assertEqual(csv_rows[0][42], "SNYK-PYTHON-CRYPTOGRAPHY-6913422")
-        self.assertEqual(csv_rows[0][43], "PYTHON")
+        self.assertEqual(csv_rows[0][40], "cryptography@42.0.7")
+        self.assertEqual(csv_rows[0][41], "TRANSITIVE")
+        self.assertEqual(csv_rows[0][42], "FALSE")
+        self.assertEqual(csv_rows[0][43], "FALSE")
+        self.assertEqual(csv_rows[0][44], "SNYK-PYTHON-CRYPTOGRAPHY-6913422")
+        self.assertEqual(csv_rows[0][45], "PYTHON")
 
     @patch(
         "main.python3.experiment_1_generate_report.get_opencve_cwe_details",

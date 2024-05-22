@@ -662,6 +662,76 @@ def parse_insider_data(
     return csv_rows
 
 
+def parse_semgrep_data(
+    opencve_username: str,
+    opencve_password: str,
+    sast_semgrep_report_filename: str,
+) -> list:
+    """Parse Semgrep SAST JSON report and write data to output file
+
+    :parameter
+        opencve_username:str -- OpenCVE username
+        opencve_password:str -- OpenCVE password
+        sast_semgrep_report_filename:str -- Name of Semgrep JSON report to parse
+
+    :return
+        list -- CSV data to write to output file
+    """
+    log.info(f"Parsing Semgrep report: {sast_semgrep_report_filename}")
+    with open(sast_semgrep_report_filename, "r") as f:
+        data = json.load(f)
+    csv_rows = []
+
+    for vulnerability in data["results"]:
+        cwe_class = vulnerability["path"]
+        cwe_severity = vulnerability["extra"]["severity"]
+
+        vulnerability_metadata = vulnerability["extra"]["metadata"]
+        for cwe in vulnerability_metadata["cwe"]:
+            # Example: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+            cwe_id = re.split(":", cwe)[0]
+            cwe_confidence = vulnerability_metadata["confidence"]
+            cwe_rule_id = vulnerability_metadata["semgrep.dev"]["rule"][
+                "rule_id"
+            ]
+            cwe_language = vulnerability_metadata["technology"][0]
+            cwe_impact = vulnerability_metadata["impact"]
+            cwe_likelihood = vulnerability_metadata["likelihood"]
+
+            cwe_name = default_column_value
+            cwe_description = default_column_value
+            opencve_cwe_details = get_opencve_cwe_details(
+                opencve_username, opencve_password, cwe_id
+            )
+            if opencve_cwe_details:
+                cwe_name = opencve_cwe_details.json()["name"]
+                cwe_description = opencve_cwe_details.json()["description"]
+
+            cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+            cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+
+            semgrep_data = get_csv_column_entries(
+                tool_type="SAST",
+                tool_name="Semgrep",
+                tool_classification="Semantic-based",
+                severity=cwe_severity,
+                confidence=cwe_confidence,
+                cwe_id=cwe_id,
+                cwe_name=cwe_name,
+                cwe_description=cwe_description,
+                cwe_impact=cwe_impact,
+                cwe_likelihood=cwe_likelihood,
+                owasp_top_10=cwe_owasp_top_10,
+                mitre_top_25=cwe_mitre_top_25,
+                rule_id=cwe_rule_id,
+                language=cwe_language,
+                classname=cwe_class,
+            )
+            log.info("Semgrep parsed data: " + str(semgrep_data))
+            csv_rows.append(semgrep_data)
+    return csv_rows
+
+
 def parse_grype_data(
     nvd_api_key: str,
     opencve_username: str,
@@ -740,7 +810,7 @@ def parse_grype_data(
             nvd_cve_info = get_cve_information_from_nvd(nvd_api_key, cve_id)
             cwe_list = []
 
-            if nvd_cve_info:
+            if nvd_cve_info:  # pragma: no cover
                 cve_info = nvd_cve_info.json()["vulnerabilities"][0]["cve"]
 
                 cve_published = cve_info["published"]
@@ -808,7 +878,7 @@ def parse_grype_data(
                     for cwe in cve_info["weaknesses"][0]["description"]:
                         cwe_list.append(cwe["value"])
 
-            if len(cwe_list) > 0:
+            if len(cwe_list) > 0:  # pragma: no cover
                 for cwe_id in cwe_list:
                     opencve_cwe_details = get_opencve_cwe_details(
                         opencve_username, opencve_password, cwe_id
@@ -1408,6 +1478,8 @@ def get_csv_column_entries(
     cwe_id: str = default_column_value,
     cwe_name: str = default_column_value,
     cwe_description: str = default_column_value,
+    cwe_impact: str = default_column_value,
+    cwe_likelihood: str = default_column_value,
     owasp_top_10: str = default_column_value,
     mitre_top_25: str = default_column_value,
     dependency_name: str = default_column_value,
@@ -1457,6 +1529,8 @@ def get_csv_column_entries(
         cwe_id:str -- CWE ID
         cwe_name:str -- CWE name
         cwe_description:str -- CWE description
+        cwe_impact:str -- Impact rating of CWE
+        cwe_likelihood:str -- Likelihood of CWE exploitation
         owasp_top_10:str -- category of OWASP top 10 for CWE ID
         mitre_top_25:str -- index of MITRE top 25 for CWE ID
         dependency_name:str -- dependency name associated with vulnerability
@@ -1507,6 +1581,8 @@ def get_csv_column_entries(
         cwe_id.upper(),
         cwe_name,
         cwe_description,
+        cwe_impact.upper(),
+        cwe_likelihood.upper(),
         owasp_top_10,
         mitre_top_25,
         dependency_name,
@@ -1561,6 +1637,13 @@ def main(args: argparse.Namespace) -> None:
             args.opencve_username,
             args.opencve_password,
             args.sast_horusec_report_filename,
+        )
+        write_to_csv_report(csv_report_filename, csv_rows)
+    if args.sast_semgrep_report_filename:  # pragma: no cover
+        csv_rows = parse_semgrep_data(
+            args.opencve_username,
+            args.opencve_password,
+            args.sast_semgrep_report_filename,
         )
         write_to_csv_report(csv_report_filename, csv_rows)
     if args.sca_grype_report_filename:  # pragma: no cover
