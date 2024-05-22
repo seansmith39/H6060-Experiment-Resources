@@ -670,7 +670,7 @@ def parse_grype_data(
     nvd_api_key: str,
     opencve_username: str,
     opencve_password: str,
-    sast_grype_report_filename: str,
+    sca_grype_report_filename: str,
 ) -> list:
     """Parse Grype SCA JSON report and write data to output file
 
@@ -683,8 +683,8 @@ def parse_grype_data(
     :return
         list -- CSV data to write to output file
     """
-    log.info(f"Parsing Grype report: {sast_grype_report_filename}")
-    with open(sast_grype_report_filename, "r") as f:
+    log.info(f"Parsing Grype report: {sca_grype_report_filename}")
+    with open(sca_grype_report_filename, "r") as f:
         data = json.load(f)
     unique_cve = []
     csv_rows = []
@@ -913,6 +913,65 @@ def parse_grype_data(
                     )
                     log.info("Grype parsed data: " + str(grype_data))
                     csv_rows.append(grype_data)
+    return csv_rows
+
+
+def parse_snyk_code_data(
+    sast_snyk_code_report_filename: str,
+) -> list:
+    """Parse Snyk Code SAST JSON report and write data to output file
+
+    :parameter
+        sast_snyk_code_report_filename:str -- Name of Snyk Code JSON report to parse
+
+    :return
+        list -- CSV data to write to output file
+    """
+    log.info(f"Parsing Snyk Code report: {sast_snyk_code_report_filename}")
+    with open(sast_snyk_code_report_filename, "r") as f:
+        data = json.load(f)
+    unique_cwe = []
+    csv_rows = []
+    for vulnerability in data["runs"]:
+        cwe_name = default_column_value
+        cwe_description = default_column_value
+        cwe_confidence = default_column_value
+        cwe_rule_id = default_column_value
+        cwe_language = default_column_value
+
+        for snyk_code_rule in vulnerability["tool"]["driver"]["rules"]:
+            cwe_name = snyk_code_rule["name"]
+            cwe_description = snyk_code_rule["shortDescription"]["text"]
+            cwe_rule_id = snyk_code_rule["id"]
+            if "cwe" in snyk_code_rule["properties"]:
+                snyk_code_rule_property = snyk_code_rule["properties"]
+                cwe_language = snyk_code_rule_property["tags"][0]
+                for cwe in snyk_code_rule["properties"]["cwe"]:
+                    log.info(f"CWE ID found: {cwe} in Horusec report")
+                    cwe_confidence = snyk_code_rule_property["precision"]
+
+                    cwe_owasp_top_10 = search_owasp_top_10(cwe)
+                    cwe_mitre_top_25 = search_mitre_top_25(cwe)
+
+                    if cwe not in unique_cwe:  # pragma: no cover
+                        unique_cwe.append(cwe)
+                        snyk_code_data = get_csv_column_entries(
+                            tool_type="SAST",
+                            tool_name="Snyk Code",
+                            tool_classification="Semantic-based",
+                            confidence=cwe_confidence,
+                            cwe_id=cwe,
+                            cwe_name=cwe_name,
+                            cwe_description=cwe_description,
+                            owasp_top_10=cwe_owasp_top_10,
+                            mitre_top_25=cwe_mitre_top_25,
+                            rule_id=cwe_rule_id,
+                            language=cwe_language,
+                        )
+                        log.info(
+                            "Snyk Code parsed data: " + str(snyk_code_data)
+                        )
+                        csv_rows.append(snyk_code_data)
     return csv_rows
 
 
@@ -1299,35 +1358,35 @@ def get_csv_column_entries(
         tool_type,
         tool_name,
         tool_classification,
-        severity,
-        confidence,
-        cve_id,
-        cve_source_identifier,
+        severity.upper(),
+        confidence.upper(),
+        cve_id.upper(),
+        cve_source_identifier.upper(),
         cve_published_date,
         cve_last_modified_date,
-        cve_vulnerability_status,
+        cve_vulnerability_status.upper(),
         cve_description,
         cvss_version,
         cvss_source,
         cvss_base_score,
-        cvss_scope,
+        cvss_scope.upper(),
         cvss_exploitable_score,
         cvss_impact_score,
-        cvss_attack_vector,
-        cvss_attack_complexity,
-        cvss_privileges_required,
-        str(cvss_user_interaction),
-        cvss_confidentiality_impact,
-        cvss_integrity_impact,
-        cvss_availability_impact,
-        cvss_access_vector,
-        cvss_access_complexity,
-        cvss_authentication,
-        str(cvss_insufficient_info),
-        str(cvss_obtain_all_privilege),
-        str(cvss_obtain_user_privilege),
-        str(cvss_obtain_other_privilege),
-        cwe_id,
+        cvss_attack_vector.upper(),
+        cvss_attack_complexity.upper(),
+        cvss_privileges_required.upper(),
+        str(cvss_user_interaction).upper(),
+        cvss_confidentiality_impact.upper(),
+        cvss_integrity_impact.upper(),
+        cvss_availability_impact.upper(),
+        cvss_access_vector.upper(),
+        cvss_access_complexity.upper(),
+        cvss_authentication.upper(),
+        str(cvss_insufficient_info).upper(),
+        str(cvss_obtain_all_privilege).upper(),
+        str(cvss_obtain_user_privilege).upper(),
+        str(cvss_obtain_other_privilege).upper(),
+        cwe_id.upper(),
         cwe_name,
         cwe_description,
         owasp_top_10,
@@ -1335,7 +1394,7 @@ def get_csv_column_entries(
         dependency_scope,
         dependency,
         rule_id,
-        language,
+        language.upper(),
         classname,
     ]
 
@@ -1364,6 +1423,9 @@ def main(args: argparse.Namespace) -> None:
     csv_report_filename = "experiment_1_security_testing_tool_results.csv"
     create_csv_report(csv_report_filename)
 
+    if args.sast_snyk_code_report_filename:  # pragma: no cover
+        csv_rows = parse_snyk_code_data(args.sast_snyk_code_report_filename)
+        write_to_csv_report(csv_report_filename, csv_rows)
     if args.sast_insider_report_filename:  # pragma: no cover
         csv_rows = parse_insider_data(
             args.opencve_username,

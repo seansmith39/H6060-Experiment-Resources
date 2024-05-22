@@ -41,7 +41,9 @@ CVE_ID_NVD = "CVE-2016-2510"
 CVE_ID_GRYPE = "CVE-2024-34062"
 CWE_ID_HORUSEC = "CWE-798"
 CWE_ID_INSIDER = "CWE-330"
+CWE_ID_SNYK_CODE = "CWE-22"
 CWE_ID_OWASP_DEPENDENCY_CHECK = "CWE-19"
+CWE_ID_GRYPE = "CWE-19"
 
 
 def mocked_response(*args, **kwargs):
@@ -68,6 +70,7 @@ def mocked_response(*args, **kwargs):
     if (
         CWE_ID_HORUSEC in args[2]
         or CWE_ID_INSIDER in args[2]
+        or CWE_ID_SNYK_CODE in args[2]
         or CWE_ID_OWASP_DEPENDENCY_CHECK in args[2]
     ):
         return MockResponse(RESPONSE_OPENCVE, 200)
@@ -256,7 +259,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertEqual(csv_rows[0][35], "18")
         self.assertEqual(csv_rows[0][38], "HS-LEAKS-26")
-        self.assertEqual(csv_rows[0][39], "Leaks")
+        self.assertEqual(csv_rows[0][39], "LEAKS")
         self.assertEqual(
             csv_rows[0][40],
             "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
@@ -285,6 +288,76 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             csv_rows[0][40],
             "api/src/main/java/org/xnio/IoUtils.java",
         )
+
+    def test_parse_snyk_code_data(self):
+        csv_rows = experiment_1_generate_report.parse_snyk_code_data(
+            REPORT_SAST_SNYK_CODE
+        )
+        self.assertTrue(len(csv_rows) > 0)
+        self.assertEqual(csv_rows[0][0], "SAST")
+        self.assertEqual(csv_rows[0][1], "Snyk Code")
+        self.assertEqual(csv_rows[0][2], "Semantic-based")
+        self.assertEqual(csv_rows[0][31], CWE_ID_SNYK_CODE)
+        self.assertEqual(csv_rows[0][32], "TarSlip")
+        self.assertEqual(
+            csv_rows[0][33],
+            "Arbitrary File Write via Archive Extraction (Tar Slip)",
+        )
+        self.assertEqual(csv_rows[0][34], "A01 Broken Access Control")
+        self.assertEqual(csv_rows[0][35], "8")
+        self.assertEqual(csv_rows[0][38], "python/TarSlip")
+        self.assertEqual(csv_rows[0][39], "PYTHON")
+
+    @patch(
+        "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
+        side_effect=mocked_response,
+    )
+    @patch(
+        "main.python3.experiment_1_generate_report.get_cve_information_from_nvd",
+        side_effect=mocked_nvd_response,
+    )
+    def test_parse_grype_data(self, mock_response_opencve, mock_response_nvd):
+        csv_rows = experiment_1_generate_report.parse_grype_data(
+            NVD_API_KEY,
+            OPENCVE_USERNAME,
+            OPENCVE_PASSWORD,
+            REPORT_SCA_GRYPE,
+        )
+        self.assertTrue(len(csv_rows) > 0)
+        self.assertEqual(csv_rows[0][0], "SCA")
+        self.assertEqual(csv_rows[0][1], "Grype")
+        self.assertEqual(csv_rows[0][2], "Metadata-based")
+        self.assertEqual(csv_rows[0][3], "MEDIUM")
+        self.assertEqual(csv_rows[0][5], CVE_ID_GRYPE)
+        self.assertEqual(csv_rows[0][6], "NVD")
+        self.assertEqual(csv_rows[0][7], "2016-04-07T20:59:05.567")
+        self.assertEqual(csv_rows[0][8], "2020-10-20T22:15:18.483")
+        self.assertEqual(csv_rows[0][9], "MODIFIED")
+        self.assertEqual(
+            csv_rows[0][10],
+            "tqdm is an open source progress bar for Python and CLI. Any optional non-boolean CLI arguments (e.g. `--delim`, `--buf-size`, `--manpath`) are passed through python's `eval`, allowing arbitrary code execution. This issue is only locally exploitable and had been addressed in release version 4.66.3. All users are advised to upgrade. There are no known workarounds for this vulnerability.",
+        )
+        self.assertEqual(csv_rows[0][11], "3.1")
+        self.assertEqual(csv_rows[0][13], 4.8)
+        self.assertEqual(csv_rows[0][14], "UNCHANGED")
+        self.assertEqual(csv_rows[0][15], 1.3)
+        self.assertEqual(csv_rows[0][16], 3.4)
+        self.assertEqual(csv_rows[0][17], "NETWORK")
+        self.assertEqual(csv_rows[0][18], "HIGH")
+        self.assertEqual(csv_rows[0][19], "NONE")
+        self.assertEqual(csv_rows[0][20], "NONE")
+        self.assertEqual(csv_rows[0][21], "HIGH")
+        self.assertEqual(csv_rows[0][22], "HIGH")
+        self.assertEqual(csv_rows[0][23], "HIGH")
+        self.assertEqual(csv_rows[0][31], CWE_ID_GRYPE)
+        self.assertEqual(csv_rows[0][32], "Use of Hard-coded Credentials")
+        self.assertEqual(
+            csv_rows[0][33],
+            "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
+        )
+        self.assertEqual(csv_rows[0][37], "pkg:pypi/tqdm@4.64.1")
+        self.assertEqual(csv_rows[0][39], "PYTHON")
+        self.assertEqual(csv_rows[0][40], "/examples/cicd/requirements.txt")
 
     @patch(
         "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
@@ -315,7 +388,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         self.assertEqual(csv_rows[0][6], "NVD")
         self.assertEqual(csv_rows[0][7], "2016-04-07T20:59:05.567")
         self.assertEqual(csv_rows[0][8], "2020-10-20T22:15:18.483")
-        self.assertEqual(csv_rows[0][9], "Modified")
+        self.assertEqual(csv_rows[0][9], "MODIFIED")
         self.assertEqual(
             csv_rows[0][10],
             "BeanShell (bsh) before 2.0b6, when included on the classpath by an application that uses Java serialization or XStream, allows remote attackers to execute arbitrary code via crafted serialized data, related to XThis.Handler.",
