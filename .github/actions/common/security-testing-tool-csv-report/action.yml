@@ -84,9 +84,9 @@ runs:
       working-directory: ${{ github.action_path }}/src/main/python3
       run: |
         python3 experiment_1_generate_report.py \
-          --nvd-api-key ${{ inputs.nvd-api-key }}
-          --opencve-username ${{ inputs.opencve-username }}
-          --opencve-password ${{ inputs.opencve-password }}
+          --nvd-api-key ${{ inputs.nvd-api-key }} \
+          --opencve-username ${{ inputs.opencve-username }} \
+          --opencve-password ${{ inputs.opencve-password }} \
           --sast-horusec-report-filename ${{ inputs.sast-horusec-report-filename }} \
           --sast-insider-report-filename ${{ inputs.sast-insider-report-filename }} \
           --sast-semgrep-report-filename ${{ inputs.sast-semgrep-report-filename }} \
