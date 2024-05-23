@@ -32,8 +32,6 @@ jobs:
           nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
           opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
           opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
-          sast-codeql-report-filename: resources/report-sast-codeql.json
-          sast-deepsource-report-filename: resources/report-sast-deepsource.json
           sast-horusec-report-filename: resources/report-sast-horusec.json
           sast-insider-report-filename: resources/report-sast-insider.json
           sast-semgrep-report-filename: resources/report-sast-semgrep.json

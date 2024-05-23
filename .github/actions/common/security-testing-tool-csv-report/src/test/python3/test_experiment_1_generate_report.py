@@ -16,10 +16,6 @@ TEST_DIRECTORY_RESOURCES = (
 )
 RESPONSE_NVDCVE = TEST_DIRECTORY_RESOURCES + "response-nvdcve.json"
 RESPONSE_OPENCVE = TEST_DIRECTORY_RESOURCES + "response-opencve.json"
-REPORT_SAST_CODEQL = TEST_DIRECTORY_RESOURCES + "report-sast-codeql.json"
-REPORT_SAST_DEEPSOURCE = (
-    TEST_DIRECTORY_RESOURCES + "report-sast-deepsource.json"
-)
 REPORT_SAST_HORUSEC = TEST_DIRECTORY_RESOURCES + "report-sast-horusec.json"
 REPORT_SAST_INSIDER = TEST_DIRECTORY_RESOURCES + "report-sast-insider.json"
 REPORT_SAST_SEMGREP = TEST_DIRECTORY_RESOURCES + "report-sast-semgrep.json"
@@ -39,6 +35,7 @@ OPENCVE_USERNAME = "username"
 OPENCVE_PASSWORD = "password"
 CVE_ID_NVD = "CVE-2016-2510"
 CVE_ID_GRYPE = "CVE-2024-34062"
+CVE_ID_ECLIPSE_STEADY = "CVE-2017-18349"
 CVE_ID_SNYK = "CVE-2024-4603"
 CWE_ID_HORUSEC = "CWE-798"
 CWE_ID_INSIDER = "CWE-330"
@@ -107,6 +104,7 @@ def mocked_nvd_response(*args, **kwargs):
     if (
         CVE_ID_NVD in args[1]
         or CVE_ID_GRYPE in args[1]
+        or CVE_ID_ECLIPSE_STEADY in args[1]
         or CVE_ID_SNYK in args[1]
     ):
         return MockResponse(RESPONSE_NVDCVE, 200)
@@ -406,6 +404,59 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         "main.python3.experiment_1_generate_report.get_cve_information_from_nvd",
         side_effect=mocked_nvd_response,
     )
+    def test_parse_eclipse_steady_data(
+        self, mock_response_opencve, mock_response_nvd
+    ):
+        csv_rows = experiment_1_generate_report.parse_eclipse_steady_data(
+            NVD_API_KEY,
+            OPENCVE_USERNAME,
+            OPENCVE_PASSWORD,
+            REPORT_SCA_ECLIPSE_STEADY,
+        )
+        self.assertTrue(len(csv_rows) > 0)
+        self.assertEqual(csv_rows[0][0], "SCA")
+        self.assertEqual(csv_rows[0][1], "Eclipse Steady")
+        self.assertEqual(csv_rows[0][2], "Code-centric")
+        self.assertEqual(csv_rows[0][3], "HIGH")
+        self.assertEqual(csv_rows[0][5], CVE_ID_ECLIPSE_STEADY)
+        self.assertEqual(csv_rows[0][6], "NVD")
+        self.assertEqual(csv_rows[0][7], "2016-04-07T20:59:05.567")
+        self.assertEqual(csv_rows[0][8], "2020-10-20T22:15:18.483")
+        self.assertEqual(csv_rows[0][9], "MODIFIED")
+        self.assertEqual(
+            csv_rows[0][10],
+            "BeanShell (bsh) before 2.0b6, when included on the classpath by an application that uses Java serialization or XStream, allows remote attackers to execute arbitrary code via crafted serialized data, related to XThis.Handler.",
+        )
+        self.assertEqual(csv_rows[0][13], "3.1")
+        self.assertEqual(csv_rows[0][14], "nvd@nist.gov")
+        self.assertEqual(csv_rows[0][15], 8.1)
+        self.assertEqual(csv_rows[0][16], "UNCHANGED")
+        self.assertEqual(csv_rows[0][17], 2.2)
+        self.assertEqual(csv_rows[0][18], 5.9)
+        self.assertEqual(csv_rows[0][19], "NETWORK")
+        self.assertEqual(csv_rows[0][20], "HIGH")
+        self.assertEqual(csv_rows[0][21], "NONE")
+        self.assertEqual(csv_rows[0][22], "NONE")
+        self.assertEqual(csv_rows[0][23], "HIGH")
+        self.assertEqual(csv_rows[0][24], "HIGH")
+        self.assertEqual(csv_rows[0][25], "HIGH")
+        self.assertEqual(csv_rows[0][33], CWE_ID_GRYPE)
+        self.assertEqual(csv_rows[0][34], "Use of Hard-coded Credentials")
+        self.assertEqual(
+            csv_rows[0][35],
+            "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data.",
+        )
+        self.assertEqual(csv_rows[0][40], "fastjson-1.2.80.jar")
+        self.assertEqual(csv_rows[0][41], "DIRECT")
+
+    @patch(
+        "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
+        side_effect=mocked_response,
+    )
+    @patch(
+        "main.python3.experiment_1_generate_report.get_cve_information_from_nvd",
+        side_effect=mocked_nvd_response,
+    )
     def test_parse_owasp_dependency_check_data(
         self, mock_response_opencve, mock_response_nvd
     ):
@@ -518,10 +569,6 @@ class TestExperiment1GenerateReport(unittest.TestCase):
                 OPENCVE_USERNAME,
                 "--opencve-password",
                 OPENCVE_PASSWORD,
-                "--sast-codeql-report-filename",
-                REPORT_SAST_CODEQL,
-                "--sast-deepsource-report-filename",
-                REPORT_SAST_DEEPSOURCE,
                 "--sast-horusec-report-filename",
                 REPORT_SAST_HORUSEC,
                 "--sast-insider-report-filename",
