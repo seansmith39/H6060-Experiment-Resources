@@ -16,8 +16,8 @@ jobs:
           nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
           opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
           opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
-          sast-insider-report-filename: resources/report-sast-insider.json
-          sca-owasp-dependency-check-report-filename: resources/report-sca-owasp-dependency-check.json
+          sast-insider-report-filename: ./.github/workflows/resources/report-sast-insider.json
+          sca-owasp-dependency-check-report-filename: ./.github/workflows/resources/report-sca-owasp-dependency-check.json
 
   test-action-security-testing-tool-csv-report-full:
     name: Test Security Testing Tool CSV Report (Full)
@@ -32,11 +32,11 @@ jobs:
           nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
           opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
           opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
-          sast-horusec-report-filename: resources/report-sast-horusec.json
-          sast-insider-report-filename: resources/report-sast-insider.json
-          sast-semgrep-report-filename: resources/report-sast-semgrep.json
-          sast-snyk-code-report-filename: resources/report-sast-snyk-code.json
-          sca-eclipse-steady-report-filename: resources/report-sca-eclipse-steady.json
-          sca-grype-report-filename: resources/report-sca-grype.json
-          sca-owasp-dependency-check-report-filename: resources/report-sca-owasp-dependency-check.json
-          sca-snyk-report-filename: resources/report-sca-snyk.json
+          sast-horusec-report-filename: ./.github/workflows/resources/report-sast-horusec.json
+          sast-insider-report-filename: ./.github/workflows/resources/report-sast-insider.json
+          sast-semgrep-report-filename: ./.github/workflows/resources/report-sast-semgrep.json
+          sast-snyk-code-report-filename: ./.github/workflows/resources/report-sast-snyk-code.json
+          sca-eclipse-steady-report-filename: ./.github/workflows/resources/report-sca-eclipse-steady.json
+          sca-grype-report-filename: ./.github/workflows/resources/report-sca-grype.json
+          sca-owasp-dependency-check-report-filename: ./.github/workflows/resources/report-sca-owasp-dependency-check.json
+          sca-snyk-report-filename: ./.github/workflows/resources/report-sca-snyk.json

@@ -18,18 +18,6 @@ inputs:
     type: string
     required: true
 
-  sast-codeql-report-filename:
-    description: Name of CodeQL report filename
-    type: string
-    required: false
-    default: ''
-
-  sast-deepsource-report-filename:
-    description: Name of Deepsource report filename
-    type: string
-    required: false
-    default: ''
-
   sast-horusec-report-filename:
     description: Name of Snyk report filename
     type: string
@@ -94,8 +82,6 @@ runs:
           --nvd-api-key ${{ inputs.nvd-api-key }}
           --opencve-username ${{ inputs.opencve-username }}
           --opencve-password ${{ inputs.opencve-password }}
-          --sast-codeql-report-filename ${{ inputs.sast-codeql-report-filename }} \
-          --sast-deepsource-report-filename ${{ inputs.sast-deepsource-report-filename }} \
           --sast-horusec-report-filename ${{ inputs.sast-horusec-report-filename }} \
           --sast-insider-report-filename ${{ inputs.sast-insider-report-filename }} \
           --sast-semgrep-report-filename ${{ inputs.sast-semgrep-report-filename }} \

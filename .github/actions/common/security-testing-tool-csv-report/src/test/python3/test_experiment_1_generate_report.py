@@ -159,7 +159,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             sast_horusec_report_filename:str -- Name of the SAST Horusec report to parse data from
             sast_insider_report_filename:str -- Name of the SAST Insider report to parse data from
             sast_semgrep_report_filename:str -- Name of the SAST Semgrep report to parse data from
-            sast_snyk_code_report_filename:str -- Name of the SAST Snyk Code report to parse data from
+            sast_snyk_code_report_filename:str -- Name of the SAST SNYK-CODE report to parse data from
             sca_eclipse_steady_report_filename:str -- Name of the SCA Eclipse Steady report to parse data from
             sca_grype_report_filename:str -- Name of the SCA Grype report to parse data from
             sca_owasp_dependency_check_report_filename:str -- Name of the SCA OWASP Dependency Check report to parse data from
@@ -251,8 +251,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
-        self.assertEqual(csv_rows[0][1], "HorusecEngine")
-        self.assertEqual(csv_rows[0][2], "Syntax-based")
+        self.assertEqual(csv_rows[0][1], "HORUSEC")
+        self.assertEqual(csv_rows[0][2], "SYNTAX-BASED")
         self.assertEqual(csv_rows[0][3], "CRITICAL")
         self.assertEqual(csv_rows[0][4], "MEDIUM")
         self.assertEqual(csv_rows[0][33], CWE_ID_HORUSEC)
@@ -282,8 +282,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
-        self.assertEqual(csv_rows[0][1], "Insider")
-        self.assertEqual(csv_rows[0][2], "Syntax-based")
+        self.assertEqual(csv_rows[0][1], "INSIDER")
+        self.assertEqual(csv_rows[0][2], "SYNTAX-BASED")
         self.assertEqual(csv_rows[0][33], CWE_ID_INSIDER)
         self.assertEqual(csv_rows[0][34], "Use of Hard-coded Credentials")
         self.assertEqual(
@@ -306,8 +306,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
-        self.assertEqual(csv_rows[0][1], "Semgrep")
-        self.assertEqual(csv_rows[0][2], "Semantic-based")
+        self.assertEqual(csv_rows[0][1], "SEMGREP")
+        self.assertEqual(csv_rows[0][2], "SEMANTIC-BASED")
         self.assertEqual(csv_rows[0][3], "WARNING")
         self.assertEqual(csv_rows[0][4], "MEDIUM")
         self.assertEqual(csv_rows[0][33], CWE_ID_SEMGREP)
@@ -332,8 +332,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SAST")
-        self.assertEqual(csv_rows[0][1], "Snyk Code")
-        self.assertEqual(csv_rows[0][2], "Semantic-based")
+        self.assertEqual(csv_rows[0][1], "SNYK CODE")
+        self.assertEqual(csv_rows[0][2], "SEMANTIC-BASED")
         self.assertEqual(csv_rows[0][33], CWE_ID_SNYK_CODE)
         self.assertEqual(csv_rows[0][34], "TarSlip")
         self.assertEqual(
@@ -362,8 +362,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SCA")
-        self.assertEqual(csv_rows[0][1], "Grype")
-        self.assertEqual(csv_rows[0][2], "Metadata-based")
+        self.assertEqual(csv_rows[0][1], "GRYPE")
+        self.assertEqual(csv_rows[0][2], "METADATA-BASED")
         self.assertEqual(csv_rows[0][3], "MEDIUM")
         self.assertEqual(csv_rows[0][5], CVE_ID_GRYPE)
         self.assertEqual(csv_rows[0][6], "NVD")
@@ -415,8 +415,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SCA")
-        self.assertEqual(csv_rows[0][1], "Eclipse Steady")
-        self.assertEqual(csv_rows[0][2], "Code-centric")
+        self.assertEqual(csv_rows[0][1], "ECLIPSE STEADY")
+        self.assertEqual(csv_rows[0][2], "CODE-CENTRIC")
         self.assertEqual(csv_rows[0][3], "HIGH")
         self.assertEqual(csv_rows[0][5], CVE_ID_ECLIPSE_STEADY)
         self.assertEqual(csv_rows[0][6], "NVD")
@@ -470,8 +470,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SCA")
-        self.assertEqual(csv_rows[0][1], "OWASP Dependency Check")
-        self.assertEqual(csv_rows[0][2], "Metadata-based")
+        self.assertEqual(csv_rows[0][1], "OWASP DEPENDENCY CHECK")
+        self.assertEqual(csv_rows[0][2], "METADATA-BASED")
         self.assertEqual(csv_rows[0][3], "HIGH")
         self.assertEqual(csv_rows[0][4], "HIGH")
         self.assertEqual(csv_rows[0][5], "CVE-2016-2510")
@@ -520,12 +520,12 @@ class TestExperiment1GenerateReport(unittest.TestCase):
         )
         self.assertTrue(len(csv_rows) > 0)
         self.assertEqual(csv_rows[0][0], "SCA")
-        self.assertEqual(csv_rows[0][1], "Snyk")
-        self.assertEqual(csv_rows[0][2], "Metadata-based")
+        self.assertEqual(csv_rows[0][1], "SNYK")
+        self.assertEqual(csv_rows[0][2], "METADATA-BASED")
         self.assertEqual(csv_rows[0][3], "LOW")
         self.assertEqual(csv_rows[0][5], "CVE-2024-4603")
         self.assertEqual(csv_rows[0][7], "2024-05-19T10:46:05.728350Z")
-        self.assertEqual(csv_rows[0][8], "2024-05-18T13:33:51.382424Z")
+        self.assertEqual(csv_rows[0][8], "2024-05-19T10:46:06.262960Z")
         self.assertEqual(
             csv_rows[0][10],
             "Uncontrolled Resource Consumption",
@@ -593,9 +593,8 @@ class TestExperiment1GenerateReport(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         sys.stdout = sys.__stdout__
-        # TODO: Uncomment when finished development
-        # if os.path.isfile(DEFAULT_CSV_REPORT_FILENAME):
-        #     os.remove(DEFAULT_CSV_REPORT_FILENAME)
+        if os.path.isfile(DEFAULT_CSV_REPORT_FILENAME):
+            os.remove(DEFAULT_CSV_REPORT_FILENAME)
 
 
 if __name__ == "__main__":
