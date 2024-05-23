@@ -56,57 +56,58 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
     )
     parser.add_argument(
         "--sast-horusec-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
-        default='',
         help="Name of Horusec JSON report to parse",
     )
     parser.add_argument(
         "--sast-insider-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
-        default='',
         help="Name of Insider JSON report to parse",
     )
     parser.add_argument(
         "--sast-semgrep-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
-        default='',
         help="Name of Semgrep JSON report to parse",
     )
     parser.add_argument(
         "--sast-snyk-code-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
         help="Name of Snyk Code JSON report to parse",
     )
     parser.add_argument(
         "--sca-eclipse-steady-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
-        default='',
         help="Name of Eclipse Steady report to parse",
     )
     parser.add_argument(
         "--sca-grype-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
-        default='',
         help="Name of Grype report to parse",
     )
     parser.add_argument(
         "--sca-owasp-dependency-check-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
-        default='',
         help="Name of OWASP Dependency Check JSON report to parse",
     )
     parser.add_argument(
         "--sca-snyk-report-filename",
-        action="store",
+        nargs="?",
+        const="",
         required=False,
-        default='',
         help="Name of Snyk report to parse",
     )
     return parser.parse_args(args)
@@ -563,6 +564,8 @@ def parse_horusec_data(
     with open(sast_horusec_report_filename, "r") as f:
         data = json.load(f)
     csv_rows = []
+    cwe_name_dict = {}
+    cwe_description_dict = {}
 
     try:
         for vulnerabilities in data["analysisVulnerabilities"]:
@@ -592,14 +595,21 @@ def parse_horusec_data(
                         and cwe_id.upper() != "NVD-CWE-OTHER"
                     ):
                         # Get additional CWE details from OpenCVE
-                        opencve_cwe_details = get_opencve_cwe_details(
-                            opencve_username, opencve_password, cwe_id
-                        )
-                        if opencve_cwe_details:
-                            cwe_name = opencve_cwe_details.json()["name"]
-                            cwe_description = opencve_cwe_details.json()[
-                                "description"
-                            ]
+                        if cwe_id not in cwe_name_dict:
+                            opencve_cwe_details = get_opencve_cwe_details(
+                                opencve_username, opencve_password, cwe_id
+                            )
+
+                            if opencve_cwe_details:
+                                cwe_name = opencve_cwe_details.json()["name"]
+                                cwe_description = opencve_cwe_details.json()[
+                                    "description"
+                                ]
+                            cwe_name_dict = {cwe_id: cwe_name}
+                            cwe_description_dict = {cwe_id: cwe_description}
+                        else:
+                            cwe_name = cwe_name_dict[cwe_id]
+                            cwe_description = cwe_description_dict[cwe_id]
 
                     horusec_data = get_csv_column_entries(
                         tool_type="SAST",
@@ -644,6 +654,8 @@ def parse_insider_data(
     with open(sast_insider_report_filename, "r") as f:
         data = json.load(f)
     csv_rows = []
+    cwe_name_dict = {}
+    cwe_description_dict = {}
 
     try:
         for vulnerability in data["vulnerabilities"]:
@@ -669,14 +681,21 @@ def parse_insider_data(
                     and cwe_id.upper() != "NVD-CWE-OTHER"
                 ):
                     # Get additional CWE details from OpenCVE
-                    opencve_cwe_details = get_opencve_cwe_details(
-                        opencve_username, opencve_password, cwe_id
-                    )
-                    if opencve_cwe_details:
-                        cwe_name = opencve_cwe_details.json()["name"]
-                        cwe_description = opencve_cwe_details.json()[
-                            "description"
-                        ]
+                    if cwe_id not in cwe_name_dict:
+                        opencve_cwe_details = get_opencve_cwe_details(
+                            opencve_username, opencve_password, cwe_id
+                        )
+
+                        if opencve_cwe_details:
+                            cwe_name = opencve_cwe_details.json()["name"]
+                            cwe_description = opencve_cwe_details.json()[
+                                "description"
+                            ]
+                        cwe_name_dict = {cwe_id: cwe_name}
+                        cwe_description_dict = {cwe_id: cwe_description}
+                    else:
+                        cwe_name = cwe_name_dict[cwe_id]
+                        cwe_description = cwe_description_dict[cwe_id]
 
                 insider_data = get_csv_column_entries(
                     tool_type="SAST",
@@ -717,6 +736,8 @@ def parse_semgrep_data(
     with open(sast_semgrep_report_filename, "r") as f:
         data = json.load(f)
     csv_rows = []
+    cwe_name_dict = {}
+    cwe_description_dict = {}
 
     try:
         for vulnerability in data["results"]:
@@ -749,14 +770,21 @@ def parse_semgrep_data(
                     and cwe_id.upper() != "NVD-CWE-OTHER"
                 ):
                     # Get additional CWE details from OpenCVE
-                    opencve_cwe_details = get_opencve_cwe_details(
-                        opencve_username, opencve_password, cwe_id
-                    )
-                    if opencve_cwe_details:
-                        cwe_name = opencve_cwe_details.json()["name"]
-                        cwe_description = opencve_cwe_details.json()[
-                            "description"
-                        ]
+                    if cwe_id not in cwe_name_dict:
+                        opencve_cwe_details = get_opencve_cwe_details(
+                            opencve_username, opencve_password, cwe_id
+                        )
+
+                        if opencve_cwe_details:
+                            cwe_name = opencve_cwe_details.json()["name"]
+                            cwe_description = opencve_cwe_details.json()[
+                                "description"
+                            ]
+                        cwe_name_dict = {cwe_id: cwe_name}
+                        cwe_description_dict = {cwe_id: cwe_description}
+                    else:
+                        cwe_name = cwe_name_dict[cwe_id]
+                        cwe_description = cwe_description_dict[cwe_id]
 
                 semgrep_data = get_csv_column_entries(
                     tool_type="SAST",
@@ -863,6 +891,8 @@ def parse_grype_data(
     with open(sca_grype_report_filename, "r") as f:
         data = json.load(f)
     csv_rows = []
+    cwe_name_dict = {}
+    cwe_description_dict = {}
 
     try:
         for vulnerability in data["matches"]:
@@ -1058,20 +1088,32 @@ def parse_grype_data(
                         cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
                         cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-                        # Get additional CWE details from OpenCVE
                         if (
                             cwe_id.upper() != "NVD-CWE-NOINFO"
                             and cwe_id.upper() != "NVD-CWE-OTHER"
                         ):
-                            opencve_cwe_details = get_opencve_cwe_details(
-                                opencve_username, opencve_password, cwe_id
-                            )
+                            # Get additional CWE details from OpenCVE
+                            if cwe_id not in cwe_name_dict:
+                                opencve_cwe_details = get_opencve_cwe_details(
+                                    opencve_username, opencve_password, cwe_id
+                                )
 
-                            if opencve_cwe_details:
-                                cwe_name = opencve_cwe_details.json()["name"]
-                                cwe_description = opencve_cwe_details.json()[
-                                    "description"
-                                ]
+                                if opencve_cwe_details:
+                                    cwe_name = opencve_cwe_details.json()[
+                                        "name"
+                                    ]
+                                    cwe_description = (
+                                        opencve_cwe_details.json()[
+                                            "description"
+                                        ]
+                                    )
+                                cwe_name_dict = {cwe_id: cwe_name}
+                                cwe_description_dict = {
+                                    cwe_id: cwe_description
+                                }
+                            else:
+                                cwe_name = cwe_name_dict[cwe_id]
+                                cwe_description = cwe_description_dict[cwe_id]
 
                         grype_data = get_csv_column_entries(
                             tool_type="SCA",
@@ -1145,6 +1187,8 @@ def parse_eclipse_steady_data(
     with open(sca_eclipse_steady_report_filename, "r") as f:
         data = json.load(f)
     csv_rows = []
+    cwe_name_dict = {}
+    cwe_description_dict = {}
 
     try:
         for vulnerability in data["vulasReport"]["vulnerabilities"]:
@@ -1322,15 +1366,21 @@ def parse_eclipse_steady_data(
                         and cwe_id.upper() != "NVD-CWE-OTHER"
                     ):
                         # Get additional CWE details from OpenCVE
-                        opencve_cwe_details = get_opencve_cwe_details(
-                            opencve_username, opencve_password, cwe_id
-                        )
+                        if cwe_id not in cwe_name_dict:
+                            opencve_cwe_details = get_opencve_cwe_details(
+                                opencve_username, opencve_password, cwe_id
+                            )
 
-                        if opencve_cwe_details:
-                            cwe_name = opencve_cwe_details.json()["name"]
-                            cwe_description = opencve_cwe_details.json()[
-                                "description"
-                            ]
+                            if opencve_cwe_details:
+                                cwe_name = opencve_cwe_details.json()["name"]
+                                cwe_description = opencve_cwe_details.json()[
+                                    "description"
+                                ]
+                            cwe_name_dict = {cwe_id: cwe_name}
+                            cwe_description_dict = {cwe_id: cwe_description}
+                        else:
+                            cwe_name = cwe_name_dict[cwe_id]
+                            cwe_description = cwe_description_dict[cwe_id]
 
                     eclipse_steady_data = get_csv_column_entries(
                         tool_type="SCA",
@@ -1405,6 +1455,8 @@ def parse_owasp_dependency_check_data(
     with open(sca_owasp_dependency_check_report_filename, "r") as f:
         data = json.load(f)
     csv_rows = []
+    cwe_name_dict = {}
+    cwe_description_dict = {}
 
     try:
         for dependency in data["dependencies"]:
@@ -1564,14 +1616,27 @@ def parse_owasp_dependency_check_data(
                             and cwe_id.upper() != "NVD-CWE-OTHER"
                         ):
                             # Get additional CWE details from OpenCVE
-                            opencve_cwe_details = get_opencve_cwe_details(
-                                opencve_username, opencve_password, cwe_id
-                            )
-                            if opencve_cwe_details:
-                                cwe_name = opencve_cwe_details.json()["name"]
-                                cwe_description = opencve_cwe_details.json()[
-                                    "description"
-                                ]
+                            if cwe_id not in cwe_name_dict:
+                                opencve_cwe_details = get_opencve_cwe_details(
+                                    opencve_username, opencve_password, cwe_id
+                                )
+
+                                if opencve_cwe_details:
+                                    cwe_name = opencve_cwe_details.json()[
+                                        "name"
+                                    ]
+                                    cwe_description = (
+                                        opencve_cwe_details.json()[
+                                            "description"
+                                        ]
+                                    )
+                                cwe_name_dict = {cwe_id: cwe_name}
+                                cwe_description_dict = {
+                                    cwe_id: cwe_description
+                                }
+                            else:
+                                cwe_name = cwe_name_dict[cwe_id]
+                                cwe_description = cwe_description_dict[cwe_id]
 
                         owasp_dependency_check_data = get_csv_column_entries(
                             tool_type="SCA",
@@ -1644,6 +1709,8 @@ def parse_snyk_data(
     with open(sca_snyk_report_filename, "r") as f:
         data = json.load(f)
     csv_rows = []
+    cwe_name_dict = {}
+    cwe_description_dict = {}
 
     try:
         for vulnerability in data["vulnerabilities"]:
@@ -1706,19 +1773,26 @@ def parse_snyk_data(
                     cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
                     cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-                    # Get additional CWE details from OpenCVE
                     if (
                         cwe_id.upper() != "NVD-CWE-NOINFO"
                         and cwe_id.upper() != "NVD-CWE-OTHER"
                     ):
-                        opencve_cwe_details = get_opencve_cwe_details(
-                            opencve_username, opencve_password, cwe_id
-                        )
-                        if opencve_cwe_details:
-                            cwe_name = opencve_cwe_details.json()["name"]
-                            cwe_description = opencve_cwe_details.json()[
-                                "description"
-                            ]
+                        # Get additional CWE details from OpenCVE
+                        if cwe_id not in cwe_name_dict:
+                            opencve_cwe_details = get_opencve_cwe_details(
+                                opencve_username, opencve_password, cwe_id
+                            )
+
+                            if opencve_cwe_details:
+                                cwe_name = opencve_cwe_details.json()["name"]
+                                cwe_description = opencve_cwe_details.json()[
+                                    "description"
+                                ]
+                            cwe_name_dict = {cwe_id: cwe_name}
+                            cwe_description_dict = {cwe_id: cwe_description}
+                        else:
+                            cwe_name = cwe_name_dict[cwe_id]
+                            cwe_description = cwe_description_dict[cwe_id]
 
                     snyk_check_data = get_csv_column_entries(
                         tool_type="SCA",
@@ -1809,6 +1883,8 @@ def create_csv_report(csv_filename: str) -> None:
         "CWE ID",
         "CWE NAME",
         "CWE DESCRIPTION",
+        "CWE IMPACT",
+        "CWE LIKELIHOOD",
         "OWASP TOP 10",
         "MITRE TOP 25",
         "DEPENDENCY NAME",

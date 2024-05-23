@@ -46,7 +46,7 @@ runs:
       with:
         checkout_path: ${{ inputs.path }}
         category: /language:${{ inputs.language }}
-        upload: always
+        upload: never
         output: ${{ inputs.path }}/results
 
     - name: Upload CodeQL Report

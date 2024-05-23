@@ -28,7 +28,8 @@ jobs:
           opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
           opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
           sast-insider-report-filename: ./.github/workflows/resources/report-sast-insider.json
-          sca-owasp-dependency-check-report-filename: ./.github/workflows/resources/report-sca-owasp-dependency-check.json
+          sca-snyk-report-filename: ./.github/workflows/resources/report-sca-snyk.json
+          build-artifact-name: experiment-1-security-testing-tool-results-partial
 
   test-action-security-testing-tool-csv-report-full:
     name: Test Security Testing Tool CSV Report (Full)
@@ -62,3 +63,4 @@ jobs:
           sca-grype-report-filename: ./.github/workflows/resources/report-sca-grype.json
           sca-owasp-dependency-check-report-filename: ./.github/workflows/resources/report-sca-owasp-dependency-check.json
           sca-snyk-report-filename: ./.github/workflows/resources/report-sca-snyk.json
+          build-artifact-name: experiment-1-security-testing-tool-results-full

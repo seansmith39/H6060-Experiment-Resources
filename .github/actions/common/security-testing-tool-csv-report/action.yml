@@ -22,19 +22,16 @@ inputs:
     description: Name of Snyk report filename
     type: string
     required: false
-    default: ''
 
   sast-insider-report-filename:
     description: Name of Insider report filename
     type: string
     required: false
-    default: ''
 
   sast-semgrep-report-filename:
     description: Name of Semgrep report filename
     type: string
     required: false
-    default: ''
 
   sast-snyk-code-report-filename:
     description: Name of Snyk Code report filename
@@ -45,25 +42,21 @@ inputs:
     description: Name of Eclipse Steady report filename
     type: string
     required: false
-    default: ''
 
   sca-grype-report-filename:
     description: Name of Grype report filename
     type: string
     required: false
-    default: ''
 
   sca-owasp-dependency-check-report-filename:
     description: Name of OWASP Dependency Check report filename
     type: string
     required: false
-    default: ''
 
   sca-snyk-report-filename:
     description: Name of Snyk report filename
     type: string
     required: false
-    default: ''
 
   build-artifact-name:
     description: Name of resulting CSV report
@@ -74,6 +67,19 @@ inputs:
 runs:
   using: composite
   steps:
+    # Workaround due to https://github.com/actions/runner/issues/924
+    - name: Set Environment Variables
+      shell: bash
+      run: |
+        echo "SAST_HORUSEC_REPORT_FILENAME=${{ inputs.sast-horusec-report-filename || '' }}" >> $GITHUB_ENV
+        echo "SAST_INSIDER_REPORT_FILENAME=${{ inputs.sast-insider-report-filename || '' }}" >> $GITHUB_ENV
+        echo "SAST_SEMGREP_REPORT_FILENAME=${{ inputs.sast-semgrep-report-filename || '' }}" >> $GITHUB_ENV
+        echo "SAST_SNYK_CODE_REPORT_FILENAME=${{ inputs.sast-snyk-code-report-filename || '' }}" >> $GITHUB_ENV
+        echo "SCA_ECLIPSE_STEADY_REPORT_FILENAME=${{ inputs.sca-eclipse-steady-report-filename || '' }}" >> $GITHUB_ENV
+        echo "SCA_GRYPE_REPORT_FILENAME=${{ inputs.sca-grype-report-filename || '' }}" >> $GITHUB_ENV
+        echo "SCA_OWASP_DEPENDENCY_CHECK_REPORT_FILENAME=${{ inputs.sca-owasp-dependency-check-report-filename || '' }}" >> $GITHUB_ENV
+        echo "SCA_SNYK_REPORT_FILENAME=${{ inputs.sca-snyk-report-filename || '' }}" >> $GITHUB_ENV
+
     - name: Run Unit Tests
       shell: bash
       working-directory: ${{ github.action_path }}
@@ -86,18 +92,18 @@ runs:
           --nvd-api-key ${{ inputs.nvd-api-key }} \
           --opencve-username ${{ inputs.opencve-username }} \
           --opencve-password ${{ inputs.opencve-password }} \
-          --sast-horusec-report-filename ${{ inputs.sast-horusec-report-filename }} \
-          --sast-insider-report-filename ${{ inputs.sast-insider-report-filename }} \
-          --sast-semgrep-report-filename ${{ inputs.sast-semgrep-report-filename }} \
-          --sast-snyk-code-report-filename ${{ inputs.sast-snyk-code-report-filename }} \
-          --sca-eclipse-steady-report-filename ${{ inputs.sca-eclipse-steady-report-filename }} \
-          --sca-grype-report-filename ${{ inputs.sca-grype-report-filename }} \
-          --sca-owasp-dependency-check-report-filename ${{ inputs.sca-owasp-dependency-check-report-filename }} \
-          --sca-snyk-report-filename ${{ inputs.sca-snyk-report-filename }}
+          --sast-horusec-report-filename ${{ env.SAST_HORUSEC_REPORT_FILENAME }} \
+          --sast-insider-report-filename ${{ env.SAST_INSIDER_REPORT_FILENAME }} \
+          --sast-semgrep-report-filename ${{ env.SAST_SEMGREP_REPORT_FILENAME }} \
+          --sast-snyk-code-report-filename ${{ env.SAST_SNYK_CODE_REPORT_FILENAME }} \
+          --sca-eclipse-steady-report-filename ${{ env.SCA_ECLIPSE_STEADY_REPORT_FILENAME }} \
+          --sca-grype-report-filename ${{ env.SCA_GRYPE_REPORT_FILENAME }} \
+          --sca-owasp-dependency-check-report-filename ${{ env.SCA_OWASP_DEPENDENCY_CHECK_REPORT_FILENAME }} \
+          --sca-snyk-report-filename ${{ env.SCA_SNYK_REPORT_FILENAME }}
 
     - name: Upload Security Testing Tool Report (CSV)
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.build-artifact-name }}
-        path: ${{ github.action_path }}/src/main/python3/experiment_1_security_testing_tool_results.csv
+        path: experiment_1_security_testing_tool_results.csv
         if-no-files-found: error
