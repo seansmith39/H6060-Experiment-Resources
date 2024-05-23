@@ -82,7 +82,7 @@ runs:
     - name: Create Security Testing Tool Report
       shell: bash
       run: |
-        .github/actions/common/security-testing-tool-csv-report/src/main/python3/python3 experiment_1_generate_report.py \
+        python3 ${{ github.action_path }}/src/main/python3/experiment_1_generate_report.py \
           --nvd-api-key ${{ inputs.nvd-api-key }} \
           --opencve-username ${{ inputs.opencve-username }} \
           --opencve-password ${{ inputs.opencve-password }} \
