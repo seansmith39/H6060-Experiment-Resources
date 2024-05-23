@@ -56,13 +56,13 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
     )
     parser.add_argument(
         "--sast-horusec-report-filename",
-        action="store",
+        action="store_true",
         required=False,
         help="Name of Horusec JSON report to parse",
     )
     parser.add_argument(
         "--sast-insider-report-filename",
-        action="store",
+        action="store_true",
         required=False,
         help="Name of Insider JSON report to parse",
     )
@@ -74,7 +74,7 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
     )
     parser.add_argument(
         "--sast-snyk-code-report-filename",
-        action="store",
+        action="store_true",
         required=False,
         help="Name of Snyk Code JSON report to parse",
     )
@@ -86,19 +86,19 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
     )
     parser.add_argument(
         "--sca-grype-report-filename",
-        action="store",
+        action="store_true",
         required=False,
         help="Name of Grype report to parse",
     )
     parser.add_argument(
         "--sca-owasp-dependency-check-report-filename",
-        action="store",
+        action="store_true",
         required=False,
         help="Name of OWASP Dependency Check JSON report to parse",
     )
     parser.add_argument(
         "--sca-snyk-report-filename",
-        action="store",
+        action="store_true",
         required=False,
         help="Name of Snyk report to parse",
     )
@@ -425,15 +425,15 @@ def get_cve_information_from_nvd(
 def get_opencve_cwe_details(
     opencve_username: str, opencve_password: str, cwe_id: str
 ) -> str:  # pragma: no cover
-    """Query opencve with CWE ID
+    """Query OpenCVE with CWE ID
 
     :parameter
         opencve_username:str -- OpenCVE username
         opencve_password:str -- OpenCVE password
-        cwe_id:str -- CVE ID to query
+        cwe_id:str -- CWE ID to query
 
     :return
-        str,str -- name and description associated with CWE ID
+        dict -- JSON data containing CWE information
     """
     url = f"https://www.opencve.io/api/cwe/{cwe_id}"
     log.info(f"GET request: {url}")
@@ -445,7 +445,7 @@ def get_opencve_cwe_details(
         request = get(
             url,
             headers=headers,
-            auth=HTTPBasicAuth(opencve_username, opencve_password),
+            auth=HTTPBasicAuth(opencve_username, opencve_password)
         )
         if request.ok:
             log.info("GET request successful")
