@@ -40,41 +40,44 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         "--nvd-api-key",
         action="store",
         required=True,
-        help="NIST NVD API key.",
+        help="NIST NVD API key",
     )
     parser.add_argument(
         "--opencve-username",
         action="store",
         required=True,
-        help="OpenCVE registered username.",
+        help="OpenCVE registered username",
     )
     parser.add_argument(
         "--opencve-password",
         action="store",
         required=True,
-        help="OpenCVE registered password.",
+        help="OpenCVE registered password",
     )
     parser.add_argument(
         "--sast-horusec-report-filename",
-        action="store_true",
+        action="store",
         required=False,
+        default='',
         help="Name of Horusec JSON report to parse",
     )
     parser.add_argument(
         "--sast-insider-report-filename",
-        action="store_true",
+        action="store",
         required=False,
+        default='',
         help="Name of Insider JSON report to parse",
     )
     parser.add_argument(
         "--sast-semgrep-report-filename",
         action="store",
         required=False,
+        default='',
         help="Name of Semgrep JSON report to parse",
     )
     parser.add_argument(
         "--sast-snyk-code-report-filename",
-        action="store_true",
+        action="store",
         required=False,
         help="Name of Snyk Code JSON report to parse",
     )
@@ -82,24 +85,28 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         "--sca-eclipse-steady-report-filename",
         action="store",
         required=False,
+        default='',
         help="Name of Eclipse Steady report to parse",
     )
     parser.add_argument(
         "--sca-grype-report-filename",
-        action="store_true",
+        action="store",
         required=False,
+        default='',
         help="Name of Grype report to parse",
     )
     parser.add_argument(
         "--sca-owasp-dependency-check-report-filename",
-        action="store_true",
+        action="store",
         required=False,
+        default='',
         help="Name of OWASP Dependency Check JSON report to parse",
     )
     parser.add_argument(
         "--sca-snyk-report-filename",
-        action="store_true",
+        action="store",
         required=False,
+        default='',
         help="Name of Snyk report to parse",
     )
     return parser.parse_args(args)
@@ -445,7 +452,7 @@ def get_opencve_cwe_details(
         request = get(
             url,
             headers=headers,
-            auth=HTTPBasicAuth(opencve_username, opencve_password)
+            auth=HTTPBasicAuth(opencve_username, opencve_password),
         )
         if request.ok:
             log.info("GET request successful")
