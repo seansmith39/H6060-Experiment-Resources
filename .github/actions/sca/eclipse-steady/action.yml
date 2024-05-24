@@ -1,0 +1,124 @@
+name: Eclipse Steady SCA Action
+description: Run Eclipse Steady SCA scan
+
+inputs:
+  language:
+    description: Programming language to run Eclipse Steady scan against
+    type: string
+    required: true
+
+  eclipse-steady-workspace-token:
+    description: Token used to identify project workspace
+    type: string
+    required: true
+
+  eclipse-steady-host-url:
+    description: Hostname of Eclipse Steady
+    type: string
+    required: true
+
+  project-name:
+    description: The name of the project being scanned
+    type: string
+    required: true
+
+  project-source-directories:
+    description: Project source directories to scan (separated by comma)
+    type: string
+    required: true
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+  build-artifact-name:
+    description: Name of Eclipse Steady build artifact
+    type: string
+    required: false
+    default: sca-eclipse-steady-report
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: 17
+        distribution: temurin
+
+    - name: Setup Rsync
+      uses: GuillaumeFalourd/setup-rsync@v1.2
+
+    - name: Download Eclipse Steady Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        curl -LO https://github.com/eclipse/steady/releases/download/release-3.2.5/steady-cli-3.2.5.zip
+        unzip steady-cli-3.2.5.zip
+
+    - name: Copy Project Source Files To Eclipse Steady App Directory
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        for i in $(echo ${{ inputs.project-source-directories }} | sed "s/,/ /g")
+        do
+          rsync -a --exclude='*.JAR' $i steady-cli/app/
+        done
+
+    - name: Set Eclipse Steady Properties
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mv steady-cli/steady-custom.properties.sample steady-cli/steady-custom.properties
+        sed -i 's,http://localhost:8033/backend,${{ inputs.eclipse-steady-host-url }}/backend,g' steady-cli/steady-custom.properties
+        sed -i 's,<GROUP>,${{ inputs.project-name }},g' steady-cli/steady-custom.properties
+        sed -i 's,<ARTIFACT>,${{ inputs.project-name }},g' steady-cli/steady-custom.properties
+        sed -i 's,<VERSION>,1.0.0,g' steady-cli/steady-custom.properties
+        echo 'vulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}' >> steady-cli/steady-custom.properties
+
+    - name: Set Eclipse Steady Pip Property
+      if: ${{ inputs.language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: echo 'vulas.core.bom.python.pip=/usr/bin/pip' >> steady-cli/steady-custom.properties
+
+    - name: Run Eclipse Steady Scan (Java)
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn org.eclipse.steady:plugin-maven:3.2.5:app
+
+    - name: Create Eclipse Steady Report (Java)
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn org.eclipse.steady:plugin-maven:3.2.5:report
+
+    - name: Run Eclipse Steady Scan (Python)
+      if: ${{ inputs.language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal app
+
+    - name: Create Eclipse Steady Report (Python)
+      if: ${{ inputs.language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal report
+
+    - name: Upload Eclipse Steady Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact-name }}
+        path: |
+          ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.json
+          ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.html
+        if-no-files-found: error
