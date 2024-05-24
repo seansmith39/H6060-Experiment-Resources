@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import re
 import csv
 import sys
@@ -2085,62 +2086,101 @@ def main(args: argparse.Namespace) -> None:
     csv_report_filename = "experiment_1_security_testing_tool_results.csv"
     create_csv_report(csv_report_filename)
 
+    # SAST - Snyk Code
     if args.sast_snyk_code_report_filename:
-        csv_rows = parse_snyk_code_data(args.sast_snyk_code_report_filename)
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sast_snyk_code_report_filename):
+            csv_rows = parse_snyk_code_data(args.sast_snyk_code_report_filename)
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sast_snyk_code_report_filename}")
+
+    # SAST - Insider
     if args.sast_insider_report_filename:
-        csv_rows = parse_insider_data(
-            args.opencve_username,
-            args.opencve_password,
-            args.sast_insider_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sast_insider_report_filename):
+            csv_rows = parse_insider_data(
+                args.opencve_username,
+                args.opencve_password,
+                args.sast_insider_report_filename,
+            )
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sast_insider_report_filename}")
+
+    # SAST - Horusec
     if args.sast_horusec_report_filename:
-        csv_rows = parse_horusec_data(
-            args.opencve_username,
-            args.opencve_password,
-            args.sast_horusec_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sast_horusec_report_filename):
+            csv_rows = parse_horusec_data(
+                args.opencve_username,
+                args.opencve_password,
+                args.sast_horusec_report_filename,
+            )
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sast_horusec_report_filename}")
+
+    # SAST - Semgrep
     if args.sast_semgrep_report_filename:
-        csv_rows = parse_semgrep_data(
-            args.opencve_username,
-            args.opencve_password,
-            args.sast_semgrep_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sast_semgrep_report_filename):
+            csv_rows = parse_semgrep_data(
+                args.opencve_username,
+                args.opencve_password,
+                args.sast_semgrep_report_filename,
+            )
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sast_semgrep_report_filename}")
+
+    # SAST - Grype
     if args.sca_grype_report_filename:
-        csv_rows = parse_grype_data(
-            args.nvd_api_key,
-            args.opencve_username,
-            args.opencve_password,
-            args.sca_grype_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sca_grype_report_filename):
+            csv_rows = parse_grype_data(
+                args.nvd_api_key,
+                args.opencve_username,
+                args.opencve_password,
+                args.sca_grype_report_filename,
+            )
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sca_grype_report_filename}")
+
+    # SCA - OWASP Dependency Check
     if args.sca_owasp_dependency_check_report_filename:
-        csv_rows = parse_owasp_dependency_check_data(
-            args.nvd_api_key,
-            args.opencve_username,
-            args.opencve_password,
-            args.sca_owasp_dependency_check_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sca_owasp_dependency_check_report_filename):
+            csv_rows = parse_owasp_dependency_check_data(
+                args.nvd_api_key,
+                args.opencve_username,
+                args.opencve_password,
+                args.sca_owasp_dependency_check_report_filename,
+            )
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sca_owasp_dependency_check_report_filename}")
+
+    # SCA - Snyk
     if args.sca_snyk_report_filename:
-        csv_rows = parse_snyk_data(
-            args.nvd_api_key,
-            args.opencve_username,
-            args.opencve_password,
-            args.sca_snyk_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sca_snyk_report_filename):
+            csv_rows = parse_snyk_data(
+                args.nvd_api_key,
+                args.opencve_username,
+                args.opencve_password,
+                args.sca_snyk_report_filename,
+            )
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sca_snyk_report_filename}")
+
+    # SCA - Eclipse Steady
     if args.sca_eclipse_steady_report_filename:
-        csv_rows = parse_eclipse_steady_data(
-            args.nvd_api_key,
-            args.opencve_username,
-            args.opencve_password,
-            args.sca_eclipse_steady_report_filename,
-        )
-        write_to_csv_report(csv_report_filename, csv_rows)
+        if os.path.isfile(args.sca_eclipse_steady_report_filename):
+            csv_rows = parse_eclipse_steady_data(
+                args.nvd_api_key,
+                args.opencve_username,
+                args.opencve_password,
+                args.sca_eclipse_steady_report_filename,
+            )
+            write_to_csv_report(csv_report_filename, csv_rows)
+        else:
+            logging.error(f"File not found: {args.sca_eclipse_steady_report_filename}")
 
     return None
 

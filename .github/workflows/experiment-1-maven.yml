@@ -117,12 +117,6 @@ jobs:
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: maven-build
-          path: upstream-repo
-
       - name: Run SonarQube (SAST)
         uses: ./main-repo/.github/actions/sast/sonarqube
         with:
@@ -190,13 +184,7 @@ jobs:
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Coverage
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: maven-build
-          path: upstream-repo
-
-      - name: Run DeepSource (SAST)
+      - name: Run Deepsource (SAST)
         uses: ./main-repo/.github/actions/sast/deepsource
         with:
           language: java
@@ -319,12 +307,6 @@ jobs:
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: maven-build
-          path: upstream-repo
-
       - name: Run Eclipse Steady (SCA)
         uses: ./main-repo/.github/actions/sca/eclipse-steady
         with:
@@ -362,12 +344,6 @@ jobs:
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: maven-build
-          path: upstream-repo
-
       - name: Run Snyk (SCA)
         uses: ./main-repo/.github/actions/sca/snyk
         with:
@@ -400,12 +376,6 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
-
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: maven-build
-          path: upstream-repo
 
       - name: Run OWASP Dependency Check (SCA)
         uses: ./main-repo/.github/actions/sca/owasp-dependency-check
@@ -441,12 +411,6 @@ jobs:
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: maven-build
-          path: upstream-repo
-
       - name: Run Grype (SCA)
         uses: ./main-repo/.github/actions/sca/grype
         with:
@@ -474,4 +438,26 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+
+      - name: Download All Build Artifacts
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: in_progress
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Create Security Testing Tool Report
+        uses: ./.github/actions/common/security-testing-tool-csv-report
+        with:
+          nvd-api-key: ${{ secrets.NVD_API_KEY }}
+          opencve-username: ${{ secrets.OPENCVE_USERNAME }}
+          opencve-password: ${{ secrets.OPENCVE_PASSWORD }}
+          sast-horusec-report-filename: horusec-report.json
+          sast-insider-report-filename: sast-insider-report/report.json
+          sast-semgrep-report-filename: semgrep-report.json
+          sast-snyk-code-report-filename: snyk-code-report.json
+          sca-eclipse-steady-report-filename: sca-eclipse-steady-report/vulas-report.json
+          sca-grype-report-filename: results.json
+          sca-owasp-dependency-check-report-filename: sca-owasp-dependency-check-report/dependency-check-report.json
+          sca-snyk-report-filename: snyk-report.json
