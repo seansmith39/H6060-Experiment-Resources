@@ -91,6 +91,8 @@ The following report columns are populated
 | CWE ID                      | CWE ID                                                                                                                   |               |
 | CWE Name                    | CWE Name                                                                                                                 |               |
 | CWE Description             | CWE Description                                                                                                          |               |
+| CWE Impact                  | Impact rating of CWE                                                                                                     |               |
+| CWE Likelihood              | Likelihood of CWE exploitation                                                                                           |               |
 | OWASP Top 10                | Category of OWASP top 10 for CWE ID                                                                                      |               |
 | MITRE Top 25                | Index of MITRE top 25 for CWE ID                                                                                         |               |
 | Dependency Name             | Dependency name associated with vulnerability                                                                            |               |
