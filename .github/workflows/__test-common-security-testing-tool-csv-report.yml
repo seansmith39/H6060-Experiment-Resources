@@ -1,0 +1,66 @@
+name: Test Security Testing Tool CSV Report Action
+
+on: push
+
+jobs:
+  test-action-security-testing-tool-csv-report-partial:
+    name: Test Security Testing Tool CSV Report (Partial)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.12
+
+      - name: Install Pip Dependencies
+        uses: ./.github/actions/python/install-pip-dependencies
+        with:
+          requirement-file-name: requirements-dev.txt
+          path: ./.github/actions/common/security-testing-tool-csv-report
+
+      - name: Create Security Testing Tool Report
+        uses: ./.github/actions/common/security-testing-tool-csv-report
+        with:
+          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
+          opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
+          opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
+          sast-insider-report-filename: ./.github/workflows/resources/report-sast-insider.json
+          sca-snyk-report-filename: ./.github/workflows/resources/report-sca-snyk.json
+          build-artifact-name: experiment-1-security-testing-tool-results-partial
+
+  test-action-security-testing-tool-csv-report-full:
+    name: Test Security Testing Tool CSV Report (Full)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.12
+
+      - name: Install Pip Dependencies
+        uses: ./.github/actions/python/install-pip-dependencies
+        with:
+          requirement-file-name: requirements-dev.txt
+          path: ./.github/actions/common/security-testing-tool-csv-report
+
+      - name: Create Security Testing Tool Report
+        uses: ./.github/actions/common/security-testing-tool-csv-report
+        with:
+          nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
+          opencve-username: ${{ secrets.TEST_OPENCVE_USERNAME }}
+          opencve-password: ${{ secrets.TEST_OPENCVE_PASSWORD }}
+          sast-horusec-report-filename: ./.github/workflows/resources/report-sast-horusec.json
+          sast-insider-report-filename: ./.github/workflows/resources/report-sast-insider.json
+          sast-semgrep-report-filename: ./.github/workflows/resources/report-sast-semgrep.json
+          sast-snyk-code-report-filename: ./.github/workflows/resources/report-sast-snyk-code.json
+          sca-eclipse-steady-report-filename: ./.github/workflows/resources/report-sca-eclipse-steady.json
+          sca-grype-report-filename: ./.github/workflows/resources/report-sca-grype.json
+          sca-owasp-dependency-check-report-filename: ./.github/workflows/resources/report-sca-owasp-dependency-check.json
+          sca-snyk-report-filename: ./.github/workflows/resources/report-sca-snyk.json
+          build-artifact-name: experiment-1-security-testing-tool-results-full
