@@ -27,12 +27,6 @@ on:
         required: false
         default: true
 
-      sast-insider-enabled:
-        description: 'Enable Insider scan (SAST)'
-        type: boolean
-        required: false
-        default: true
-
       sast-codeql-enabled:
         description: 'Enable CodeQL scan (SAST)'
         type: boolean

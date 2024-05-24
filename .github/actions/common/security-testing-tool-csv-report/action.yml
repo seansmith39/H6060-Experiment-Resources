@@ -81,9 +81,9 @@ runs:
         echo "SCA_SNYK_REPORT_FILENAME=${{ inputs.sca-snyk-report-filename || '' }}" >> $GITHUB_ENV
 
     - name: Install Python 3.12
-        uses: actions/setup-python@v5.1.0
-        with:
-          python-version: 3.12
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: 3.12
 
     - name: Install Pip Dependencies
       uses: ./.github/actions/python/install-pip-dependencies
