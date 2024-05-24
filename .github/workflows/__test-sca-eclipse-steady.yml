@@ -1,13 +1,11 @@
-name: Test Snyk SCA Action
+name: Test Eclipse Steady SCA Action
 
 on: push
 
 jobs:
   test-action-mvn-job:
-    name: Test Snyk SCA Action (Maven)
+    name: Test Eclipse Steady SCA Action (Maven)
     runs-on: ubuntu-latest
-    env:
-      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,18 +31,20 @@ jobs:
           build-command: -U -B -fae -DskipTests clean install
           path: xnio
 
-      - name: Run Snyk (SCA)
-        uses: ./main/.github/actions/sca/snyk
+      - name: Run Eclipse Steady (SCA)
+        uses: ./main/.github/actions/sca/eclipse-steady
         with:
           language: java
+          eclipse-steady-workspace-token: B774A44546001A1711E7B8F77CF9483E
+          eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
+          project-name: xnio
+          project-source-directories: api/src/main,nio-impl/src/main
           path: xnio
-          build-artifact-name: sast-snyk-report-maven
+          build-artifact-name: sast-eclipse-steady-report-maven
 
   test-action-python-job:
-    name: Test Snyk SCA Action (Python)
+    name: Test Eclipse Steady SCA Action (Python)
     runs-on: ubuntu-latest
-    env:
-      SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -74,11 +74,13 @@ jobs:
         with:
           path: mycli
 
-      - name: Run Snyk (SCA)
-        uses: ./main/.github/actions/sca/snyk
+      - name: Run Eclipse Steady (SCA)
+        uses: ./main/.github/actions/sca/eclipse-steady
         with:
           language: python
-          snyk-package-manager: pip
-          snyk-file-to-scan: requirements-dev.txt
+          eclipse-steady-workspace-token: D307665D82F83EBC28AE4B22BE0F0CAC
+          eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
+          project-name: mycli
+          project-source-directories: mycli
           path: mycli
-          build-artifact-name: sast-snyk-report-python
+          build-artifact-name: sast-eclipse-steady-report-python

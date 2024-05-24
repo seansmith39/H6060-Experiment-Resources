@@ -54,7 +54,7 @@ jobs:
         with:
           path: main
 
-      - name: Checkout Clearml
+      - name: Checkout mycli
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-mycli
