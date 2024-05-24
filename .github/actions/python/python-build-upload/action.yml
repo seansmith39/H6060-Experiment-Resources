@@ -3,6 +3,12 @@ description: Build a Python project and upload as a build artifact
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  build-command:
+    description: Build command to run
+    type: string
+    required: false
+    default: python setup.py build
+
   path:
     description: Directory to run the action
     type: string
@@ -15,7 +21,7 @@ runs:
     - name: Build Python Package
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: python setup.py build
+      run: ${{ inputs.build-command }}
 
     - name: Tar Python Build
       shell: bash

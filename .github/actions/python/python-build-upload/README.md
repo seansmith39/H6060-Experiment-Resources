@@ -8,9 +8,10 @@ Resulting TAR is uploaded as a build artifact.
 
 ## Inputs
 
-| name | required | type   | default                 | description                    |
-| ---- | -------- | ------ | ----------------------- | ------------------------------ |
-| path | false    | string | ${{ github.workspace }} | Path to run the Python command |
+| name          | required | type   | default                 | description                    |
+| ------------- | -------- | ------ | ----------------------- | ------------------------------ |
+| build-command | false    | string | python setup.py build   | Python build command           |
+| path          | false    | string | ${{ github.workspace }} | Path to run the Python command |
 
 ## Example Execution
 
