@@ -1,6 +1,10 @@
 name: Test Mvn Build And Upload Action
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   test-action-job:
