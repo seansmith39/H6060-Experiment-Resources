@@ -20,4 +20,4 @@ runs:
     - name: Extract Build Artifact
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: tar -xzf ${{ inputs.build-artifact-name }}.tgz -C ~
+      run: tar -xvf ${{ inputs.build-artifact-name }}.tgz
