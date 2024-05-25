@@ -31,6 +31,11 @@ REPORT_SAST_INSIDER = (
 REPORT_SAST_SEMGREP = (
     TEST_DIRECTORY_RESOURCES + "sast-semgrep/report-sast-semgrep.json"
 )
+REPORT_SAST_SEMGREP_NO_RESULTS = (
+    TEST_DIRECTORY_RESOURCES
+    + "sast-semgrep/report-sast-semgrep-no-results.json"
+)
+
 REPORT_SAST_SNYK_CODE = (
     TEST_DIRECTORY_RESOURCES + "sast-snyk-code/report-sast-snyk-code.json"
 )
@@ -347,6 +352,12 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             csv_rows[0][46],
             "clearml/automation/job.py",
         )
+
+    def test_parse_semgrep_data_no_vulnerabilities(self):
+        csv_rows = experiment_1_generate_report.parse_semgrep_data(
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_SAST_SEMGREP_NO_RESULTS
+        )
+        self.assertTrue(len(csv_rows) == 0)
 
     def test_parse_snyk_code_data(self):
         csv_rows = experiment_1_generate_report.parse_snyk_code_data(
