@@ -50,10 +50,10 @@ runs:
         add-snippets: true
         output: ${{ inputs.path }}/results
 
-      - name: Upload CodeQL SARIF For Analysis
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ${{ inputs.path }}/results/${{ inputs.language }}.sarif
+    - name: Upload CodeQL SARIF For Analysis
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.path }}/results/${{ inputs.language }}.sarif
 
     - name: Upload CodeQL Report
       uses: actions/upload-artifact@v4
