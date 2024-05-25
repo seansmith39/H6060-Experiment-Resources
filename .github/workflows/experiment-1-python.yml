@@ -141,7 +141,7 @@ jobs:
       - name: Run SonarQube (SAST)
         uses: ./main-repo/.github/actions/sast/sonarqube
         with:
-          language: java
+          language: python
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           sonar-host-url: ${{ secrets.SONAR_HOST_URL}}
           sonar-username: ${{ secrets.SONAR_USERNAME }}
