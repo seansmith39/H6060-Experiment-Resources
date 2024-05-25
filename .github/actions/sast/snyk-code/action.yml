@@ -39,11 +39,11 @@ runs:
         snyk code test \
           --severity-threshold=low \
           --json \
-          --json-file-output=result.json || EXIT_CODE=$?
+          --json-file-output=snyk-code-report.json || EXIT_CODE=$?
         if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
 
     - name: Upload Snyk Report
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.build-artifact-name }}
-        path: ${{ inputs.path }}/result.json
+        path: ${{ inputs.path }}/snyk-code-report.json

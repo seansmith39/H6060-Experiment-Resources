@@ -14,20 +14,36 @@ from main.python3 import experiment_1_generate_report
 TEST_DIRECTORY_RESOURCES = (
     os.path.dirname(os.path.realpath(__file__)) + "/resources/"
 )
-RESPONSE_NVDCVE = TEST_DIRECTORY_RESOURCES + "response-nvdcve.json"
-RESPONSE_OPENCVE = TEST_DIRECTORY_RESOURCES + "response-opencve.json"
-REPORT_SAST_HORUSEC = TEST_DIRECTORY_RESOURCES + "report-sast-horusec.json"
-REPORT_SAST_INSIDER = TEST_DIRECTORY_RESOURCES + "report-sast-insider.json"
-REPORT_SAST_SEMGREP = TEST_DIRECTORY_RESOURCES + "report-sast-semgrep.json"
-REPORT_SAST_SNYK_CODE = TEST_DIRECTORY_RESOURCES + "report-sast-snyk-code.json"
+RESPONSE_NVDCVE = TEST_DIRECTORY_RESOURCES + "nvdcve/response-nvdcve.json"
+RESPONSE_OPENCVE = TEST_DIRECTORY_RESOURCES + "opencve/response-opencve.json"
+
+REPORT_SAST_HORUSEC = (
+    TEST_DIRECTORY_RESOURCES + "sast-horusec/report-sast-horusec.json"
+)
+REPORT_SAST_HORUSEC_NO_RESULTS = (
+    TEST_DIRECTORY_RESOURCES
+    + "sast-horusec/report-sast-horusec-no-results.json"
+)
+
+REPORT_SAST_INSIDER = (
+    TEST_DIRECTORY_RESOURCES + "sast-insider/report-sast-insider.json"
+)
+REPORT_SAST_SEMGREP = (
+    TEST_DIRECTORY_RESOURCES + "sast-semgrep/report-sast-semgrep.json"
+)
+REPORT_SAST_SNYK_CODE = (
+    TEST_DIRECTORY_RESOURCES + "sast-snyk-code/report-sast-snyk-code.json"
+)
 REPORT_SCA_ECLIPSE_STEADY = (
-    TEST_DIRECTORY_RESOURCES + "report-sca-eclipse-steady.json"
+    TEST_DIRECTORY_RESOURCES
+    + "sca-eclipse-steady/report-sca-eclipse-steady.json"
 )
-REPORT_SCA_GRYPE = TEST_DIRECTORY_RESOURCES + "report-sca-grype.json"
+REPORT_SCA_GRYPE = TEST_DIRECTORY_RESOURCES + "sca-grype/report-sca-grype.json"
 REPORT_SCA_OWASP_DEPENDENCY_CHECK = (
-    TEST_DIRECTORY_RESOURCES + "report-sca-owasp-dependency-check.json"
+    TEST_DIRECTORY_RESOURCES
+    + "sca-owasp-dependency-check/report-sca-owasp-dependency-check.json"
 )
-REPORT_SCA_SNYK = TEST_DIRECTORY_RESOURCES + "report-sca-snyk.json"
+REPORT_SCA_SNYK = TEST_DIRECTORY_RESOURCES + "sca-snyk/report-sca-snyk.json"
 
 DEFAULT_CSV_REPORT_FILENAME = "experiment_1_security_testing_tool_results.csv"
 NVD_API_KEY = "11111111-2222-3333-4444-555555555555"
@@ -271,6 +287,12 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             csv_rows[0][46],
             "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
         )
+
+    def test_parse_horusec_data_no_results(self):
+        csv_rows = experiment_1_generate_report.parse_horusec_data(
+            OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_SAST_HORUSEC_NO_RESULTS
+        )
+        self.assertTrue(len(csv_rows) == 0)
 
     @patch(
         "main.python3.experiment_1_generate_report.get_opencve_cwe_details",
