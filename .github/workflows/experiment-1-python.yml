@@ -266,6 +266,8 @@ jobs:
     if: ${{ inputs.sast-snyk-code-enabled == true }}
     runs-on: ubuntu-latest
     needs: create-pip-dependency-tree
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - name: Checkout Current GitHub Repository
         uses: actions/checkout@v4
@@ -327,6 +329,8 @@ jobs:
     if: ${{ inputs.sca-snyk-enabled == true }}
     runs-on: ubuntu-latest
     needs: create-pip-dependency-tree
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - name: Checkout Current GitHub Repository
         uses: actions/checkout@v4
