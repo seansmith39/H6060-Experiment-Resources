@@ -288,7 +288,7 @@ class TestExperiment1GenerateReport(unittest.TestCase):
             "nio-impl/src/test/java/org/xnio/nio/test/NioSslTcpChannelTestCase.java",
         )
 
-    def test_parse_horusec_data_no_results(self):
+    def test_parse_horusec_data_no_vulnerabilities(self):
         csv_rows = experiment_1_generate_report.parse_horusec_data(
             OPENCVE_USERNAME, OPENCVE_PASSWORD, REPORT_SAST_HORUSEC_NO_RESULTS
         )
