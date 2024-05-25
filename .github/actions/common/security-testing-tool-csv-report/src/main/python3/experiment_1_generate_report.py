@@ -569,66 +569,75 @@ def parse_horusec_data(
     cwe_description_dict = {}
 
     try:
-        for vulnerabilities in data["analysisVulnerabilities"]:
-            # Set default values
-            cwe_name = default_column_value
-            cwe_description = default_column_value
+        if data["analysisVulnerabilities"] is None:
+            log.info("No vulnerabilities reported by Horusec.")
+        else:
+            for vulnerabilities in data["analysisVulnerabilities"]:
+                # Set default values
+                cwe_name = default_column_value
+                cwe_description = default_column_value
 
-            vulnerability_index = vulnerabilities["vulnerabilities"]
-            if vulnerability_index["type"].upper() == "VULNERABILITY":
-                cwe_severity = vulnerability_index["severity"]
-                cwe_confidence = vulnerability_index["confidence"]
-                cwe_rule_id = vulnerability_index["rule_id"]
-                cwe_language = vulnerability_index["language"]
-                cwe_class = vulnerability_index["file"]
+                vulnerability_index = vulnerabilities["vulnerabilities"]
+                if vulnerability_index["type"].upper() == "VULNERABILITY":
+                    cwe_severity = vulnerability_index["severity"]
+                    cwe_confidence = vulnerability_index["confidence"]
+                    cwe_rule_id = vulnerability_index["rule_id"]
+                    cwe_language = vulnerability_index["language"]
+                    cwe_class = vulnerability_index["file"]
 
-                details = vulnerability_index["details"]
-                match = re.search(get_cwe_pattern(), details)
-                if match:
-                    cwe_id = match.group(0)
-                    log.info(f"Horusec CWE ID: {cwe_id}")
+                    details = vulnerability_index["details"]
+                    match = re.search(get_cwe_pattern(), details)
+                    if match:
+                        cwe_id = match.group(0)
+                        log.info(f"Horusec CWE ID: {cwe_id}")
 
-                    cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
-                    cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+                        cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+                        cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-                    if (
-                        cwe_id.upper() != "NVD-CWE-NOINFO"
-                        and cwe_id.upper() != "NVD-CWE-OTHER"
-                    ):
-                        # Get additional CWE details from OpenCVE
-                        if cwe_id not in cwe_name_dict:
-                            opencve_cwe_details = get_opencve_cwe_details(
-                                opencve_username, opencve_password, cwe_id
-                            )
+                        if (
+                            cwe_id.upper() != "NVD-CWE-NOINFO"
+                            and cwe_id.upper() != "NVD-CWE-OTHER"
+                        ):
+                            # Get additional CWE details from OpenCVE
+                            if cwe_id not in cwe_name_dict:
+                                opencve_cwe_details = get_opencve_cwe_details(
+                                    opencve_username, opencve_password, cwe_id
+                                )
 
-                            if opencve_cwe_details:
-                                cwe_name = opencve_cwe_details.json()["name"]
-                                cwe_description = opencve_cwe_details.json()[
-                                    "description"
-                                ]
-                            cwe_name_dict = {cwe_id: cwe_name}
-                            cwe_description_dict = {cwe_id: cwe_description}
-                        else:
-                            cwe_name = cwe_name_dict[cwe_id]
-                            cwe_description = cwe_description_dict[cwe_id]
+                                if opencve_cwe_details:
+                                    cwe_name = opencve_cwe_details.json()[
+                                        "name"
+                                    ]
+                                    cwe_description = (
+                                        opencve_cwe_details.json()[
+                                            "description"
+                                        ]
+                                    )
+                                cwe_name_dict = {cwe_id: cwe_name}
+                                cwe_description_dict = {
+                                    cwe_id: cwe_description
+                                }
+                            else:
+                                cwe_name = cwe_name_dict[cwe_id]
+                                cwe_description = cwe_description_dict[cwe_id]
 
-                    horusec_data = get_csv_column_entries(
-                        tool_type="SAST",
-                        tool_name="HORUSEC",
-                        tool_classification="SYNTAX-BASED",
-                        severity=cwe_severity,
-                        confidence=cwe_confidence,
-                        cwe_id=cwe_id,
-                        cwe_name=cwe_name,
-                        cwe_description=cwe_description,
-                        owasp_top_10=cwe_owasp_top_10,
-                        mitre_top_25=cwe_mitre_top_25,
-                        rule_id=cwe_rule_id,
-                        language=cwe_language,
-                        classname=cwe_class,
-                    )
-                    log.info(f"Horusec parsed data: {str(horusec_data)}")
-                    csv_rows.append(horusec_data)
+                        horusec_data = get_csv_column_entries(
+                            tool_type="SAST",
+                            tool_name="HORUSEC",
+                            tool_classification="SYNTAX-BASED",
+                            severity=cwe_severity,
+                            confidence=cwe_confidence,
+                            cwe_id=cwe_id,
+                            cwe_name=cwe_name,
+                            cwe_description=cwe_description,
+                            owasp_top_10=cwe_owasp_top_10,
+                            mitre_top_25=cwe_mitre_top_25,
+                            rule_id=cwe_rule_id,
+                            language=cwe_language,
+                            classname=cwe_class,
+                        )
+                        log.info(f"Horusec parsed data: {str(horusec_data)}")
+                        csv_rows.append(horusec_data)
     except Exception as e:
         log.error(f"Horusec parsing error: {e}")
     else:
