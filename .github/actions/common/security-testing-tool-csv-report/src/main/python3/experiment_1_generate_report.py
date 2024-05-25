@@ -2089,10 +2089,14 @@ def main(args: argparse.Namespace) -> None:
     # SAST - Snyk Code
     if args.sast_snyk_code_report_filename:
         if os.path.isfile(args.sast_snyk_code_report_filename):
-            csv_rows = parse_snyk_code_data(args.sast_snyk_code_report_filename)
+            csv_rows = parse_snyk_code_data(
+                args.sast_snyk_code_report_filename
+            )
             write_to_csv_report(csv_report_filename, csv_rows)
         else:
-            logging.error(f"File not found: {args.sast_snyk_code_report_filename}")
+            logging.error(
+                f"File not found: {args.sast_snyk_code_report_filename}"
+            )
 
     # SAST - Insider
     if args.sast_insider_report_filename:
@@ -2104,7 +2108,9 @@ def main(args: argparse.Namespace) -> None:
             )
             write_to_csv_report(csv_report_filename, csv_rows)
         else:
-            logging.error(f"File not found: {args.sast_insider_report_filename}")
+            logging.error(
+                f"File not found: {args.sast_insider_report_filename}"
+            )
 
     # SAST - Horusec
     if args.sast_horusec_report_filename:
@@ -2116,7 +2122,9 @@ def main(args: argparse.Namespace) -> None:
             )
             write_to_csv_report(csv_report_filename, csv_rows)
         else:
-            logging.error(f"File not found: {args.sast_horusec_report_filename}")
+            logging.error(
+                f"File not found: {args.sast_horusec_report_filename}"
+            )
 
     # SAST - Semgrep
     if args.sast_semgrep_report_filename:
@@ -2128,7 +2136,9 @@ def main(args: argparse.Namespace) -> None:
             )
             write_to_csv_report(csv_report_filename, csv_rows)
         else:
-            logging.error(f"File not found: {args.sast_semgrep_report_filename}")
+            logging.error(
+                f"File not found: {args.sast_semgrep_report_filename}"
+            )
 
     # SAST - Grype
     if args.sca_grype_report_filename:
@@ -2154,7 +2164,9 @@ def main(args: argparse.Namespace) -> None:
             )
             write_to_csv_report(csv_report_filename, csv_rows)
         else:
-            logging.error(f"File not found: {args.sca_owasp_dependency_check_report_filename}")
+            logging.error(
+                f"File not found: {args.sca_owasp_dependency_check_report_filename}"
+            )
 
     # SCA - Snyk
     if args.sca_snyk_report_filename:
@@ -2180,7 +2192,9 @@ def main(args: argparse.Namespace) -> None:
             )
             write_to_csv_report(csv_report_filename, csv_rows)
         else:
-            logging.error(f"File not found: {args.sca_eclipse_steady_report_filename}")
+            logging.error(
+                f"File not found: {args.sca_eclipse_steady_report_filename}"
+            )
 
     return None
 
