@@ -1,6 +1,10 @@
 name: Test Extract Build Artifact Action
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   test-action-extract-build-artifact:

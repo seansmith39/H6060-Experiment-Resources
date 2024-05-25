@@ -80,6 +80,17 @@ runs:
         echo "SCA_OWASP_DEPENDENCY_CHECK_REPORT_FILENAME=${{ inputs.sca-owasp-dependency-check-report-filename || '' }}" >> $GITHUB_ENV
         echo "SCA_SNYK_REPORT_FILENAME=${{ inputs.sca-snyk-report-filename || '' }}" >> $GITHUB_ENV
 
+    - name: Install Python 3.12
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: 3.12
+
+    - name: Install Pip Dependencies
+      uses: ./.github/actions/python/install-pip-dependencies
+      with:
+        requirement-file-name: requirements-dev.txt
+        path: ${{ github.action_path }}
+
     - name: Run Unit Tests
       shell: bash
       working-directory: ${{ github.action_path }}

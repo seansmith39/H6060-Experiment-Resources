@@ -1,6 +1,10 @@
 name: Test Snyk Code SAST Action
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   test-action-mvn-job:
