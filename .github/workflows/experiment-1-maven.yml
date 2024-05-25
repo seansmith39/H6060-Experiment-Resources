@@ -491,11 +491,11 @@ jobs:
           nvd-api-key: ${{ secrets.NVD_API_KEY }}
           opencve-username: ${{ secrets.OPENCVE_USERNAME }}
           opencve-password: ${{ secrets.OPENCVE_PASSWORD }}
-          sast-horusec-report-filename: horusec-report.json
+          sast-horusec-report-filename: sast-horusec-report/horusec-report.json
           sast-insider-report-filename: sast-insider-report/report.json
-          sast-semgrep-report-filename: semgrep-report.json
-          sast-snyk-code-report-filename: snyk-code-report.json
+          sast-semgrep-report-filename: sast-semgrep-report/semgrep-report.json
+          sast-snyk-code-report-filename: sast-snyk-code-report/snyk-code-report.json
           sca-eclipse-steady-report-filename: sca-eclipse-steady-report/vulas-report.json
-          sca-grype-report-filename: results.json
+          sca-grype-report-filename: sca-grype-report/results.json
           sca-owasp-dependency-check-report-filename: sca-owasp-dependency-check-report/dependency-check-report.json
-          sca-snyk-report-filename: snyk-report.json
+          sca-snyk-report-filename: sca-snyk-report/snyk-report.json

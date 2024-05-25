@@ -1,0 +1,44 @@
+{
+  "errors":[
+     {
+        "code":2,
+        "level":"warn",
+        "message":"Timeout when running python.boto3.security.hardcoded-token.hardcoded-token on idna/uts46data.py:\n ",
+        "path":"idna/uts46data.py",
+        "rule_id":"python.boto3.security.hardcoded-token.hardcoded-token",
+        "type":"Timeout"
+     }
+  ],
+  "interfile_languages_used":[
+
+  ],
+  "paths":{
+     "scanned":[
+        ".github/workflows/experiment-1.yml",
+        ".gitignore",
+        "HISTORY.rst",
+        "LICENSE.md",
+        "README.rst",
+        "SECURITY.md",
+        "idna/__init__.py",
+        "idna/codec.py",
+        "idna/compat.py",
+        "idna/core.py",
+        "idna/idnadata.py",
+        "idna/intranges.py",
+        "idna/package_data.py",
+        "idna/py.typed",
+        "idna/uts46data.py",
+        "pyproject.toml",
+        "setup.cfg",
+        "tools/idna-data"
+     ]
+  },
+  "results":[
+
+  ],
+  "skipped_rules":[
+
+  ],
+  "version":"1.73.0"
+}

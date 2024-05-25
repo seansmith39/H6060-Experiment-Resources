@@ -750,71 +750,74 @@ def parse_semgrep_data(
     cwe_description_dict = {}
 
     try:
-        for vulnerability in data["results"]:
-            # Set default values
-            cwe_name = default_column_value
-            cwe_description = default_column_value
+        if len(data["results"]) == 0:
+            log.info("No vulnerabilities reported by Semgrep.")
+        else:
+            for vulnerability in data["results"]:
+                # Set default values
+                cwe_name = default_column_value
+                cwe_description = default_column_value
 
-            cwe_class = vulnerability["path"]
-            cwe_severity = vulnerability["extra"]["severity"]
+                cwe_class = vulnerability["path"]
+                cwe_severity = vulnerability["extra"]["severity"]
 
-            vulnerability_metadata = vulnerability["extra"]["metadata"]
-            cwe_confidence = vulnerability_metadata["confidence"]
-            cwe_rule_id = vulnerability_metadata["semgrep.dev"]["rule"][
-                "rule_id"
-            ]
-            cwe_language = vulnerability_metadata["technology"][0]
-            cwe_impact = vulnerability_metadata["impact"]
-            cwe_likelihood = vulnerability_metadata["likelihood"]
+                vulnerability_metadata = vulnerability["extra"]["metadata"]
+                cwe_confidence = vulnerability_metadata["confidence"]
+                cwe_rule_id = vulnerability_metadata["semgrep.dev"]["rule"][
+                    "rule_id"
+                ]
+                cwe_language = vulnerability_metadata["technology"][0]
+                cwe_impact = vulnerability_metadata["impact"]
+                cwe_likelihood = vulnerability_metadata["likelihood"]
 
-            for cwe in vulnerability_metadata["cwe"]:
-                # Example: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
-                cwe_id = re.split(":", cwe)[0]
-                log.info(f"Semgrep CWE ID: {cwe_id}")
+                for cwe in vulnerability_metadata["cwe"]:
+                    # Example: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+                    cwe_id = re.split(":", cwe)[0]
+                    log.info(f"Semgrep CWE ID: {cwe_id}")
 
-                cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
-                cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
+                    cwe_owasp_top_10 = search_owasp_top_10(cwe_id)
+                    cwe_mitre_top_25 = search_mitre_top_25(cwe_id)
 
-                if (
-                    cwe_id.upper() != "NVD-CWE-NOINFO"
-                    and cwe_id.upper() != "NVD-CWE-OTHER"
-                ):
-                    # Get additional CWE details from OpenCVE
-                    if cwe_id not in cwe_name_dict:
-                        opencve_cwe_details = get_opencve_cwe_details(
-                            opencve_username, opencve_password, cwe_id
-                        )
+                    if (
+                        cwe_id.upper() != "NVD-CWE-NOINFO"
+                        and cwe_id.upper() != "NVD-CWE-OTHER"
+                    ):
+                        # Get additional CWE details from OpenCVE
+                        if cwe_id not in cwe_name_dict:
+                            opencve_cwe_details = get_opencve_cwe_details(
+                                opencve_username, opencve_password, cwe_id
+                            )
 
-                        if opencve_cwe_details:
-                            cwe_name = opencve_cwe_details.json()["name"]
-                            cwe_description = opencve_cwe_details.json()[
-                                "description"
-                            ]
-                        cwe_name_dict = {cwe_id: cwe_name}
-                        cwe_description_dict = {cwe_id: cwe_description}
-                    else:
-                        cwe_name = cwe_name_dict[cwe_id]
-                        cwe_description = cwe_description_dict[cwe_id]
+                            if opencve_cwe_details:
+                                cwe_name = opencve_cwe_details.json()["name"]
+                                cwe_description = opencve_cwe_details.json()[
+                                    "description"
+                                ]
+                            cwe_name_dict = {cwe_id: cwe_name}
+                            cwe_description_dict = {cwe_id: cwe_description}
+                        else:
+                            cwe_name = cwe_name_dict[cwe_id]
+                            cwe_description = cwe_description_dict[cwe_id]
 
-                semgrep_data = get_csv_column_entries(
-                    tool_type="SAST",
-                    tool_name="SEMGREP",
-                    tool_classification="SEMANTIC-BASED",
-                    severity=cwe_severity,
-                    confidence=cwe_confidence,
-                    cwe_id=cwe_id,
-                    cwe_name=cwe_name,
-                    cwe_description=cwe_description,
-                    cwe_impact=cwe_impact,
-                    cwe_likelihood=cwe_likelihood,
-                    owasp_top_10=cwe_owasp_top_10,
-                    mitre_top_25=cwe_mitre_top_25,
-                    rule_id=cwe_rule_id,
-                    language=cwe_language,
-                    classname=cwe_class,
-                )
-                log.info(f"Semgrep parsed data: {str(semgrep_data)}")
-                csv_rows.append(semgrep_data)
+                    semgrep_data = get_csv_column_entries(
+                        tool_type="SAST",
+                        tool_name="SEMGREP",
+                        tool_classification="SEMANTIC-BASED",
+                        severity=cwe_severity,
+                        confidence=cwe_confidence,
+                        cwe_id=cwe_id,
+                        cwe_name=cwe_name,
+                        cwe_description=cwe_description,
+                        cwe_impact=cwe_impact,
+                        cwe_likelihood=cwe_likelihood,
+                        owasp_top_10=cwe_owasp_top_10,
+                        mitre_top_25=cwe_mitre_top_25,
+                        rule_id=cwe_rule_id,
+                        language=cwe_language,
+                        classname=cwe_class,
+                    )
+                    log.info(f"Semgrep parsed data: {str(semgrep_data)}")
+                    csv_rows.append(semgrep_data)
     except Exception as e:
         log.error(f"Semgrep parsing error: {e}")
     else:
