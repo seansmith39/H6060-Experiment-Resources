@@ -131,7 +131,6 @@ jobs:
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: python-build
           path: upstream-repo
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
