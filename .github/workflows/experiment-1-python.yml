@@ -128,6 +128,7 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
+      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
@@ -137,6 +138,18 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Extract Build
+        uses: ./main-repo/.github/actions/common/extract-build-artifact
+        with:
+          build-artifact-name: python-build
+          path: upstream-repo
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/dist
+          fail: false
 
       - name: Run SonarQube (SAST)
         uses: ./main-repo/.github/actions/sast/sonarqube
