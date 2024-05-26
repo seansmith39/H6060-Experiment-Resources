@@ -1,6 +1,10 @@
 name: Test Eclipse Steady SCA Action
 
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   test-action-mvn-job:

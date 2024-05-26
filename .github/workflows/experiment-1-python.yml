@@ -162,7 +162,7 @@ jobs:
         uses: andstor/file-existence-action@v3
         with:
           files: upstream-repo/${{ inputs.project-build-dir }}
-          fail: false
+          fail: true
 
       - name: Run SonarQube (SAST)
         uses: ./main-repo/.github/actions/sast/sonarqube
@@ -330,6 +330,7 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
+      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
@@ -339,6 +340,18 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Extract Build
+        uses: ./main-repo/.github/actions/common/extract-build-artifact
+        with:
+          build-artifact-name: python-build
+          path: upstream-repo
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/${{ inputs.project-build-dir }}
+          fail: true
 
       - name: Run Eclipse Steady (SCA)
         uses: ./main-repo/.github/actions/sca/eclipse-steady
@@ -370,7 +383,7 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
-        # Unzips to upstream-repo/python-build.tgz
+      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
@@ -391,7 +404,7 @@ jobs:
         uses: andstor/file-existence-action@v3
         with:
           files: upstream-repo/${{ inputs.project-build-dir }}
-          fail: false
+          fail: true
 
       - name: Install Pip Dependencies
         uses: ./main-repo/.github/actions/python/install-pip-dependencies
@@ -425,6 +438,7 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
+      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
@@ -434,6 +448,18 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Extract Build
+        uses: ./main-repo/.github/actions/common/extract-build-artifact
+        with:
+          build-artifact-name: python-build
+          path: upstream-repo
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/${{ inputs.project-build-dir }}
+          fail: true
 
       - name: Run OWASP Dependency Check (SCA)
         uses: ./main-repo/.github/actions/sca/owasp-dependency-check
@@ -460,7 +486,7 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
-        # Unzips to upstream-repo/python-build.tgz
+      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
@@ -481,7 +507,7 @@ jobs:
         uses: andstor/file-existence-action@v3
         with:
           files: upstream-repo/${{ inputs.project-build-dir }}
-          fail: false
+          fail: true
 
       - name: Install Pip Dependencies
         uses: ./main-repo/.github/actions/python/install-pip-dependencies
