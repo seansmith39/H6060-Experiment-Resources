@@ -28,7 +28,7 @@ inputs:
     description: Name of Snyk build artifact
     type: string
     required: false
-    default: sast-snyk-report
+    default: sca-snyk-report
 
 runs:
   using: composite
