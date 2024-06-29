@@ -53,7 +53,6 @@ The workflow can be triggered using the following example snippet:
 
 | name                                          | required | type    | default | description                                        |
 |-----------------------------------------------|----------|---------|---------|----------------------------------------------------|
-| **sbom-image-to-scan:**                       | yes      | string  |         | Name of SBOM image to scan                         |
 | **sast-sonarqube-enabled :**                  | no       | boolean | true    | Enable SonarQube scan (SAST)                       |
 | **sast-semgrep-enabled**                      | no       | boolean | true    | Enable Semgrep scan (SAST)                         |
 | **sast-deepsource-enabled**                   | no       | boolean | true    | Enable Deepsource scan (SAST)                      |
@@ -73,7 +72,6 @@ The workflow can be triggered using the following example snippet:
 
 | name                                          | required | type    | default          | description                                        |
 |-----------------------------------------------|----------|---------|------------------|----------------------------------------------------|
-| **sbom-image-to-scan:**                       | yes      | string  |                  | Name of SBOM image to scan                         |
 | **sast-sonarqube-enabled :**                  | no       | boolean | true             | Enable SonarQube scan (SAST)                       |
 | **sast-semgrep-enabled**                      | no       | boolean | true             | Enable Semgrep scan (SAST)                         |
 | **sast-deepsource-enabled**                   | no       | boolean | true             | Enable Deepsource scan (SAST)                      |
