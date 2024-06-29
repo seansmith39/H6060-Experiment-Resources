@@ -15,7 +15,7 @@ runs:
     - name: Install CycloneDX
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: pip install cyclonedx-bom==4.5.0
+      run: pip install cyclonedx-bom
 
     - name: Create CycloneDX SBOM
       shell: bash
