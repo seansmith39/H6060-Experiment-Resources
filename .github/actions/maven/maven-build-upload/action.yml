@@ -32,5 +32,7 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: maven-build
-        path: ${{ inputs.path }}/maven-build.tgz
+        path: |
+          ${{ inputs.path }}/maven-build.tgz
+          ${{ inputs.path }}/target
         if-no-files-found: error

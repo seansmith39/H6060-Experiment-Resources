@@ -29,7 +29,7 @@ jobs:
           distribution: adopt
           java-version: 8
 
-      - name: Create Mvn Dependency Tree
-        uses: ./main/.github/actions/maven/mvn-dependency-tree
+      - name: Create Maven Dependency Tree
+        uses: ./main/.github/actions/maven/maven-dependency-tree
         with:
           path: xnio
