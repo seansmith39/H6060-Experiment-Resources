@@ -1,11 +1,11 @@
-name: Test Mvn Dependency Tree Action
+name: Test Maven Dependency Tree Action
 
 on:
   workflow_dispatch:
 
 jobs:
   test-action-job:
-    name: Test Mvn Dependency Tree Action
+    name: Test Maven Dependency Tree Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
