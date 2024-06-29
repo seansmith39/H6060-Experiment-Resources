@@ -140,7 +140,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SBOM
-          path: target/bom.json
+          path: target/sbom.json
           if-no-files-found: error
 
   sast-sonarqube:
