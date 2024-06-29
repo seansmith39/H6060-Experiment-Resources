@@ -3,6 +3,11 @@ name: Experiment 1 - Maven Scanning
 on:
   workflow_call:
     inputs:
+      sbom-image-to-scan:
+        description: 'Name of SBOM image to scan'
+        type: string
+        required: true
+
       sast-sonarqube-enabled:
         description: 'Enable SonarQube scan (SAST)'
         type: boolean
@@ -137,7 +142,7 @@ jobs:
       - name: Create SBOM
         uses: anchore/sbom-action@v0.15.10
         with:
-          image: target/*.jar
+          image: target/${{ inputs.sbom-image-to-scan }}
           artifact-name: ${{ inputs.project-name }}.cyclonedx
           dependency-snapshot: true
           format: cyclonedx-json
