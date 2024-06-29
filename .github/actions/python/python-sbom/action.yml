@@ -14,6 +14,7 @@ runs:
   steps:
     - name: Freeze Python Environment
       shell: bash
+      working-directory: ${{ inputs.path }}
       run: pip freeze > python-packages.txt
 
     - name: Install Python 3.12
