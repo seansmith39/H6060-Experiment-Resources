@@ -1,10 +1,7 @@
 name: Test Security Testing Tool CSV Report Action
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   test-action-security-testing-tool-csv-report-partial:

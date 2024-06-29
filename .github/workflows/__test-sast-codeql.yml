@@ -1,11 +1,7 @@
 name: Test CodeQL SAST Action
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-
+  workflow_dispatch:
 permissions:
   security-events: write
 
