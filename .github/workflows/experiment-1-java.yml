@@ -1,4 +1,4 @@
-name: Experiment 1 - Maven Scanning
+name: Experiment 1 - Java Scanning
 
 on:
   workflow_call:
