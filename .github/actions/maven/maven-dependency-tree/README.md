@@ -1,4 +1,4 @@
-# Mvn Dependency Tree Action
+# Maven Dependency Tree Action
 
 ## Description
 
