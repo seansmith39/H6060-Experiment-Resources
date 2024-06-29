@@ -1,11 +1,11 @@
-name: Test Mvn Build And Upload Action
+name: Test Maven Build And Upload Action
 
 on:
   workflow_dispatch:
 
 jobs:
   test-action-job:
-    name: Test Mvn Build And Upload Action
+    name: Test Maven Build And Upload Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
