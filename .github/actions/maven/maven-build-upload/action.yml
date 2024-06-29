@@ -21,7 +21,7 @@ runs:
     - name: Build Maven Application
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: mvn ${{ inputs.build-command }}
+      run: ${{ inputs.build-command }}
 
     - name: Tar Maven Build Repository
       shell: bash
