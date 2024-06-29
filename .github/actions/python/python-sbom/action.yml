@@ -12,6 +12,11 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Install CycloneDX
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: pip install cyclonedx-bom==4.5.0
+
     - name: Create CycloneDX SBOM
       shell: bash
       working-directory: ${{ inputs.path }}
