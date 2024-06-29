@@ -1,4 +1,4 @@
-name: Experiment 1 - Maven Scanning
+name: Experiment 1 - Java Scanning
 
 on:
   workflow_call:
@@ -23,12 +23,6 @@ on:
 
       sast-horusec-enabled:
         description: 'Enable Horusec scan (SAST)'
-        type: boolean
-        required: false
-        default: true
-
-      sast-insider-enabled:
-        description: 'Enable Insider scan (SAST)'
         type: boolean
         required: false
         default: true
@@ -135,12 +129,14 @@ jobs:
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Create SBOM
-        uses: anchore/sbom-action@v0.15.10
+        run: mvn -Dmaven.test.skip=true install cyclonedx:makeAggregateBom
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
         with:
-          image: target/*.jar
-          artifact-name: ${{ inputs.project-name }}.cyclonedx
-          dependency-snapshot: true
-          format: cyclonedx-json
+          name: SBOM
+          path: target/sbom.json
+          if-no-files-found: error
 
   sast-sonarqube:
     name: Run SonarQube (SAST)
@@ -266,29 +262,6 @@ jobs:
 
       - name: Run Horusec (SAST)
         uses: ./main-repo/.github/actions/sast/horusec
-        with:
-          path: upstream-repo
-
-  sast-insider:
-    name: Run Insider (SAST)
-    if: ${{ inputs.sast-insider-enabled == true }}
-    runs-on: ubuntu-latest
-    needs: [ create-maven-dependency-tree, create-sbom ]
-    steps:
-      - name: Checkout Current GitHub Repository
-        uses: actions/checkout@v4
-        with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
-
-      - name: Checkout Calling GitHub Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: upstream-repo
-
-      - name: Run Insider (SAST)
-        uses: ./main-repo/.github/actions/sast/insider
         with:
           path: upstream-repo
 
@@ -487,7 +460,6 @@ jobs:
       sast-semgrep,
       sast-deepsource,
       sast-horusec,
-      sast-insider,
       sast-codeql,
       sast-snyk-code,
       sca-eclipse-steady,
@@ -517,7 +489,6 @@ jobs:
           opencve-username: ${{ secrets.OPENCVE_USERNAME }}
           opencve-password: ${{ secrets.OPENCVE_PASSWORD }}
           sast-horusec-report-filename: sast-horusec-report/horusec-report.json
-          sast-insider-report-filename: sast-insider-report/report.json
           sast-semgrep-report-filename: sast-semgrep-report/semgrep-report.json
           sast-snyk-code-report-filename: sast-snyk-code-report/snyk-code-report.json
           sca-eclipse-steady-report-filename: sca-eclipse-steady-report/vulas-report.json

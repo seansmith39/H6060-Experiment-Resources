@@ -1,4 +1,4 @@
-name: Experiment 1 - Python Scanning
+name: Experiment 2 - Python Scanning
 
 on:
   workflow_call:
