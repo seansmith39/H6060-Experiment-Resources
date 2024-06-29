@@ -1,10 +1,7 @@
 name: Test OWASP Dependency Check SCA Action
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   test-action-mvn-job:
