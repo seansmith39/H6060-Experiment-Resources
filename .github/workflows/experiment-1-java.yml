@@ -84,29 +84,6 @@ on:
         required: false
 
 jobs:
-  create-maven-dependency-tree:
-    name: Create Maven Dependency Tree
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Current GitHub Repository
-        uses: actions/checkout@v4
-        with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
-
-      - name: Setup Maven Action
-        uses: s4u/setup-maven-action@v1.14.0
-        with:
-          checkout-fetch-depth: 0
-          checkout-path: upstream-repo
-          java-distribution: temurin
-          java-version: 17
-
-      - name: Create Maven Dependency Tree
-        uses: ./main-repo/.github/actions/maven/maven-dependency-tree
-        with:
-          path: upstream-repo
-
   sast-sonarqube:
     name: Run SonarQube (SAST)
     if: ${{ inputs.sast-sonarqube-enabled == true }}
