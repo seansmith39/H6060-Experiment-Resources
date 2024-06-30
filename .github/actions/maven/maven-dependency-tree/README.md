@@ -4,7 +4,7 @@
 
 An action to generate a Maven dependency tree.
 
-Resulting TXT is uploaded as a build artifact.
+Resulting JSON is uploaded as a build artifact.
 
 ## Inputs
 

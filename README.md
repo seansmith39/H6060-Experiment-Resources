@@ -66,7 +66,7 @@ The workflow can be triggered using the following example snippet:
 | **eclipse-steady-workspace-token**            | no       | string  |         | Token assigned to Eclipse Steady project workspace |
 | **eclipse-steady-project-source-directories** | no       | string  |         | Source directories to scan using Eclipse Steady    |
 | **project-name**                              | no       | string  |         | Name of project to be scanned                      |
-| **coverage-filename**                         | no       | string  |         | Name of test coverage file                         |
+| **build-directory**                           | no       | string  | target  | Name of project build directory                    |
 
 ### experiment-2-python.yml
 
@@ -85,6 +85,5 @@ The workflow can be triggered using the following example snippet:
 | **eclipse-steady-workspace-token**            | no       | string  |                  | Token assigned to Eclipse Steady project workspace |
 | **eclipse-steady-project-source-directories** | no       | string  |                  | Source directories to scan using Eclipse Steady    |
 | **project-name**                              | no       | string  |                  | Name of project to be scanned                      |
-| **project-build-dir**                         | no       | string  | dist             | Name of project build directory                    |
-| **coverage-filename**                         | no       | string  |                  | Name of test coverage file                         |
+| **build-directory**                           | no       | string  | dist             | Name of project build directory                    |
 | **sca-file-to-scan**                          | no       | string  | requirements.txt | Name of file to scan                               |

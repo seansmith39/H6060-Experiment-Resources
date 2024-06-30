@@ -78,10 +78,11 @@ on:
         type: string
         required: false
 
-      coverage-filename:
-        description: 'Name of test coverage file'
+      build-directory:
+        description: Name of project build directory
         type: string
         required: false
+        default: target
 
 jobs:
   sast-sonarqube:
@@ -105,11 +106,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: maven-build
-          path: upstream-repo/target
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/${{ inputs.build-directory }}
+          fail: true
 
       - name: Run SonarQube (SAST)
         uses: ./main-repo/.github/actions/sast/sonarqube
@@ -171,18 +178,24 @@ jobs:
       - name: Download Coverage
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
-          path: upstream-repo/target
+          name: coverage-report
+          path: upstream-repo
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/coverage.xml
+          fail: true
+
       - name: Run Deepsource (SAST)
         uses: ./main-repo/.github/actions/sast/deepsource
         with:
           language: java
-          coverage-file: ${{ inputs.coverage-filename }}
+          coverage-file: coverage.xml
           path: upstream-repo
 
   sast-horusec:
@@ -273,11 +286,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: maven-build
-          path: upstream-repo/target
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/${{ inputs.build-directory }}
+          fail: true
 
       - name: Run Eclipse Steady (SCA)
         uses: ./main-repo/.github/actions/sca/eclipse-steady
@@ -310,11 +329,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: maven-build
-          path: upstream-repo/target
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/${{ inputs.build-directory }}
+          fail: true
 
       - name: Run Snyk (SCA)
         uses: ./main-repo/.github/actions/sca/snyk
@@ -343,11 +368,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: maven-build
-          path: upstream-repo/target
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/${{ inputs.build-directory }}
+          fail: true
 
       - name: Run OWASP Dependency Check (SCA)
         uses: ./main-repo/.github/actions/sca/owasp-dependency-check
@@ -377,11 +408,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: maven-build
-          path: upstream-repo/target
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Check For File Existence
+        uses: andstor/file-existence-action@v3
+        with:
+          files: upstream-repo/${{ inputs.build-directory }}
+          fail: true
 
       - name: Run Grype (SCA)
         uses: ./main-repo/.github/actions/sca/grype
