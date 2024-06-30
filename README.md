@@ -51,22 +51,23 @@ The workflow can be triggered using the following example snippet:
 
 ### experiment-1-java.yml
 
-| name                                          | required | type    | default | description                                        |
-|-----------------------------------------------|----------|---------|---------|----------------------------------------------------|
-| **sast-sonarqube-enabled :**                  | no       | boolean | true    | Enable SonarQube scan (SAST)                       |
-| **sast-semgrep-enabled**                      | no       | boolean | true    | Enable Semgrep scan (SAST)                         |
-| **sast-deepsource-enabled**                   | no       | boolean | true    | Enable Deepsource scan (SAST)                      |
-| **sast-horusec-enabled**                      | no       | boolean | true    | Enable Horusec scan (SAST)                         |
-| **sast-codeql-enabled**                       | no       | boolean | true    | Enable CodeQL scan (SAST)                          |
-| **sast-snyk-code-enabled**                    | no       | boolean | true    | Enable Snyk Code scan (SAST)                       |
-| **sca-eclipse-steady-enabled**                | no       | boolean | true    | Enable Eclipse Steady scan (SCA)                   |
-| **sca-snyk-enabled**                          | no       | boolean | true    | Enable Snyk scan (SCA)                             |
-| **sca-owasp-dependency-check-enabled**        | no       | boolean | true    | Enable OWASP Dependency Check scan (SCA)           |
-| **sca-grype-enabled**                         | no       | boolean | true    | Enable Grype scan (SCA)                            |
-| **eclipse-steady-workspace-token**            | no       | string  |         | Token assigned to Eclipse Steady project workspace |
-| **eclipse-steady-project-source-directories** | no       | string  |         | Source directories to scan using Eclipse Steady    |
-| **project-name**                              | no       | string  |         | Name of project to be scanned                      |
-| **build-directory**                           | no       | string  | target  | Name of project build directory                    |
+| name                                          | required | type    | default      | description                                        |
+|-----------------------------------------------|----------|---------|--------------|----------------------------------------------------|
+| **sast-sonarqube-enabled :**                  | no       | boolean | true         | Enable SonarQube scan (SAST)                       |
+| **sast-semgrep-enabled**                      | no       | boolean | true         | Enable Semgrep scan (SAST)                         |
+| **sast-deepsource-enabled**                   | no       | boolean | true         | Enable Deepsource scan (SAST)                      |
+| **sast-horusec-enabled**                      | no       | boolean | true         | Enable Horusec scan (SAST)                         |
+| **sast-codeql-enabled**                       | no       | boolean | true         | Enable CodeQL scan (SAST)                          |
+| **sast-snyk-code-enabled**                    | no       | boolean | true         | Enable Snyk Code scan (SAST)                       |
+| **sca-eclipse-steady-enabled**                | no       | boolean | true         | Enable Eclipse Steady scan (SCA)                   |
+| **sca-snyk-enabled**                          | no       | boolean | true         | Enable Snyk scan (SCA)                             |
+| **sca-owasp-dependency-check-enabled**        | no       | boolean | true         | Enable OWASP Dependency Check scan (SCA)           |
+| **sca-grype-enabled**                         | no       | boolean | true         | Enable Grype scan (SCA)                            |
+| **eclipse-steady-workspace-token**            | no       | string  |              | Token assigned to Eclipse Steady project workspace |
+| **eclipse-steady-project-source-directories** | no       | string  |              | Source directories to scan using Eclipse Steady    |
+| **project-name**                              | no       | string  |              | Name of project to be scanned                      |
+| **coverage-report-name**                      | no       | string  | coverage.xml | Name of test coverage report                       |
+| **build-directory**                           | no       | string  | target       | Name of project build directory                    |
 
 ### experiment-2-python.yml
 

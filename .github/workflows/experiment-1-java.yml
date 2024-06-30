@@ -78,6 +78,12 @@ on:
         type: string
         required: false
 
+      coverage-report-name:
+        description: 'Name of coverage report artifact'
+        type: string
+        required: false
+        default: coverage.xml
+
       build-directory:
         description: Name of project build directory
         type: string
@@ -188,14 +194,14 @@ jobs:
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/coverage.xml
+          files: upstream-repo/${{ inputs.coverage-report-name }}
           fail: true
 
       - name: Run Deepsource (SAST)
         uses: ./main-repo/.github/actions/sast/deepsource
         with:
           language: java
-          coverage-file: coverage.xml
+          coverage-file: ${{ inputs.coverage-report-name }}
           path: upstream-repo
 
   sast-horusec:
