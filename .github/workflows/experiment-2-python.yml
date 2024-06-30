@@ -78,17 +78,11 @@ on:
         type: string
         required: false
 
-      project-build-dir:
+      build-directory:
         description: Name of project build directory
         type: string
         required: false
         default: dist
-
-      coverage-filename:
-        description: Name of test coverage file
-        type: string
-        required: false
-        default: coverage.xml
 
       sca-file-to-scan:
         description: File to scan
@@ -114,27 +108,20 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
-      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: python-build
-          path: upstream-repo
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: python-build
-          path: upstream-repo
-
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.project-build-dir }}
+          files: upstream-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run SonarQube (SAST)
@@ -207,14 +194,14 @@ jobs:
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.coverage-filename }}
+          files: upstream-repo/coverage.xml
           fail: true
 
       - name: Run Deepsource (SAST)
         uses: ./main-repo/.github/actions/sast/deepsource
         with:
           language: python
-          coverage-file: ${{ inputs.coverage-filename }}
+          coverage-file: coverage.xml
           path: upstream-repo
 
   sast-horusec:
@@ -303,27 +290,20 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
-      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: python-build
-          path: upstream-repo
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: python-build
-          path: upstream-repo
-
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.project-build-dir }}
+          files: upstream-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run Eclipse Steady (SCA)
@@ -355,27 +335,20 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
-      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: python-build
-          path: upstream-repo
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
-
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: python-build
-          path: upstream-repo
-
+          
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.project-build-dir }}
+          files: upstream-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Install Pip Dependencies
@@ -409,27 +382,20 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
-      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: python-build
-          path: upstream-repo
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: python-build
-          path: upstream-repo
-
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.project-build-dir }}
+          files: upstream-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run OWASP Dependency Check (SCA)
@@ -456,34 +422,21 @@ jobs:
           fetch-depth: 0
           path: upstream-repo
 
-      # Unzips to upstream-repo/python-build.tgz
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: python-build
-          path: upstream-repo
+          path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
-      - name: Extract Build
-        uses: ./main-repo/.github/actions/common/extract-build-artifact
-        with:
-          build-artifact-name: python-build
-          path: upstream-repo
-
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.project-build-dir }}
+          files: upstream-repo/${{ inputs.build-directory }}
           fail: true
-
-      - name: Install Pip Dependencies
-        uses: ./main-repo/.github/actions/python/install-pip-dependencies
-        with:
-          requirement-file-name: ${{ inputs.sca-file-to-scan }}
-          path: upstream-repo
 
       - name: Run Grype (SCA)
         uses: ./main-repo/.github/actions/sca/grype

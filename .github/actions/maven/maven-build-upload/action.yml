@@ -9,6 +9,12 @@ inputs:
     required: false
     default: clean install
 
+  build-directory:
+    description: Build results directory
+    type: string
+    required: false
+    default: target
+
   path:
     description: Directory to run the action
     type: string
@@ -27,5 +33,5 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: maven-build
-        path: ${{ inputs.path }}/target
+        path: "${{ inputs.path }}/${{ inputs.build-directory }}"
         if-no-files-found: error
