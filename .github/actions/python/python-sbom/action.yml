@@ -32,9 +32,9 @@ runs:
       working-directory: ${{ inputs.path }}
       run: cyclonedx-py requirements python-packages.txt --outfile=sbom.json  --output-format=JSON --schema-version=1.6
 
-    - name: Upload Python Build Repository
+    - name: Upload CycloneDX SBOM
       uses: actions/upload-artifact@v4
       with:
-        name: SBOM
+        name: cyclonedx-sbom
         path: ${{ inputs.path }}/sbom.json
         if-no-files-found: error

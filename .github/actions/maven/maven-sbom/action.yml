@@ -1,0 +1,25 @@
+name: Maven CycloneDX SBOM Creation Action
+description: Create a Maven CycloneDX SBOM and upload as a build artifact
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Create CycloneDX SBOM
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn -Dmaven.test.skip=true install cyclonedx:makeAggregateBom
+
+    - name: Upload CycloneDX SBOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: cyclonedx-sbom
+        path: ${{ inputs.path }}/target/sbom.json
+        if-no-files-found: error
