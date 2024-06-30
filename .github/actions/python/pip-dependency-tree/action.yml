@@ -20,7 +20,7 @@ runs:
     - name: Create Pip Dependency Tree
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: pipdeptree -fl --json > python_dep_tree.json
+      run: pipdeptree --freeze --json-ree --exclude pip,pipdeptree,setuptools,wheel,tox,build,cyclonedx-bom > python_dep_tree.json
 
     - name: Upload Python Dependency Tree (JSON)
       uses: actions/upload-artifact@v4
