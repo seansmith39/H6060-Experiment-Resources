@@ -90,26 +90,12 @@ runs:
       working-directory: ${{ inputs.path }}
       run: echo 'vulas.core.bom.python.pip=/usr/bin/pip' >> steady-cli/steady-custom.properties
 
-    - name: Run Eclipse Steady Scan (Java)
-      if: ${{ inputs.language == 'java' }}
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: mvn org.eclipse.steady:plugin-maven:3.2.5:app
-
-    - name: Create Eclipse Steady Report (Java)
-      if: ${{ inputs.language == 'java' }}
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: mvn org.eclipse.steady:plugin-maven:3.2.5:report
-
-    - name: Run Eclipse Steady Scan (Python)
-      if: ${{ inputs.language == 'python' }}
+    - name: Run Eclipse Steady Scan
       shell: bash
       working-directory: ${{ inputs.path }}/steady-cli
       run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal app
 
-    - name: Create Eclipse Steady Report (Python)
-      if: ${{ inputs.language == 'python' }}
+    - name: Create Eclipse Steady Report
       shell: bash
       working-directory: ${{ inputs.path }}/steady-cli
       run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal report
