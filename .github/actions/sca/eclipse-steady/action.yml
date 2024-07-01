@@ -12,6 +12,11 @@ inputs:
     type: string
     required: true
 
+  eclipse-steady-app-prefix:
+    description: Prefix of the application to scan (Java only)
+    type: string
+    required: false
+
   eclipse-steady-host-url:
     description: Hostname of Eclipse Steady
     type: string
@@ -83,6 +88,12 @@ runs:
         sed -i 's,<ARTIFACT>,${{ inputs.project-name }},g' steady-cli/steady-custom.properties
         sed -i 's,<VERSION>,1.0.0,g' steady-cli/steady-custom.properties
         echo 'vulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}' >> steady-cli/steady-custom.properties
+
+    - name: Set Eclipse Steady Java Property
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: echo 'vulas.core.app.appPrefixes=${{ inputs.eclipse-steady-app-prefix }}' >> steady-cli/steady-custom.properties
 
     - name: Set Eclipse Steady Pip Property
       if: ${{ inputs.language == 'python' }}
