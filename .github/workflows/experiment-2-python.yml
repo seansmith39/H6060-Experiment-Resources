@@ -307,7 +307,7 @@ jobs:
           fail: true
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./main-repo/.github/actions/sca/eclipse-steady
+        uses: ./main-repo/.github/actions/sca/eclipse-steady/cli
         with:
           language: python
           eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}

@@ -1,0 +1,44 @@
+name: Eclipse Steady MVN SCA Action
+description: Run Eclipse Steady MVN SCA scan
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: 17
+        distribution: temurin
+
+    - name: Run Eclipse Steady Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn org.eclipse.steady:plugin-maven:3.2.5:app
+
+    - name: Create Eclipse Steady Report
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn org.eclipse.steady:plugin-maven:3.2.5:report
+
+    - name: Upload Eclipse Steady Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: sca-eclipse-steady-report
+        path: |
+          ${{ inputs.path }}/vulas/report/vulas-report.json
+          ${{ inputs.path }}/vulas/report/vulas-report.html
+        if-no-files-found: error
