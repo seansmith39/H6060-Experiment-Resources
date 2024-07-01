@@ -27,12 +27,12 @@ runs:
     - name: Run Eclipse Steady Scan
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: mvn org.eclipse.steady:plugin-maven:3.2.5:app
+      run: mvn -Dsteady compile steady:app
 
     - name: Create Eclipse Steady Report
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: mvn org.eclipse.steady:plugin-maven:3.2.5:report
+      run: mvn -Dsteady compile steady:report
 
     - name: Upload Eclipse Steady Report
       uses: actions/upload-artifact@v4
