@@ -72,6 +72,13 @@ on:
         description: Prefix of the application to scan
         type: string
         required: false
+        default: ''
+
+      eclipse-steady-app-jar-names:
+        description: Names of the JAR files to scan (Java only)
+        type: string
+        required: false
+        default: ''
 
       eclipse-steady-project-source-directories:
         description: Source directories to scan using Eclipse Steady
@@ -316,6 +323,7 @@ jobs:
           eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
           eclipse-steady-host-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}
           eclipse-steady-app-prefix: ${{ inputs.eclipse-steady-app-prefix }}
+          eclipse-steady-app-jar-names: ${{ inputs.eclipse-steady-app-jar-names }}
           project-name: ${{ inputs.project-name }}
           project-source-directories: ${{ inputs.eclipse-steady-project-source-directories }}
           path: upstream-repo
