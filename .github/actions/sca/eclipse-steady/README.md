@@ -9,9 +9,10 @@ JSON result is uploaded as a build artifact.
 ## Inputs
 
 | name                           | required | type   | default                   | description                                             |
-| ------------------------------ | -------- | ------ | ------------------------- | ------------------------------------------------------- |
+|--------------------------------| -------- | ------ |---------------------------|---------------------------------------------------------|
 | language                       | true     | string |                           | Language to scan using Eclipse Steady                   |
 | eclipse-steady-workspace-token | true     | string |                           | Token used to identify project workspace                |
+| eclipse-steady-app-prefix      | false    | string |                           | Package prefix(es) of Java application code             |
 | eclipse-steady-host-url        | true     | string |                           | Hostname of Eclipse Steady                              |
 | project-name                   | true     | string |                           | Name of the project being scanned                       |
 | project-source-directories     | true     | string |                           | Project source directories to scan (separated by comma) |
@@ -26,6 +27,7 @@ JSON result is uploaded as a build artifact.
   with:
     language: python
     eclipse-steady-workspace-token: 1111-2222-3333-4444
+    eclipse-steady-app-prefix: com.example
     eclipse-steady-host-url: https://my-eclipse-steady-instance.com
     project-name: my-project
     project-source-dir: src
