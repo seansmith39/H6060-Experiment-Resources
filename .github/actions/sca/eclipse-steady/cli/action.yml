@@ -1,5 +1,6 @@
-name: Eclipse Steady SCA Action
-description: Run Eclipse Steady SCA scan
+name: Eclipse Steady CLI SCA Action
+description: Run Eclipse Steady CLI SCA scan
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   language:

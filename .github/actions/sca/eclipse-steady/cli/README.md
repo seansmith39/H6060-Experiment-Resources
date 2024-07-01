@@ -1,8 +1,8 @@
-# SCA Eclipse Steady Action
+# SCA Eclipse Steady CLI Action
 
 ## Description
 
-An action to configure and run an [Eclipse Steady](https://projects.eclipse.org/projects/technology.steady) SCA scan.
+An action to configure and run an [Eclipse Steady](https://projects.eclipse.org/projects/technology.steady) SCA CLI scan.
 
 JSON result is uploaded as a build artifact.
 
@@ -24,9 +24,9 @@ JSON result is uploaded as a build artifact.
 
 ```yaml
 - name: Run Eclipse Steady SCA Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady
+  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady/cli
   with:
-    language: python
+    language: java
     eclipse-steady-workspace-token: 1111-2222-3333-4444
     eclipse-steady-app-jar-names: my-app.jar
     eclipse-steady-app-prefix: com.example

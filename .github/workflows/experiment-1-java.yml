@@ -317,15 +317,8 @@ jobs:
           fail: true
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./main-repo/.github/actions/sca/eclipse-steady
+        uses: ./main-repo/.github/actions/sca/eclipse-steady/mvn
         with:
-          language: java
-          eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
-          eclipse-steady-host-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}
-          eclipse-steady-app-prefix: ${{ inputs.eclipse-steady-app-prefix }}
-          eclipse-steady-app-jar-names: ${{ inputs.eclipse-steady-app-jar-names }}
-          project-name: ${{ inputs.project-name }}
-          project-source-directories: ${{ inputs.eclipse-steady-project-source-directories }}
           path: upstream-repo
 
   sca-snyk:

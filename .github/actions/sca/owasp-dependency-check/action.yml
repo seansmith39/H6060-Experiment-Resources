@@ -1,5 +1,6 @@
 name: OWASP Dependency Check SCA Action
 description: Run OWASP Dependency Check SCA scan
+author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
   project-name:
