@@ -3,6 +3,12 @@ description: Run Eclipse Steady MVN SCA scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  build-directory:
+    description: Build results directory
+    type: string
+    required: false
+    default: target
+
   path:
     description: Directory to run the action
     type: string
@@ -18,18 +24,36 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
+    # Add the following lines to .mvn/jvm.config in the source repo
+    # --add-opens=java.base/java.lang=ALL-UNNAMED
+    # --add-opens=java.base/java.io=ALL-UNNAMED
     - name: Setup Java JDK
       uses: actions/setup-java@v4.2.1
       with:
         java-version: 17
         distribution: temurin
 
-    - name: Run Eclipse Steady Scan
+    - name: Run Eclipse Steady (app)
       shell: bash
       working-directory: ${{ inputs.path }}
       run: mvn -Dsteady compile steady:app
 
-    - name: Create Eclipse Steady Report
+    - name: Run Eclipse Steady (a2c)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn -Dsteady compile steady:a2c
+
+    - name: Run Eclipse Steady (t2c)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn -Dsteady compile steady:t2c
+
+    - name: Run Eclipse Steady (checkcode)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn -Dsteady compile steady:checkcode
+
+    - name: Run Eclipse Steady (report)
       shell: bash
       working-directory: ${{ inputs.path }}
       run: mvn -Dsteady compile steady:report
@@ -39,6 +63,6 @@ runs:
       with:
         name: sca-eclipse-steady-report
         path: |
-          ${{ inputs.path }}/vulas/report/vulas-report.json
-          ${{ inputs.path }}/vulas/report/vulas-report.html
+          ${{ inputs.path }}/${{ inputs.build-directory }}/vulas/report/vulas-report.json
+          ${{ inputs.path }}/${{ inputs.build-directory }}/vulas/report/vulas-report.html
         if-no-files-found: error
