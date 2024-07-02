@@ -63,10 +63,6 @@ The workflow can be triggered using the following example snippet:
 | **sca-snyk-enabled**                          | no       | boolean | true         | Enable Snyk scan (SCA)                                  |
 | **sca-owasp-dependency-check-enabled**        | no       | boolean | true         | Enable OWASP Dependency Check scan (SCA)                |
 | **sca-grype-enabled**                         | no       | boolean | true         | Enable Grype scan (SCA)                                 |
-| **eclipse-steady-workspace-token**            | no       | string  |              | Token assigned to Eclipse Steady project workspace      |
-| **eclipse-steady-app-prefix**                 | false    | string  |              | Package prefix(es) of Java application code             |
-| **eclipse-steady-app-jar-names**              | false    | string  |              | JAR names of Java application code (separated by comma) |
-| **eclipse-steady-project-source-directories** | no       | string  |              | Source directories to scan using Eclipse Steady         |
 | **project-name**                              | no       | string  |              | Name of project to be scanned                           |
 | **coverage-report-name**                      | no       | string  | coverage.xml | Name of test coverage report                            |
 | **build-directory**                           | no       | string  | target       | Name of project build directory                         |
