@@ -10,13 +10,6 @@ JSON result is uploaded as a build artifact.
 
 | name                           | required | type   | default                 | description                                             |
 |--------------------------------| -------- | ------ |-------------------------|---------------------------------------------------------|
-| language                       | true     | string |                         | Language to scan using Eclipse Steady                   |
-| eclipse-steady-workspace-token | true     | string |                         | Token used to identify project workspace                |
-| eclipse-steady-app-prefix      | false    | string |                         | Package prefix(es) of Java application code             |
-| eclipse-steady-app-jar-names   | false    | string |                         | JAR names of Java application code (separated by comma) |
-| eclipse-steady-host-url        | true     | string |                         | Hostname of Eclipse Steady                              |
-| project-name                   | true     | string |                         | Name of the project being scanned                       |
-| project-source-directories     | true     | string |                         | Project source directories to scan (separated by comma) |
 | path                           | false    | string | ${{ github.workspace }} | Path to run the Eclipse Steady scan                     |
 | build-directory                | false    | string | target                  | Name of build directory containing JAR                  |
 
