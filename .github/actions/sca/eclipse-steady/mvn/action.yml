@@ -24,9 +24,6 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    # Add the following lines to .mvn/jvm.config in the source repo
-    # --add-opens=java.base/java.lang=ALL-UNNAMED
-    # --add-opens=java.base/java.io=ALL-UNNAMED
     - name: Setup Java JDK
       uses: actions/setup-java@v4.2.1
       with:
@@ -52,6 +49,8 @@ runs:
       shell: bash
       working-directory: ${{ inputs.path }}
       run: mvn -Dsteady compile steady:checkcode
+      env:
+        MAVEN_OPTS: "--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED"
 
     - name: Run Eclipse Steady (report)
       shell: bash
