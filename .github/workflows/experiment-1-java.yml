@@ -63,28 +63,6 @@ on:
         required: false
         default: true
 
-      eclipse-steady-workspace-token:
-        description: Token assigned to Eclipse Steady project workspace
-        type: string
-        required: false
-
-      eclipse-steady-app-prefix:
-        description: Prefix of the application to scan
-        type: string
-        required: false
-        default: ''
-
-      eclipse-steady-app-jar-names:
-        description: Names of the JAR files to scan (Java only)
-        type: string
-        required: false
-        default: ''
-
-      eclipse-steady-project-source-directories:
-        description: Source directories to scan using Eclipse Steady
-        type: string
-        required: false
-
       project-name:
         description: Name of project to be scanned
         type: string
