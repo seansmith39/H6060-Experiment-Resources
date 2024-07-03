@@ -72,7 +72,7 @@ on:
         description: Name of coverage report artifact
         type: string
         required: false
-        default: coverage.xml
+        default: jacoco.xml
 
       build-directory:
         description: Name of project build directory
