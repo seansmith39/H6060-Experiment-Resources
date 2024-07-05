@@ -243,6 +243,8 @@ jobs:
     name: Run Snyk Code (SAST)
     if: ${{ inputs.sast-snyk-code-enabled == true }}
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - name: Checkout Current GitHub Repository
         uses: actions/checkout@v4
@@ -303,6 +305,8 @@ jobs:
     name: Run Snyk (SCA)
     if: ${{ inputs.sca-snyk-enabled == true }}
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - name: Checkout Current GitHub Repository
         uses: actions/checkout@v4
