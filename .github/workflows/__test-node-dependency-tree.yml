@@ -25,6 +25,11 @@ jobs:
         with:
           node-version: 16.x
 
+      - name: Install Node Dependencies
+        shell: bash
+        working-directory: lodash
+        run: npm ci
+
       - name: Create Node Dependency Tree
         uses: ./main/.github/actions/node/node-dependency-tree
         with:

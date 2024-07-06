@@ -15,11 +15,11 @@ runs:
     - name: Generate Node Dependency Tree
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: npm ls -json --all > node-dependency-tree.json
+      run: npm shrinkwrap
 
     - name: Upload Node Dependency Tree
       uses: actions/upload-artifact@v4
       with:
         name: node-dependency-tree
-        path: ${{ inputs.path }}/node-dependency-tree.json
+        path: ${{ inputs.path }}/npm-shrinkwrap.json
         if-no-files-found: error
