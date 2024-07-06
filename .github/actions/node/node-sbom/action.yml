@@ -12,11 +12,19 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Create CycloneDX SBOM
-      uses: CycloneDX/gh-node-module-generatebom@v1.0.3
+    - name: Setup Node.js
+      uses: actions/setup-node@v4.0.2
       with:
-        path: ${{ inputs.path }}
-        output: sbom.json
+        node-version: 18.x
+
+    - name: Install CycloneDX SBOM
+      shell: bash
+      run: npm install --global @cyclonedx/cyclonedx-npm@1.19.0
+
+    - name: Create CycloneDX SBOM
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: cyclonedx-npm package.json --package-lock-only --spec-version=1.6 --output-format=JSON --output-file=sbom.json --validate
 
     - name: Upload CycloneDX SBOM
       uses: actions/upload-artifact@v4
