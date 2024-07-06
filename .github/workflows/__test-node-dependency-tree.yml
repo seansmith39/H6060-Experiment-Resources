@@ -1,0 +1,31 @@
+name: Test Node Dependency Tree Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-action-job:
+    name: Test Node Dependency Tree Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Lodash
+        uses: actions/checkout@v4
+        with:
+          repository: lodash/lodash
+          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
+          path: lodash
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 16.x
+
+      - name: Create Node Dependency Tree
+        uses: ./main/.github/actions/node/node-dependency-tree
+        with:
+          path: lodash
