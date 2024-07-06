@@ -30,16 +30,6 @@ jobs:
         working-directory: lodash
         run: npm ci
 
-      - name: Build Node Application
-        shell: bash
-        working-directory: lodash
-        run: npm run build
-
-      - name: Package Node Application
-        shell: bash
-        working-directory: lodash
-        run: npm pack
-
       - name: Create CycloneDX SBOM
         uses: ./main/.github/actions/node/node-sbom
         with:
