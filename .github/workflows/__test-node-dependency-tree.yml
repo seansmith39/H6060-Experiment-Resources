@@ -27,6 +27,7 @@ jobs:
 
       - name: Install Node Dependencies
         shell: bash
+        working-directory: lodash
         run: npm ci
 
       - name: Create Node Dependency Tree
