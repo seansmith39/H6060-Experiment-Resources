@@ -3,14 +3,20 @@ description: Run Snyk Code SAST scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  version:
+    description: Snyk Code CLI version to use
+    type: string
+    required: false
+    default: 1.1292.1
+
   path:
     description: Directory to run the action
     type: string
     required: false
     default: ${{ github.workspace }}
 
-  build-artifact-name:
-    description: Name of Snyk Code build artifact
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
     type: string
     required: false
     default: sast-snyk-code-report
@@ -29,7 +35,7 @@ runs:
 
     - name: Install Snyk CLI
       shell: bash
-      run: npm install snyk -g
+      run: npm install snyk@${{ inputs.version }} -g
 
     # Snyk returns exit code 1 if vulnerabilities are found
     - name: Run Snyk Code Scan
@@ -45,5 +51,5 @@ runs:
     - name: Upload Snyk Report
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.build-artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: ${{ inputs.path }}/snyk-code-report.json

@@ -1,4 +1,4 @@
-name: Experiment 1 - Java Scanning
+name: Experiment 3 - JavaScript Scanning
 
 on:
   workflow_call:
@@ -39,12 +39,6 @@ on:
         required: false
         default: true
 
-      sca-eclipse-steady-enabled:
-        description: Enable Eclipse Steady scan (SCA)
-        type: boolean
-        required: false
-        default: true
-
       sca-snyk-enabled:
         description: Enable Snyk scan (SCA)
         type: boolean
@@ -68,17 +62,23 @@ on:
         type: string
         required: false
 
-      coverage-report-name:
-        description: Name of coverage report artifact
+      node-version:
+        description: Node.js version to use
         type: string
         required: false
-        default: jacoco.xml
+        default: 16.x
 
       build-directory:
         description: Name of project build directory
         type: string
         required: false
-        default: target
+        default: dist
+
+      sca-file-to-scan:
+        description: File to scan
+        type: string
+        required: false
+        default: requirements.txt
 
 defaults:
   run:
@@ -105,7 +105,7 @@ jobs:
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
+          name: python-build
           path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
@@ -122,7 +122,7 @@ jobs:
       - name: Run SonarQube (SAST)
         uses: ./main-repo/.github/actions/sast/sonarqube
         with:
-          language: java
+          language: javascript
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           sonar-host-url: ${{ secrets.SONAR_HOST_URL}}
           sonar-username: ${{ secrets.SONAR_USERNAME }}
@@ -154,7 +154,7 @@ jobs:
       - name: Run Semgrep (SAST)
         uses: ./main-repo/.github/actions/sast/semgrep
         with:
-          language: java
+          language: python
           path: upstream-repo
 
   sast-deepsource:
@@ -189,14 +189,14 @@ jobs:
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.coverage-report-name }}
+          files: upstream-repo/coverage.xml
           fail: true
 
       - name: Run Deepsource (SAST)
         uses: ./main-repo/.github/actions/sast/deepsource
         with:
-          language: java
-          coverage-file: ${{ inputs.coverage-report-name }}
+          language: javascript
+          coverage-file: coverage.xml
           path: upstream-repo
 
   sast-horusec:
@@ -241,7 +241,7 @@ jobs:
       - name: Run CodeQL (SAST)
         uses: ./main-repo/.github/actions/sast/codeql
         with:
-          language: java
+          language: javascript
           path: upstream-repo
 
   sast-snyk-code:
@@ -268,44 +268,6 @@ jobs:
         with:
           path: upstream-repo
 
-  sca-eclipse-steady:
-    name: Run Eclipse Steady (SCA)
-    if: ${{ inputs.sca-eclipse-steady-enabled == true }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Current GitHub Repository
-        uses: actions/checkout@v4
-        with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
-
-      - name: Checkout Calling GitHub Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: upstream-repo
-
-      - name: Download Build
-        uses: dawidd6/action-download-artifact@v3.1.4
-        with:
-          name: maven-build
-          path: upstream-repo/${{ inputs.build-directory }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
-          commit: ${{ github.event.workflow_run.head_commit.id }}
-
-      - name: Check For File Existence
-        uses: andstor/file-existence-action@v3
-        with:
-          files: upstream-repo/${{ inputs.build-directory }}
-          fail: true
-
-      - name: Run Eclipse Steady (SCA)
-        uses: ./main-repo/.github/actions/sca/eclipse-steady/mvn
-        with:
-          path: upstream-repo
-
   sca-snyk:
     name: Run Snyk (SCA)
     if: ${{ inputs.sca-snyk-enabled == true }}
@@ -328,24 +290,34 @@ jobs:
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
+          name: python-build
           path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
-
+          
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
           files: upstream-repo/${{ inputs.build-directory }}
           fail: true
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install Node Dependencies
+        run: npm ci
+
       - name: Run Snyk (SCA)
         uses: ./main-repo/.github/actions/sca/snyk
         with:
-          language: java
+          language: javascript
           path: upstream-repo
+          snyk-package-manager: pip
+          snyk-file-to-scan: ${{ inputs.sca-file-to-scan }}
 
   sca-owasp-dependency-check:
     name: Run OWASP Dependency Check (SCA)
@@ -367,7 +339,7 @@ jobs:
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
+          name: python-build
           path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
@@ -407,7 +379,7 @@ jobs:
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
+          name: python-build
           path: upstream-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}

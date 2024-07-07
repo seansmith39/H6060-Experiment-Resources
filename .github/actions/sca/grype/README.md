@@ -8,10 +8,10 @@ JSON result is uploaded as a build artifact.
 
 ## Inputs
 
-| name                | required | type   | default                 | description                  |
-| ------------------- | -------- | ------ | ----------------------- | ---------------------------- |
-| path                | false    | string | ${{ github.workspace }} | Path to run the Grype scan   |
-| build-artifact-name | false    | string | sca-grype-report        | Name of Grype build artifact |
+| name              | required | type     | default                 | description                                           |
+|-------------------| -------- |----------|-------------------------|-------------------------------------------------------|
+| **path**          | false    | string   | ${{ github.workspace }} | Path to run the Grype scan                            |
+| **artifact-name** | false    | string   | sca-grype-report        | Name of the artifact to upload (for testing use only) |
 
 ## Example Execution
 

@@ -8,11 +8,11 @@ JSON result is uploaded as a build artifact.
 
 ## Inputs
 
-| name                | required | type   | default                 | description                    |
-| ------------------- | -------- | ------ | ----------------------- | ------------------------------ |
-| language            | true     | string |                         | Semgrep ruleset language       |
-| path                | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan   |
-| build-artifact-name | false    | string | sast-semgrep-report     | Name of Semgrep build artifact |
+| name              | required | type   | default                 | description                                           |
+|-------------------| -------- | ------ |-------------------------|-------------------------------------------------------|
+| **language**      | true     | string |                         | Semgrep ruleset language                              |
+| **path**          | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan                          |
+| **artifact-name** | false    | string | sast-semgrep-report     | Name of the artifact to upload (for testing use only) |
 
 ## Example Execution
 

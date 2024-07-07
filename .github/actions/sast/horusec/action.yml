@@ -9,8 +9,8 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
-  build-artifact-name:
-    description: Name of Horusec build artifact
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
     type: string
     required: false
     default: sast-horusec-report
@@ -32,6 +32,6 @@ runs:
     - name: Upload Horusec Report (JSON)
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.build-artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: horusec-report.json
         if-no-files-found: error

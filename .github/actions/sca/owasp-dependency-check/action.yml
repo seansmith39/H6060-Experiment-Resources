@@ -19,8 +19,8 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
-  build-artifact-name:
-    description: Name of OWASP Dependency Check build artifact
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
     type: string
     required: false
     default: sca-owasp-dependency-check-report
@@ -56,11 +56,12 @@ runs:
           --out ${{ github.workspace }}/owasp-reports \
           --enableRetired \
           --enableExperimental \
-          --prettyPrint
+          --prettyPrint \
+          --disableYarnAudit
 
     - name: Upload OWASP Dependency Check Report
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.build-artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: ${{ github.workspace }}/owasp-reports
         if-no-files-found: error

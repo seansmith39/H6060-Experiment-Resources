@@ -90,6 +90,10 @@ on:
         required: false
         default: requirements.txt
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   sast-sonarqube:
     name: Run SonarQube (SAST)
@@ -119,6 +123,7 @@ jobs:
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
           files: upstream-repo/${{ inputs.build-directory }}
@@ -311,9 +316,9 @@ jobs:
         with:
           language: python
           eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
+          eclipse-steady-project-source-directories: ${{ inputs.eclipse-steady-project-source-directories }}
           eclipse-steady-host-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}
           project-name: ${{ inputs.project-name }}
-          project-source-directories: ${{ inputs.eclipse-steady-project-source-directories }}
           path: upstream-repo
 
   sca-snyk:

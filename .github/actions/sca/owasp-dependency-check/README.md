@@ -8,12 +8,12 @@ All result formats are uploaded as a build artifact.
 
 ## Inputs
 
-| name                | required | type   | default                           | description                                   |
-| ------------------- | -------- | ------ | --------------------------------- | --------------------------------------------- |
-| project-name        | true     | string |                                   | Name of the project being scanned             |
-| nvd-api-key         | true     | string |                                   | API Key to access the NVD API                 |
-| path                | false    | string | ${{ github.workspace }}           | Path to run the OWASP Dependency Check scan   |
-| build-artifact-name | false    | string | sca-owasp-dependency-check-report | Name of OWASP Dependency Check build artifact |
+| name              | required | type   | default                           | description                                           |
+|-------------------| -------- |--------|-----------------------------------|-------------------------------------------------------|
+| **project-name**  | true     | string |                                   | Name of the project being scanned                     |
+| **nvd-api-key**   | true     | string |                                   | API Key to access the NVD API                         |
+| **path**          | false    | string | ${{ github.workspace }}           | Path to run the OWASP Dependency Check scan           |
+| **artifact-name** | false    | string | sca-owasp-dependency-check-report | Name of the artifact to upload (for testing use only) |
 
 ## Example Execution
 

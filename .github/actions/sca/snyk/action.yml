@@ -24,8 +24,8 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
-  build-artifact-name:
-    description: Name of Snyk build artifact
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
     type: string
     required: false
     default: sca-snyk-report
@@ -74,8 +74,20 @@ runs:
           --json-file-output=snyk-report.json || EXIT_CODE=$?
         if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
 
+    - name: Run Snyk Scan (Java)
+      if: ${{ inputs.language == 'javascript' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk test \
+          --severity-threshold=low \
+          --strict-out-of-sync=true \
+          --json \
+          --json-file-output=snyk-report.json || EXIT_CODE=$?
+        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+
     - name: Upload Snyk Report
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.build-artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: ${{ inputs.path }}/snyk-report.json

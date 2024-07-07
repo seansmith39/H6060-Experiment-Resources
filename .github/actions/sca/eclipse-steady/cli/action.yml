@@ -3,6 +3,12 @@ description: Run Eclipse Steady CLI SCA scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  version:
+    description: Eclipse Steady CLI version to use
+    type: string
+    required: false
+    default: 3.2.5
+
   language:
     description: Programming language to run Eclipse Steady scan against
     type: string
@@ -25,6 +31,11 @@ inputs:
     required: false
     default: ''
 
+  eclipse-steady-project-source-directories:
+    description: Project source directories to scan (separated by comma)
+    type: string
+    required: true
+
   eclipse-steady-host-url:
     description: Hostname of Eclipse Steady
     type: string
@@ -32,11 +43,6 @@ inputs:
 
   project-name:
     description: The name of the project being scanned
-    type: string
-    required: true
-
-  project-source-directories:
-    description: Project source directories to scan (separated by comma)
     type: string
     required: true
 
@@ -51,6 +57,12 @@ inputs:
     type: string
     required: false
     default: target
+
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
+    type: string
+    required: false
+    default: sca-eclipse-steady-report
 
 runs:
   using: composite
@@ -74,8 +86,8 @@ runs:
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        curl -LO https://github.com/eclipse/steady/releases/download/release-3.2.5/steady-cli-3.2.5.zip
-        unzip steady-cli-3.2.5.zip
+        curl -LO https://github.com/eclipse/steady/releases/download/release-${{ inputs.version }}/steady-cli-${{ inputs.version }}.zip
+        unzip steady-cli-${{ inputs.version }}.zip
 
     - name: Copy Project Source Files To Eclipse Steady App Directory
       shell: bash
@@ -86,7 +98,7 @@ runs:
           rsync -a --exclude='*.JAR' $i steady-cli/app/
         done
 
-    - name: Copy Project Source Files To Eclipse Steady App Directory
+    - name: Copy Project Jar Files To Eclipse Steady App Directory (Java)
       if: ${{ inputs.language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
@@ -103,7 +115,7 @@ runs:
         sed -i 's,<VERSION>,1.0.0,g' steady-cli/steady-custom.properties
         echo 'vulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}' >> steady-cli/steady-custom.properties
 
-    - name: Set Eclipse Steady Java Properties
+    - name: Set Additional Eclipse Steady Properties (Java)
       if: ${{ inputs.language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
@@ -115,26 +127,43 @@ runs:
           echo 'vulas.core.app.appJarNames=${{ inputs.eclipse-steady-app-jar-names }}' >> steady-cli/steady-custom.properties
         fi
 
-    - name: Set Eclipse Steady Pip Property
+    - name: Set Additional Eclipse Steady Properties (Python)
       if: ${{ inputs.language == 'python' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: echo 'vulas.core.bom.python.pip=/usr/bin/pip' >> steady-cli/steady-custom.properties
 
-    - name: Run Eclipse Steady Scan
+    - name: Run Eclipse Steady (app)
       shell: bash
       working-directory: ${{ inputs.path }}/steady-cli
-      run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal app
+      run: java -jar steady-cli-${{ inputs.version }}-jar-with-dependencies.jar -goal app
+
+    - name: Run Eclipse Steady (a2c)
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-${{ inputs.version }}-jar-with-dependencies.jar -goal a2c
+
+    - name: Run Eclipse Steady Scan (t2c)
+      if: ${{ inputs.language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-${{ inputs.version }}-jar-with-dependencies.jar -goal t2c
+
+    - name: Run Eclipse Steady Scan (checkcode)
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-${{ inputs.version }}-jar-with-dependencies.jar -goal checkcode
 
     - name: Create Eclipse Steady Report
       shell: bash
       working-directory: ${{ inputs.path }}/steady-cli
-      run: java -jar steady-cli-3.2.5-jar-with-dependencies.jar -goal report
+      run: java -jar steady-cli-${{ inputs.version }}-jar-with-dependencies.jar -goal report
 
     - name: Upload Eclipse Steady Report
       uses: actions/upload-artifact@v4
       with:
-        name: sca-eclipse-steady-report
+        name: ${{ inputs.artifact-name }}
         path: |
           ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.json
           ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.html

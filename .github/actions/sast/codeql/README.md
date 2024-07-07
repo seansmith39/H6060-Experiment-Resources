@@ -6,13 +6,17 @@ An action to configure and run a [CodeQL](https://github.com/github/codeql) SAST
 
 SARIF results are uploaded as a build artifact.
 
+## Default Version
+
+- CodeQL CLI: v3
+
 ## Inputs
 
-| name                | required | type   | default                 | description                   |
-| ------------------- | -------- | ------ | ----------------------- | ----------------------------- |
-| language            | true     | string |                         | Language to scan using CodeQL |
-| path                | false    | string | ${{ github.workspace }} | Path to run the CodeQL scan   |
-| build-artifact-name | false    | string | sast-codeql-report      | Name of CodeQL build artifact |
+| name              | required | type   | default                 | description                                           |
+|-------------------|----------| ------ |-------------------------|-------------------------------------------------------|
+| **language**      | true     | string |                         | Language to scan using CodeQL                         |
+| **path**          | false    | string | ${{ github.workspace }} | Path to run the CodeQL scan                           |
+| **artifact-name** | false    | string | sast-codeql-report      | Name of the artifact to upload (for testing use only) |
 
 ## Example Execution
 
@@ -25,4 +29,4 @@ SARIF results are uploaded as a build artifact.
 
 ## Note
 
-Python autobuild not supported by CodeQL.
+Python and JavaScript autobuild is not supported by CodeQL.

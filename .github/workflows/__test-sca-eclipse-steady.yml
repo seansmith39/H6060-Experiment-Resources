@@ -3,85 +3,86 @@ name: Test Eclipse Steady SCA Action
 on:
   workflow_dispatch:
 
+permissions:
+  security-events: write
+
 jobs:
-  test-action-mvn-job:
-    name: Test Eclipse Steady SCA Action (Maven)
+  test-action-java:
+    name: Test Eclipse Steady Maven SCA Action (Java)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repsitory
         uses: actions/checkout@v4
         with:
           path: main
 
-      - name: Checkout XNIO
+      - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
         with:
-          repository: xnio/xnio
-          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
-          path: xnio
+          repository: seansmith39/H6060-Java-Jackson-Databind
+          ref: 1acb8ffe6eb20005114bfe18cfd5809b443789c2
+          path: jackson-databind
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
         with:
-          distribution: adopt
-          java-version: 8
+          distribution: temurin
+          java-version: 17
 
       - name: Build and Upload Maven Package
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
-          build-command: mvn -U -B -fae -DskipTests clean install
-          path: xnio
+          build-command: mvn -Dmaven.test.skip=true clean install
+          path: jackson-databind
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./main/.github/actions/sca/eclipse-steady
+        uses: ./main/.github/actions/sca/eclipse-steady/mvn
         with:
-          language: java
-          eclipse-steady-workspace-token: B774A44546001A1711E7B8F77CF9483E
-          eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
-          project-name: xnio
-          project-source-directories: api/src/main,nio-impl/src/main
-          path: xnio
-          build-artifact-name: sast-eclipse-steady-report-maven
+          path: jackson-databind
+          artifact-name: sast-eclipse-steady-report-java
 
-  test-action-python-job:
-    name: Test Eclipse Steady SCA Action (Python)
+  test-action-python:
+    name: Test Eclipse Steady CLI SCA Action (Python)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: main
 
-      - name: Checkout mycli
+      - name: Checkout Pillow Repository
         uses: actions/checkout@v4
         with:
-          repository: dbcli/mycli
-          ref: 3bc201e4ceb62c81c2dc9ea9c0fa2cedecb8e851
-          path: mycli
+          repository: seansmith39/H6060-Python-Pillow
+          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
+          path: pillow
 
-      - name: Install Python 3.12
+      - name: Install Python 3.7
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: 3.12
+          python-version: 3.7
 
-      - name: Install Pip Dependencies
-        uses: ./main/.github/actions/python/install-pip-dependencies
-        with:
-          requirement-file-name: requirements-dev.txt
-          path: mycli
+      - name: Install Python Dependencies
+        working-directory: pillow
+        env:
+          GHA_PYTHON_VERSION: 3.7
+        run: .ci/install.sh
 
-      - name: Build and Upload Python Package
+      - name: Build And Upload Python Package
         uses: ./main/.github/actions/python/python-build-upload
         with:
-          path: mycli
+          build-command: .ci/build.sh
+          build-directory: build
+          path: pillow
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./main/.github/actions/sca/eclipse-steady
+        uses: ./main/.github/actions/sca/eclipse-steady/cli
         with:
           language: python
-          eclipse-steady-workspace-token: D307665D82F83EBC28AE4B22BE0F0CAC
+          eclipse-steady-workspace-token: 1A8CC68377BFEEA81CDF80CFA757872E
+          eclipse-steady-project-source-directories: src
           eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
-          project-name: mycli
-          project-source-directories: mycli
-          path: mycli
-          build-artifact-name: sast-eclipse-steady-report-python
+          project-name: test-python
+          build-directory: dist
+          path: pillow
+          artifact-name: sast-eclipse-steady-report-python

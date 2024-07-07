@@ -4,18 +4,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-action-mvn-job:
+  test-action-mvn:
     name: Test DeepSource SAST Action (Maven)
     runs-on: ubuntu-latest
     env:
       DEEPSOURCE_DSN: ${{ secrets.TEST_DEEPSOURCE_DSN }}
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: main
 
-      - name: Checkout XNIO
+      - name: Checkout XNIO Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-xnio
@@ -40,18 +40,18 @@ jobs:
           coverage-file: nio-impl/target/site/jacoco/jacoco.xml
           path: xnio
 
-  test-action-python-job:
+  test-action-python:
     name: Test DeepSource SAST Action (Python)
     runs-on: ubuntu-latest
     env:
       DEEPSOURCE_DSN: ${{ secrets.TEST_DEEPSOURCE_DSN }}
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: main
 
-      - name: Checkout mycli
+      - name: Checkout mycli Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-mycli

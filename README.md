@@ -24,27 +24,31 @@ The following SAST scans are performed:
 The workflow can be triggered using the following example snippet:
 
 ```yaml
-  run_java_scanning:
-    needs: [ build_application ]
+  run-java-scanning:
+    needs: [ build-application ]
     name: Run Java Scanning Workflow
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-1-java.yml@main
     secrets: inherit
     with:
-        sbom-image-to-scan: webdrivermanager-5.8.1-SNAPSHOT.jar
         project-name: H6060-Java-Webdrivermanager
-        eclipse-steady-workspace-token: 1A8CC68377BFEEA81CDF80CFA757872E
-        eclipse-steady-project-source-directories: src
-
-  run_python_scanning:
-    needs: [ build_application ]
+        
+  run-python-scanning:
+    needs: [ build-application ]
     name: Run Python Scanning Workflow
-    uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment_2_python.yml@main
+    uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-2-python.yml@main
     secrets: inherit
     with:
-      project-name: H6060-Python-pillow
-      project-build-dir: build
+      project-name: H6060-Python-Pillow
       eclipse-steady-workspace-token: 1A8CC68377BFEEA81CDF80CFA757872E
       eclipse-steady-project-source-directories: src
+
+  run-javascript-scanning:
+    needs: [ build-application ]
+    name: Run JavaScript Scanning Workflow
+    uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-3-javascript.yml@main
+    secrets: inherit
+    with:
+      project-name: H6060-JavaScript-Lodash
 ```
 
 ## GitHub Workflow Inputs
@@ -86,3 +90,21 @@ The workflow can be triggered using the following example snippet:
 | **project-name**                              | no       | string  |                  | Name of project to be scanned                      |
 | **build-directory**                           | no       | string  | dist             | Name of project build directory                    |
 | **sca-file-to-scan**                          | no       | string  | requirements.txt | Name of file to scan                               |
+
+### experiment-3-javascript.yml
+
+| name                                   | required | type    | default          | description                              |
+|----------------------------------------|----------|---------|------------------|------------------------------------------|
+| **sast-sonarqube-enabled :**           | no       | boolean | true             | Enable SonarQube scan (SAST)             |
+| **sast-semgrep-enabled**               | no       | boolean | true             | Enable Semgrep scan (SAST)               |
+| **sast-deepsource-enabled**            | no       | boolean | true             | Enable Deepsource scan (SAST)            |
+| **sast-horusec-enabled**               | no       | boolean | true             | Enable Horusec scan (SAST)               |
+| **sast-codeql-enabled**                | no       | boolean | true             | Enable CodeQL scan (SAST)                |
+| **sast-snyk-code-enabled**             | no       | boolean | true             | Enable Snyk Code scan (SAST)             |
+| **sca-snyk-enabled**                   | no       | boolean | true             | Enable Snyk scan (SCA)                   |
+| **sca-owasp-dependency-check-enabled** | no       | boolean | true             | Enable OWASP Dependency Check scan (SCA) |
+| **sca-grype-enabled**                  | no       | boolean | true             | Enable Grype scan (SCA)                  |
+| **project-name**                       | no       | string  |                  | Name of project to be scanned            |
+| **node-version**                       | no       | string  | 16.x             | Node version to use for scanning         |
+| **build-directory**                    | no       | string  | dist             | Name of project build directory          |
+| **sca-file-to-scan**                   | no       | string  | requirements.txt | Name of file to scan                     |
