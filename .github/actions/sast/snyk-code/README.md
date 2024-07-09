@@ -6,12 +6,17 @@ An action to configure and run a [Snyk Code](https://snyk.io/product/snyk-code/)
 
 JSON result is uploaded as a build artifact.
 
+## Default Version
+
+- Snyk CLI: 1.1292.1
+
 ## Inputs
 
-| name                | required | type   | default                 | description                      |
-| ------------------- | -------- | ------ | ----------------------- | -------------------------------- |
-| path                | false    | string | ${{ github.workspace }} | Path to run the Snyk Code scan   |
-| build-artifact-name | false    | string | sast-snyk-code-report   | Name of Snyk Code build artifact |
+| name              | required | type   | default                 | description                                           |
+|-------------------| -------- | ------ |-------------------------|-------------------------------------------------------|
+| **version**       | false    | string | 1.1292.1                | Snyk Code CLI version to use                          |
+| **path**          | false    | string | ${{ github.workspace }} | Path to run the Snyk Code scan                        |
+| **artifact-name** | false    | string | sast-snyk-code-report   | Name of the artifact to upload (for testing use only) |
 
 ## Example Execution
 
@@ -22,4 +27,4 @@ JSON result is uploaded as a build artifact.
 
 ## Note
 
-For SAST, Snyk does not create a report if no vulnerabilities are found.
+For SAST, Snyk does not create a report if vulnerabilities are not found.

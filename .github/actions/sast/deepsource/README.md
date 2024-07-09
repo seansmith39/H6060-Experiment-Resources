@@ -6,12 +6,12 @@ An action to configure and run a [DeepSource](https://deepsource.com/) SAST scan
 
 ## Inputs
 
-| name                | required | type   | default                 | description                                    |
-| ------------------- | -------- | ------ | ----------------------- | ---------------------------------------------- |
-| language            | true     | string |                         | Language to scan using DeepSource              |
-| coverage-file       | true     | string |                         | Path to the coverage data file                 |
-| deepsource-analyzer | false    | string | test-coverage           | Name of analyzer defined in `.deepsource.toml` |
-| path                | false    | string | ${{ github.workspace }} | Path to run the DeepSource scan                |
+| name                    | required | type   | default                 | description                                    |
+|-------------------------| -------- | ------ | ----------------------- | ---------------------------------------------- |
+| **language**            | true     | string |                         | Language to scan using DeepSource              |
+| **coverage-file**       | true     | string |                         | Path to the coverage data file                 |
+| **deepsource-analyzer** | false    | string | test-coverage           | Name of analyzer defined in `.deepsource.toml` |
+| **path**                | false    | string | ${{ github.workspace }} | Path to run the DeepSource scan                |
 
 ## Example Execution
 

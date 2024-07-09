@@ -8,23 +8,17 @@ JSON result is uploaded as a build artifact.
 
 ## Inputs
 
-| name                           | required | type   | default                 | description                                             |
-|--------------------------------| -------- | ------ |-------------------------|---------------------------------------------------------|
-| path                           | false    | string | ${{ github.workspace }} | Path to run the Eclipse Steady scan                     |
-| build-directory                | false    | string | target                  | Name of build directory containing JAR                  |
+| name                | required | type   | default                   | description                                            |
+|---------------------| -------- | ------ |---------------------------|--------------------------------------------------------|
+| **path**            | false    | string | ${{ github.workspace }}   | Path to run the Eclipse Steady scan                    |
+| **build-directory** | false    | string | target                    | Name of build directory containing JAR                 |
+| **artifact-name**   | false    | string | sca-eclipse-steady-report | Name of the artifact to upload (for testing use only)  |
 
 ## Example Execution
 
 ```yaml
 - name: Run Eclipse Steady SCA Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady/mvn
-  with:
-    eclipse-steady-workspace-token: 1111-2222-3333-4444
-    eclipse-steady-app-jar-names: my-app.jar
-    eclipse-steady-app-prefix: com.example
-    eclipse-steady-host-url: https://my-eclipse-steady-instance.com
-    project-name: my-project
-    project-source-dir: src
 ```
 
 ## Note

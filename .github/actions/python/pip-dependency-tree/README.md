@@ -8,9 +8,9 @@ Resulting JSON is uploaded as a build artifact.
 
 ## Inputs
 
-| name | required | type   | default                 | description                 |
-| ---- | -------- | ------ | ----------------------- | --------------------------- |
-| path | false    | string | ${{ github.workspace }} | Path to run the pip command |
+| name     | required | type   | default                 | description                 |
+|----------| -------- | ------ | ----------------------- | --------------------------- |
+| **path** | false    | string | ${{ github.workspace }} | Path to run the pip command |
 
 ## Example Execution
 

@@ -6,9 +6,9 @@ An action to build and upload a JSON formatted Maven CycloneDX SBOM.
 
 ## Inputs
 
-| name            | required | type   | default                 | description                   |
-| --------------- | -------- | ------ |-------------------------|-------------------------------|
-| path            | false    | string | ${{ github.workspace }} | Path to run the Maven command |
+| name     | required | type   | default                 | description                   |
+|----------| -------- | ------ |-------------------------|-------------------------------|
+| **path** | false    | string | ${{ github.workspace }} | Path to run the Maven command |
 
 ## Example Execution
 

@@ -39,8 +39,8 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
-  build-artifact-name:
-    description: Name of SonarQube build artifact
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
     type: string
     required: false
     default: sast-sonarqube-report
@@ -60,7 +60,7 @@ runs:
         distribution: temurin
         java-version: 17
 
-    - name: Run SonarQube Scan (Maven)
+    - name: Run SonarQube Scan (Java)
       if: ${{ inputs.language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
@@ -71,8 +71,8 @@ runs:
           -Dsonar.projectKey=${{ inputs.sonar-project-name }} \
           -Dsonar.projectName=${{ inputs.sonar-project-name }}
 
-    - name: Run SonarQube Scan (Python)
-      if: ${{ inputs.language == 'python' }}
+    - name: Run SonarQube Scan (Python & JavaScript)
+      if: ${{ (inputs.language == 'python') || (inputs.language == 'javascript') }}
       uses: SonarSource/sonarqube-scan-action@v2.0.2
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
@@ -94,6 +94,6 @@ runs:
     - name: Upload SonarQube Report
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.build-artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: ${{ inputs.path }}/cnes-report.zip
         if-no-files-found: error

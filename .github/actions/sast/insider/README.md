@@ -8,10 +8,10 @@ JSON and HTML results are uploaded as a build artifact.
 
 ## Inputs
 
-| name                | required | type   | default                 | description                    |
-| ------------------- | -------- | ------ | ----------------------- | ------------------------------ |
-| path                | false    | string | ${{ github.workspace }} | Path to run the Insider scan   |
-| build-artifact-name | false    | string | sast-insider-report     | Name of Insider build artifact |
+| name                    | required | type   | default                 | description                    |
+|-------------------------| -------- | ------ | ----------------------- | ------------------------------ |
+| **path**                | false    | string | ${{ github.workspace }} | Path to run the Insider scan   |
+| **build-artifact-name** | false    | string | sast-insider-report     | Name of Insider build artifact |
 
 ## Example Execution
 

@@ -3,9 +3,12 @@ name: Test Grype SCA Action
 on:
   workflow_dispatch:
 
+permissions:
+  security-events: write
+
 jobs:
-  test-action-mvn-job:
-    name: Test Grype SCA Action (Maven)
+  test-action-java:
+    name: Test Grype SCA Action (Java)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -13,32 +16,32 @@ jobs:
         with:
           path: main
 
-      - name: Checkout XNIO
+      - name: Checkout Jackson-Databind
         uses: actions/checkout@v4
         with:
-          repository: xnio/xnio
-          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
-          path: xnio
+          repository: seansmith39/H6060-Java-Jackson-Databind
+          ref: 1acb8ffe6eb20005114bfe18cfd5809b443789c2
+          path: jackson-databind
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
         with:
-          distribution: adopt
-          java-version: 8
+          distribution: temurin
+          java-version: 17
 
       - name: Build and Upload Maven Package
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
-          build-command: mvn -U -B -fae -DskipTests clean install
-          path: xnio
+          build-command: mvn -Dmaven.test.skip=true clean install
+          path: jackson-databind
 
       - name: Run Grype (SCA)
         uses: ./main/.github/actions/sca/grype
         with:
-          path: xnio
-          build-artifact-name: sca-grype-report-maven
+          path: jackson-databind
+          artifact-name: sca-grype-report-java
 
-  test-action-python-job:
+  test-action-python:
     name: Test Grype SCA Action (Python)
     runs-on: ubuntu-latest
     steps:
@@ -47,32 +50,72 @@ jobs:
         with:
           path: main
 
-      - name: Checkout Clearml
+      - name: Checkout Pillow Repository
         uses: actions/checkout@v4
         with:
-          repository: allegroai/clearml
-          ref: f2674669265a56a8ecaed3d0147f319ee136a231
-          path: clearml
+          repository: seansmith39/H6060-Python-Pillow
+          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
+          path: pillow
 
-      - name: Install Python 3.8
+      - name: Install Python 3.7
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: 3.8
+          python-version: 3.7
 
-      - name: Install Pip Dependencies
-        uses: ./main/.github/actions/python/install-pip-dependencies
-        with:
-          requirement-file-name: requirements.txt
-          extra-pip-packages: setuptools
-          path: clearml
+      - name: Install Python Dependencies
+        working-directory: pillow
+        env:
+          GHA_PYTHON_VERSION: 3.7
+        run: .ci/install.sh
 
-      - name: Build and Upload Python Package
+      - name: Build And Upload Python Package
         uses: ./main/.github/actions/python/python-build-upload
         with:
-          path: clearml
+          build-command: .ci/build.sh
+          build-directory: build
+          path: pillow
 
       - name: Run Grype (SCA)
         uses: ./main/.github/actions/sca/grype
         with:
-          path: clearml
-          build-artifact-name: sca-grype-report-python
+          path: pillow
+          artifact-name: sca-grype-report-python
+
+  test-action-javascript:
+    name: Test Grype SCA Action (JavaScript)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Lodash Repository
+        uses: actions/checkout@v4
+        with:
+          repository: lodash/lodash
+          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
+          path: lodash
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 16.x
+
+      - name: Install Node Dependencies
+        working-directory: lodash
+        run: npm ci
+
+      - name: Build Node Application
+        working-directory: lodash
+        run: npm run build
+
+      - name: Package Node Application
+        working-directory: lodash
+        run: npm pack
+
+      - name: Run Grype (SCA)
+        uses: ./main/.github/actions/sca/grype
+        with:
+          path: lodash
+          artifact-name: sca-grype-report-javascript

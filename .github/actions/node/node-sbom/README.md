@@ -6,9 +6,9 @@ An action to build and upload a JSON formatted Node CycloneDX SBOM.
 
 ## Inputs
 
-| name            | required | type   | default                 | description                 |
-| --------------- | -------- | ------ |-------------------------|-----------------------------|
-| path            | false    | string | ${{ github.workspace }} | Path to run the npm command |
+| name     | required | type   | default                 | description                 |
+|----------| -------- | ------ |-------------------------|-----------------------------|
+| **path** | false    | string | ${{ github.workspace }} | Path to run the npm command |
 
 ## Example Execution
 

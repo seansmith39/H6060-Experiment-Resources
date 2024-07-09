@@ -14,8 +14,8 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
-  build-artifact-name:
-    description: Name of Semgrep build artifact
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
     type: string
     required: false
     default: sast-semgrep-report
@@ -29,27 +29,13 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Run Semgrep Scan (Java)
-      if: ${{ inputs.language == 'java' }}
+    - name: Run Semgrep Scan
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         semgrep scan \
           --config=p/ci \
-          --config=p/java \
-          --config=p/cwe-top-25 \
-          --config=p/owasp-top-ten \
-          --json \
-          --json-output=semgrep-report.json
-
-    - name: Run Semgrep Scan (Python)
-      if: ${{ inputs.language == 'python' }}
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: |
-        semgrep scan \
-          --config=p/ci \
-          --config=p/python \
+          --config=p/${{ inputs.language }} \
           --config=p/cwe-top-25 \
           --config=p/owasp-top-ten \
           --json \
@@ -58,6 +44,6 @@ runs:
     - name: Upload Semgrep Report
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.build-artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: ${{ inputs.path }}/semgrep-report.json
         if-no-files-found: error

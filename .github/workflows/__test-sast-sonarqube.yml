@@ -3,34 +3,37 @@ name: Test SonarQube SAST Action
 on:
   workflow_dispatch:
 
+permissions:
+  security-events: write
+
 jobs:
-  test-action-mvn-job:
-    name: Test SonarQube SAST Action (Maven)
+  test-action-java:
+    name: Test SonarQube SAST Action (Java)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: main
 
-      - name: Checkout XNIO
+      - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
         with:
-          repository: xnio/xnio
-          ref: 262b9acfc8a9a85aa62a40634cc14581bf6b0d7d
-          path: xnio
+          repository: FasterXML/jackson-databind
+          ref: d0e9952ea70d1af5c512322a32456f237afb9e9b
+          path: jackson-databind
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
         with:
-          distribution: adopt
-          java-version: 8
+          distribution: temurin
+          java-version: 17
 
       - name: Build and Upload Maven Package
         uses: ./main/.github/actions/maven/maven-build-upload
         with:
-          build-command: mvn -U -B -fae -DskipTests clean install
-          path: xnio
+          build-command: mvn -Dmaven.test.skip=true clean install
+          path: jackson-databind
 
       - name: Run SonarQube (SAST)
         uses: ./main/.github/actions/sast/sonarqube
@@ -40,25 +43,25 @@ jobs:
           sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
           sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
           sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
-          sonar-project-name: test-maven
-          path: xnio
-          build-artifact-name: sast-sonarqube-report-maven
+          sonar-project-name: test-java
+          path: jackson-databind
+          artifact-name: sast-sonarqube-report-java
 
-  test-action-python-job:
+  test-action-python:
     name: Test SonarQube SAST Action (Python)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: main
 
-      - name: Checkout Clearml
+      - name: Checkout Pillow Repository
         uses: actions/checkout@v4
         with:
-          repository: allegroai/clearml
-          ref: f2674669265a56a8ecaed3d0147f319ee136a231
-          path: clearml
+          repository: seansmith39/H6060-Python-Pillow
+          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
+          path: pillow
 
       - name: Run SonarQube (SAST)
         uses: ./main/.github/actions/sast/sonarqube
@@ -69,5 +72,33 @@ jobs:
           sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
           sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
           sonar-project-name: test-python
-          path: clearml
-          build-artifact-name: sast-sonarqube-report-python
+          path: pillow
+          artifact-name: sast-sonarqube-report-python
+
+  test-action-javascript:
+    name: Test Snyk Code SAST Action (JavaScript)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - name: Checkout Lodash Repository
+        uses: actions/checkout@v4
+        with:
+          repository: lodash/lodash
+          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
+          path: lodash
+
+      - name: Run SonarQube (SAST)
+        uses: ./main/.github/actions/sast/sonarqube
+        with:
+          language: javascript
+          sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
+          sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
+          sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
+          sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
+          sonar-project-name: test-javascript
+          path: lodash
+          artifact-name: sast-sonarqube-report-javascript

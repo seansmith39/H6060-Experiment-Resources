@@ -6,12 +6,16 @@ An action to configure and run a [Horusec](https://horusec.io/) SAST scan.
 
 JSON result is uploaded as a build artifact.
 
+## Default Version
+
+- Horusec CLI: v0.2.2
+
 ## Inputs
 
-| name                | required | type   | default                 | description                    |
-| ------------------- | -------- | ------ | ----------------------- | ------------------------------ |
-| path                | false    | string | ${{ github.workspace }} | Path to run the Horusec scan   |
-| build-artifact-name | false    | string | sast-horusec-report     | Name of Horusec build artifact |
+| name              | required | type   | default                 | description                                           |
+|-------------------| -------- | ------ |-------------------------|-------------------------------------------------------|
+| **path**          | false    | string | ${{ github.workspace }} | Path to run the Horusec scan                          |
+| **artifact-name** | false    | string | sast-horusec-report     | Name of the artifact to upload (for testing use only) |
 
 ## Example Execution
 

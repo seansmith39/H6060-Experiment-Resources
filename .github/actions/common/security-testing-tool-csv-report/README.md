@@ -21,22 +21,22 @@ An action to create a CSV report for the following security testing tools based 
 
 If an input is not provided, a report will not be parsed for the given security testing tool.
 
-| name                                       | required | type   | default                                    | description                                    |
-| ------------------------------------------ | -------- | ------ | ------------------------------------------ | ---------------------------------------------- |
-| nvd-api-key                                | true     | string |                                            | API Key to access the NVD API                  |
-| opencve-username                           | true     | string |                                            | Username to query OpenCVE API                  |
-| opencve-password                           | true     | string |                                            | Password to query OpenCVE API                  |
-| sast-codeql-report-filename                | false    | string |                                            | Name of CodeQL report filename                 |
-| sast-deepsource-report-filename            | false    | string |                                            | Name of Deepsource report filename             |
-| sast-horusec-report-filename               | false    | string |                                            | Name of Horusec report filename                |
-| sast-insider-report-filename               | false    | string |                                            | Name of Insider report filename                |
-| sast-semgrep-report-filename               | false    | string |                                            | Name of Semgrep report filename                |
-| sast-snyk-code-report-filename             | false    | string |                                            | Name of Snyk Code report filename              |
-| sca-eclipse-steady-report-filename         | false    | string |                                            | Name of Eclipse Steady report filename         |
-| sca-grype-report-filename                  | false    | string |                                            | Name of Grype report filename                  |
-| sca-owasp-dependency-check-report-filename | false    | string |                                            | Name of OWASP Dependency Check report filename |
-| sca-snyk-report-filename                   | false    | string |                                            | Name of Snyk report filename                   |
-| build-artifact-name                        | false    | string | experiment-1-security-testing-tool-results | Name of resulting security testing tool report |
+| name                                           | required | type   | default                                    | description                                    |
+|------------------------------------------------| -------- | ------ | ------------------------------------------ | ---------------------------------------------- |
+| **nvd-api-key**                                | true     | string |                                            | API Key to access the NVD API                  |
+| **opencve-username**                           | true     | string |                                            | Username to query OpenCVE API                  |
+| **opencve-password**                           | true     | string |                                            | Password to query OpenCVE API                  |
+| **sast-codeql-report-filename**                | false    | string |                                            | Name of CodeQL report filename                 |
+| **sast-deepsource-report-filename**            | false    | string |                                            | Name of Deepsource report filename             |
+| **sast-horusec-report-filename**               | false    | string |                                            | Name of Horusec report filename                |
+| **sast-insider-report-filename**               | false    | string |                                            | Name of Insider report filename                |
+| **sast-semgrep-report-filename**               | false    | string |                                            | Name of Semgrep report filename                |
+| **sast-snyk-code-report-filename**             | false    | string |                                            | Name of Snyk Code report filename              |
+| **sca-eclipse-steady-report-filename**         | false    | string |                                            | Name of Eclipse Steady report filename         |
+| **sca-grype-report-filename**                  | false    | string |                                            | Name of Grype report filename                  |
+| **sca-owasp-dependency-check-report-filename** | false    | string |                                            | Name of OWASP Dependency Check report filename |
+| **sca-snyk-report-filename**                   | false    | string |                                            | Name of Snyk report filename                   |
+| **build-artifact-name**                        | false    | string | experiment-1-security-testing-tool-results | Name of resulting security testing tool report |
 
 ## Example Execution
 
