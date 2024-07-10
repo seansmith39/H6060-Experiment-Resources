@@ -40,3 +40,4 @@ jobs:
         with:
           honeycomb-api-key: ${{ secrets.TEST_HONEYCOMB_API_KEY }}
           original-github-workflow-name: ${{ github.workflow }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
