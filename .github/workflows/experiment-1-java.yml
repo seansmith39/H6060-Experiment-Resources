@@ -468,3 +468,21 @@ jobs:
           sca-grype-report-filename: sca-grype-report/results.json
           sca-owasp-dependency-check-report-filename: sca-owasp-dependency-check-report/dependency-check-report.json
           sca-snyk-report-filename: sca-snyk-report/snyk-report.json
+
+  record-opentelemetry-metrics:
+    name: Record GitHub Action OpenTelemetry Metrics
+    runs-on: ubuntu-latest
+    needs: create-security-testing-tool-report
+    if: ${{ ! failure() && ! cancelled() }}
+    steps:
+      - name: Checkout Current GitHub Repository
+        uses: actions/checkout@v4
+        with:
+          repository: seansmith39/H6060-Experiment-Resources
+
+      - name: Record GitHub Action OpenTelemetry Metrics
+        uses: ./.github/actions/common/workflow-opentelemetry-metrics-exporter
+        with:
+          honeycomb-api-key: ${{ secrets.HONEYCOMB_API_KEY }}
+          original-github-workflow-name: ${{ github.workflow }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
