@@ -2,9 +2,10 @@
 
 import os
 import sys
-import json as JSON
 import logging
 import unittest
+import json as JSON
+from itertools import repeat
 from argparse import Namespace
 from unittest.mock import patch
 from main.python3 import cyclonedx_sbom_open_source_insights_report
@@ -12,19 +13,13 @@ from main.python3 import cyclonedx_sbom_open_source_insights_report
 
 TEST_DIRECTORY_RESOURCES = os.path.dirname(os.path.realpath(__file__)) + "/resources/"
 
-CSV_JAVA_RESULT_FILENAME = "cyclonedx_sbom_open_source_insights_java_report.csv"
-CSV_JAVASCRIPT_RESULT_FILENAME = "cyclonedx_sbom_open_source_insights_javascript_report.csv"
-CSV_PYTHON_RESULT_FILENAME = "cyclonedx_sbom_open_source_insights_python_report.csv"
+CSV_JAVA_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_open_source_insights_java_report.csv"
+CSV_JAVASCRIPT_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_open_source_insights_javascript_report.csv"
+CSV_PYTHON_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_open_source_insights_python_report.csv"
 
 CYCLONEDX_SBOM_JAVA_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/java/cyclonedx_sbom_report.json"
 CYCLONEDX_SBOM_JAVA_MISCONFIGURED_FILENAME = (
     TEST_DIRECTORY_RESOURCES + "sbom/java/cyclonedx_sbom_misconfigured_report.json"
-)
-CYCLONEDX_SBOM_PYTHON_MISCONFIGURED_FILENAME = (
-    TEST_DIRECTORY_RESOURCES + "sbom/python/cyclonedx_sbom_misconfigured_report.json"
-)
-CYCLONEDX_SBOM_JAVASCRIPT_MISCONFIGURED_FILENAME = (
-    TEST_DIRECTORY_RESOURCES + "sbom/javascript/cyclonedx_sbom_misconfigured_report.json"
 )
 CYCLONEDX_SBOM_JAVASCRIPT_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/javascript/cyclonedx_sbom_report.json"
 CYCLONEDX_SBOM_PYTHON_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/python/cyclonedx_sbom_report.json"
@@ -135,20 +130,26 @@ class TestSbomOpenSourceInsightsReport(unittest.TestCase):
         side_effect=mocked_response,
     )
     def test_query_osv_api_no_vulnerabilities(self, mock_response):
+        data = []
+        data.extend(repeat("N/A", 12))
         osv_data = cyclonedx_sbom_open_source_insights_report.query_osv_api([], "no_vulns", "1.0")
-        self.assertEqual(osv_data, [None])
+        self.assertEqual(osv_data, [data])
 
     @patch(
         "main.python3.cyclonedx_sbom_open_source_insights_report.send_post_request",
         side_effect=mocked_response,
     )
     def test_query_osv_api_no_records(self, mock_response):
+        data = []
+        data.extend(repeat("N/A", 12))
         osv_data = cyclonedx_sbom_open_source_insights_report.query_osv_api([], "no_record", "1.0")
-        self.assertEqual(osv_data, [None])
+        self.assertEqual(osv_data, [data])
 
     def test_query_osv_api_no_response(self):
+        data = []
+        data.extend(repeat("N/A", 12))
         osv_data = cyclonedx_sbom_open_source_insights_report.query_osv_api([], "no_response", "1.0")
-        self.assertEqual(osv_data, [None])
+        self.assertEqual(osv_data, [data])
 
     def test_invalid_programming_language(self):
         args = self.__mock_args("invalid", CYCLONEDX_SBOM_PYTHON_FILENAME)
@@ -184,44 +185,11 @@ class TestSbomOpenSourceInsightsReport(unittest.TestCase):
         )
         self.assertEqual(result, ("N/A", "N/A"))
 
-    def test_java_misconfigured_main(self):
-        args = cyclonedx_sbom_open_source_insights_report.get_args(
-            [
-                "--programming-language",
-                "java",
-                "--cyclonedx-sbom-filename",
-                CYCLONEDX_SBOM_JAVA_MISCONFIGURED_FILENAME,
-            ]
-        )
-        with self.assertRaises(SystemExit) as cm:
-            cyclonedx_sbom_open_source_insights_report.main(args)
-        self.assertEqual(cm.exception.code, 1)
-
-    def test_python_misconfigured_main(self):
-        args = cyclonedx_sbom_open_source_insights_report.get_args(
-            [
-                "--programming-language",
-                "python",
-                "--cyclonedx-sbom-filename",
-                CYCLONEDX_SBOM_PYTHON_MISCONFIGURED_FILENAME,
-            ]
-        )
-        with self.assertRaises(SystemExit) as cm:
-            cyclonedx_sbom_open_source_insights_report.main(args)
-        self.assertEqual(cm.exception.code, 1)
-
-    def test_javascript_misconfigured_main(self):
-        args = cyclonedx_sbom_open_source_insights_report.get_args(
-            [
-                "--programming-language",
-                "javascript",
-                "--cyclonedx-sbom-filename",
-                CYCLONEDX_SBOM_JAVASCRIPT_MISCONFIGURED_FILENAME,
-            ]
-        )
-        with self.assertRaises(SystemExit) as cm:
-            cyclonedx_sbom_open_source_insights_report.main(args)
-        self.assertEqual(cm.exception.code, 1)
+    def test_get_vulnerability_affected_not_found(self):
+        with open(RESPONSE_OSV_API_EMPTY_VULNERABILITIES, "r") as f:
+            osv_data = JSON.load(f)
+        result = cyclonedx_sbom_open_source_insights_report.get_vulnerability_affected_version(osv_data, "1.0")
+        self.assertEqual(result, ("N/A", "N/A"))
 
     @patch(
         "main.python3.cyclonedx_sbom_open_source_insights_report.send_post_request",

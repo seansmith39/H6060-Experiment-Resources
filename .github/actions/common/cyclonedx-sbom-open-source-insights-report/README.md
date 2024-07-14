@@ -4,7 +4,7 @@
 
 An action to parse CycloneDX SBOM reports and generate a CSV report with additional insights from the OSV databases.
 
-The script supports the parsing of CycloneDX SBOM reports in both v1.5 and v1.6 schemas.
+The script supports the parsing of CycloneDX SBOM v1.5 and v1.6 schemas.
 
 ## Supported Programming Language SBOM Schemas
 
@@ -16,10 +16,14 @@ The script supports the parsing of CycloneDX SBOM reports in both v1.5 and v1.6 
 
 ## Inputs
 
-| name                        | required | type   | default | description                                        |
-|-----------------------------|----------|--------|---------|----------------------------------------------------|
-| **programming-language**    | true     | string |         | Programming language of CycloneDX SBOM JSON report |
-| **cyclonedx-sbom-filename** | true     | string |         | Name of CycloneDX SBOM JSON report to parse        |
+| name                             | required | type    | default                                    | description                                           |
+|----------------------------------|----------|---------|--------------------------------------------|-------------------------------------------------------|
+| **programming-language**         | true     | string  |                                            | Programming language of CycloneDX SBOM JSON report    |
+| **cyclonedx-sbom-artifact-name** | true     | string  |                                            | Name of CycloneDX SBOM build artifact                 |
+| **cyclonedx-sbom-filename**      | true     | string  |                                            | Name of CycloneDX SBOM JSON report                    |
+| **github-token**                 | true     | string  |                                            | Token to access the GitHub API                        |
+| **artifact-name**                | false    | string  | cyclonedx-sbom-open-source-insights-report | Name of the artifact to upload (for testing use only) |
+| **include-unit-tests**           | false    | boolean | false                                      | Whether to run action unit tests                      |
 
 ## Example Execution
 
@@ -28,8 +32,14 @@ The script supports the parsing of CycloneDX SBOM reports in both v1.5 and v1.6 
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/common/sbom_open_source_insights_report@main
   with:
     programming-language: java
-    cyclonedx-sbom-filename: java-cyclonedx-sbom.json
+    cyclonedx-sbom-artifact-name: cyclonedx-sbom-maven
+    cyclonedx-sbom-filename: sbom.json
+    github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+### Action Unit Tests
+
+To run the action unit tests, set the `include-unit-tests` input to `true`.
 
 ## CSV Report
 
@@ -103,3 +113,9 @@ The generated report contains the following columns.
 | **OSV Vulnerability CVSS V2**            | CVSS V2 score                                                                                                                        | Yes                   | Yes                   |
 | **OSV Vulnerability CVSS V3**            | CVSS V3 score                                                                                                                        | Yes                   | Yes                   |
 | **OSV Vulnerability CVSS V4**            | CVSS V4 score                                                                                                                        | Yes                   | Yes                   |
+
+## Resources
+
+- [CycloneDX](https://cyclonedx.org/)
+- [Open Source Insights](https://osv.dev/)
+- [Open Source Insights API](https://google.github.io/osv.dev/api/)

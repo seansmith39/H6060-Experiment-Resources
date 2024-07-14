@@ -3,6 +3,9 @@ name: Test Workflow OpenTelemetry Metrics Exporter Action
 on:
   workflow_dispatch:
 
+permissions:
+  security-events: write
+
 jobs:
   build-action-job:
     name: Build

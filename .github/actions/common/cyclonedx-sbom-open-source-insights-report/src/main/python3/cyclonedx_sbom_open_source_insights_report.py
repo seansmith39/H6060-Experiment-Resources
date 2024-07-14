@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import csv
 import sys
 import json
@@ -7,6 +8,7 @@ import logging
 import requests
 import argparse
 import itertools
+from itertools import repeat
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
@@ -156,14 +158,16 @@ def query_osv_api(sbom_data: list, component_purl: str, component_version: str) 
     """
     csv_rows = []
     query_data = {"package": {"purl": component_purl}}
+
+    log.info(f"Querying OSV API for {component_purl}")
     response = send_post_request(get_osv_api_url(), query_data)
 
     if response:
         osv_data = response.json()
 
         # Check if record exists for component in OSV database
-        if len(osv_data) == 0:
-            log.warn(f"No record for {component_purl} in OSV database")
+        if len(osv_data) == 0 or osv_data == {}:
+            log.info(f"No record for {component_purl} in OSV database")
         else:
             total_vulnerabilities = len(osv_data["vulns"])
             log.info(f"Found {total_vulnerabilities} vulnerabilities for {component_purl}")
@@ -210,10 +214,13 @@ def query_osv_api(sbom_data: list, component_purl: str, component_version: str) 
 
                     # Add combined data to each CSV row
                     csv_rows.append(row)
+
     if len(csv_rows) == 0:
-        # Return N/A for 11 OSV columns if no vulnerabilities found
-        row = sbom_data.extend(11 * [default_not_found_value])
-        csv_rows.append(row)
+        # Return N/A for 12 OSV columns if no vulnerabilities found
+        sbom_data.extend(repeat(default_not_found_value, 12))
+        csv_rows.append(sbom_data)
+
+    log.info(f"{str(len(csv_rows))} CSV rows generated")
     return csv_rows
 
 
@@ -227,9 +234,10 @@ def get_vulnerability_cve(osv_data: dict) -> str:
         str -- CVE of vulnerability
     """
     cve_ids = []
-    for alias in osv_data["aliases"]:
-        if alias.upper().startswith("CVE"):
-            cve_ids.append(alias)
+    if "aliases" in osv_data:
+        for alias in osv_data["aliases"]:
+            if alias.upper().startswith("CVE"):
+                cve_ids.append(alias)
 
     if len(cve_ids) == 0:
         cve_ids = default_not_found_value
@@ -266,20 +274,22 @@ def get_vulnerability_affected_version(osv_data: dict, component_version: str) -
     :return
         str -- Introduced and fixed version of vulnerability
     """
-    for affected_version in osv_data["affected"]:
-        events = affected_version["ranges"][0]["events"]
-        introduced_version = default_not_found_value
-        fixed_version = default_not_found_value
-        for event in events:
-            # Check if introduced and fixed versions are available
-            if "introduced" in event:
-                # Check if introduced version is same as the component's major version
-                if event["introduced"].startswith(component_version[0]):
-                    introduced_version = event["introduced"]
-            if "fixed" in event:
-                if event["fixed"].startswith(component_version[0]):
-                    fixed_version = event["fixed"]
-        return introduced_version, fixed_version
+    if "affected" in osv_data:
+        for affected_version in osv_data["affected"]:
+            if "ranges" in affected_version:
+                events = affected_version["ranges"][0]["events"]
+                introduced_version = default_not_found_value
+                fixed_version = default_not_found_value
+                for event in events:
+                    # Check if introduced and fixed versions are available
+                    if "introduced" in event:
+                        # Check if introduced version is same as the component's major version
+                        if event["introduced"].startswith(component_version[0]):
+                            introduced_version = event["introduced"]
+                    if "fixed" in event:
+                        if event["fixed"].startswith(component_version[0]):
+                            fixed_version = event["fixed"]
+                return introduced_version, fixed_version
     return default_not_found_value, default_not_found_value
 
 
@@ -330,141 +340,141 @@ def parse_cyclonedx_sbom_report(cyclonedx_sbom_filename: str, csv_filename: str)
         bom_format = get_json_value(data, "bomFormat")
         spec_version = get_json_value(data, "specVersion")
 
-        for component in get_json_value(data, "components"):
-            # Excludes self-referencing components
-            if "version" in component:
-                component_group = get_json_value(component, "group")
-                if component_group not in exclude_component_groups:
-                    # CycloneDX SBOM data
-                    component_scope = get_json_value(component, "scope", None, "required")
-                    component_type = get_json_value(component, "type")
-                    component_name = get_json_value(component, "name")
-                    component_version = get_json_value(component, "version")
-                    component_bom_ref = get_json_value(component, "bom-ref")
-                    component_purl = get_json_value(component, "purl")
-                    component_author = get_json_value(component, "author")
-                    component_description = get_json_value(component, "description")
-                    # SBOM external references
-                    component_adversary_model = get_component_external_reference(component, "adversary-model")
-                    component_advisories = get_component_external_reference(component, "advisories")
-                    component_analysis_report = get_component_external_reference(component, "analysis-report")
-                    component_attestation = get_component_external_reference(component, "attestation")
-                    component_bom = get_component_external_reference(component, "bom")
-                    component_build_meta = get_component_external_reference(component, "build-meta")
-                    component_build_system = get_component_external_reference(component, "build-system")
-                    component_certification_report = get_component_external_reference(component, "certification-report")
-                    component_chat = get_component_external_reference(component, "chat")
-                    component_codified_infrastructure = get_component_external_reference(
-                        component, "codified-infrastructure"
-                    )
-                    component_configuration = get_component_external_reference(component, "configuration")
-                    component_digital_signature = get_component_external_reference(component, "digital-signature")
-                    component_distribution = get_component_external_reference(component, "distribution")
-                    component_distribution_intake = get_component_external_reference(component, "distribution-intake")
-                    component_documentation = get_component_external_reference(component, "documentation")
-                    component_dynamic_analysis_report = get_component_external_reference(
-                        component, "dynamic-analysis-report"
-                    )
-                    component_electronic_signature = get_component_external_reference(component, "electronic-signature")
-                    component_evidence = get_component_external_reference(component, "evidence")
-                    component_exploitability_statement = get_component_external_reference(
-                        component, "exploitability-statement"
-                    )
-                    component_formulation = get_component_external_reference(component, "formulation")
-                    component_issue_tracker = get_component_external_reference(component, "issue-tracker")
-                    component_license = get_component_external_reference(component, "license")
-                    component_log = get_component_external_reference(component, "log")
-                    component_mailing_list = get_component_external_reference(component, "mailing-list")
-                    component_maturity_report = get_component_external_reference(component, "maturity-report")
-                    component_model_card = get_component_external_reference(component, "model-card")
-                    component_other = get_component_external_reference(component, "other")
-                    component_pentest_report = get_component_external_reference(component, "pentest-report")
-                    component_poam = get_component_external_reference(component, "poam")
-                    component_quality_metrics = get_component_external_reference(component, "quality-metrics")
-                    component_rfc_9116 = get_component_external_reference(component, "rfc-9116")
-                    component_release_notes = get_component_external_reference(component, "release-notes")
-                    component_risk_assessment = get_component_external_reference(component, "risk-assessment")
-                    component_runtime_analysis_report = get_component_external_reference(
-                        component, "runtime-analysis-report"
-                    )
-                    component_security_contact = get_component_external_reference(component, "security-contact")
-                    component_social = get_component_external_reference(component, "social")
-                    component_source_distribution = get_component_external_reference(component, "source-distribution")
-                    component_static_analysis_report = get_component_external_reference(
-                        component, "static-analysis-report"
-                    )
-                    component_support = get_component_external_reference(component, "support")
-                    component_threat_model = get_component_external_reference(component, "threat-model")
-                    component_vcs = get_component_external_reference(component, "vcs")
-                    component_vulnerability_assertion = get_component_external_reference(
-                        component, "vulnerability-assertion"
-                    )
-                    component_website = get_component_external_reference(component, "website")
+        sbom_components = get_json_value(data, "components")
 
-                    # Set CycloneDX SBOM data for CSV report
-                    cyclonedx_sbom_data = [
-                        bom_format,
-                        spec_version,
-                        component_scope,
-                        component_name,
-                        component_type,
-                        component_group,
-                        component_version,
-                        component_bom_ref,
-                        component_purl,
-                        component_author,
-                        component_description,
-                        component_adversary_model,
-                        component_advisories,
-                        component_analysis_report,
-                        component_attestation,
-                        component_bom,
-                        component_build_meta,
-                        component_build_system,
-                        component_certification_report,
-                        component_chat,
-                        component_codified_infrastructure,
-                        component_configuration,
-                        component_digital_signature,
-                        component_distribution,
-                        component_distribution_intake,
-                        component_documentation,
-                        component_dynamic_analysis_report,
-                        component_electronic_signature,
-                        component_evidence,
-                        component_exploitability_statement,
-                        component_formulation,
-                        component_issue_tracker,
-                        component_license,
-                        component_log,
-                        component_mailing_list,
-                        component_maturity_report,
-                        component_model_card,
-                        component_other,
-                        component_pentest_report,
-                        component_poam,
-                        component_quality_metrics,
-                        component_rfc_9116,
-                        component_release_notes,
-                        component_risk_assessment,
-                        component_runtime_analysis_report,
-                        component_security_contact,
-                        component_social,
-                        component_source_distribution,
-                        component_static_analysis_report,
-                        component_support,
-                        component_threat_model,
-                        component_vcs,
-                        component_vulnerability_assertion,
-                        component_website,
-                    ]
-                    log.info(f"Fetched component: {component_name}@{component_version}")
+        for component in sbom_components:
+            component_name = get_json_value(component, "name")
+            log.info(f"Fetching component: {component_name}")
 
-                    # Retrieve OSV API data for all SBOM components
-                    osv_vulnerabilities = query_osv_api(cyclonedx_sbom_data, component_purl, component_version)
-                    write_to_csv_report(osv_vulnerabilities, csv_filename)
-    except Exception as e:
-        log.error(f"Error parsing CycloneDX SBOM JSON report: {e}")
+            component_group = get_json_value(component, "group")
+            if component_group not in exclude_component_groups:
+                # CycloneDX SBOM data
+                component_scope = get_json_value(component, "scope", None, "required")
+                component_type = get_json_value(component, "type")
+                component_version = get_json_value(component, "version")
+                component_bom_ref = get_json_value(component, "bom-ref")
+                component_purl = get_json_value(component, "purl")
+                component_author = get_json_value(component, "author")
+                component_description = get_json_value(component, "description")
+                # SBOM external references
+                component_adversary_model = get_component_external_reference(component, "adversary-model")
+                component_advisories = get_component_external_reference(component, "advisories")
+                component_analysis_report = get_component_external_reference(component, "analysis-report")
+                component_attestation = get_component_external_reference(component, "attestation")
+                component_bom = get_component_external_reference(component, "bom")
+                component_build_meta = get_component_external_reference(component, "build-meta")
+                component_build_system = get_component_external_reference(component, "build-system")
+                component_certification_report = get_component_external_reference(component, "certification-report")
+                component_chat = get_component_external_reference(component, "chat")
+                component_codified_infrastructure = get_component_external_reference(
+                    component, "codified-infrastructure"
+                )
+                component_configuration = get_component_external_reference(component, "configuration")
+                component_digital_signature = get_component_external_reference(component, "digital-signature")
+                component_distribution = get_component_external_reference(component, "distribution")
+                component_distribution_intake = get_component_external_reference(component, "distribution-intake")
+                component_documentation = get_component_external_reference(component, "documentation")
+                component_dynamic_analysis_report = get_component_external_reference(
+                    component, "dynamic-analysis-report"
+                )
+                component_electronic_signature = get_component_external_reference(component, "electronic-signature")
+                component_evidence = get_component_external_reference(component, "evidence")
+                component_exploitability_statement = get_component_external_reference(
+                    component, "exploitability-statement"
+                )
+                component_formulation = get_component_external_reference(component, "formulation")
+                component_issue_tracker = get_component_external_reference(component, "issue-tracker")
+                component_license = get_component_external_reference(component, "license")
+                component_log = get_component_external_reference(component, "log")
+                component_mailing_list = get_component_external_reference(component, "mailing-list")
+                component_maturity_report = get_component_external_reference(component, "maturity-report")
+                component_model_card = get_component_external_reference(component, "model-card")
+                component_other = get_component_external_reference(component, "other")
+                component_pentest_report = get_component_external_reference(component, "pentest-report")
+                component_poam = get_component_external_reference(component, "poam")
+                component_quality_metrics = get_component_external_reference(component, "quality-metrics")
+                component_rfc_9116 = get_component_external_reference(component, "rfc-9116")
+                component_release_notes = get_component_external_reference(component, "release-notes")
+                component_risk_assessment = get_component_external_reference(component, "risk-assessment")
+                component_runtime_analysis_report = get_component_external_reference(
+                    component, "runtime-analysis-report"
+                )
+                component_security_contact = get_component_external_reference(component, "security-contact")
+                component_social = get_component_external_reference(component, "social")
+                component_source_distribution = get_component_external_reference(component, "source-distribution")
+                component_static_analysis_report = get_component_external_reference(component, "static-analysis-report")
+                component_support = get_component_external_reference(component, "support")
+                component_threat_model = get_component_external_reference(component, "threat-model")
+                component_vcs = get_component_external_reference(component, "vcs")
+                component_vulnerability_assertion = get_component_external_reference(
+                    component, "vulnerability-assertion"
+                )
+                component_website = get_component_external_reference(component, "website")
+
+                # Set CycloneDX SBOM data for CSV report
+                cyclonedx_sbom_data = [
+                    bom_format,
+                    spec_version,
+                    component_scope,
+                    component_name,
+                    component_type,
+                    component_group,
+                    component_version,
+                    component_bom_ref,
+                    component_purl,
+                    component_author,
+                    component_description,
+                    component_adversary_model,
+                    component_advisories,
+                    component_analysis_report,
+                    component_attestation,
+                    component_bom,
+                    component_build_meta,
+                    component_build_system,
+                    component_certification_report,
+                    component_chat,
+                    component_codified_infrastructure,
+                    component_configuration,
+                    component_digital_signature,
+                    component_distribution,
+                    component_distribution_intake,
+                    component_documentation,
+                    component_dynamic_analysis_report,
+                    component_electronic_signature,
+                    component_evidence,
+                    component_exploitability_statement,
+                    component_formulation,
+                    component_issue_tracker,
+                    component_license,
+                    component_log,
+                    component_mailing_list,
+                    component_maturity_report,
+                    component_model_card,
+                    component_other,
+                    component_pentest_report,
+                    component_poam,
+                    component_quality_metrics,
+                    component_rfc_9116,
+                    component_release_notes,
+                    component_risk_assessment,
+                    component_runtime_analysis_report,
+                    component_security_contact,
+                    component_social,
+                    component_source_distribution,
+                    component_static_analysis_report,
+                    component_support,
+                    component_threat_model,
+                    component_vcs,
+                    component_vulnerability_assertion,
+                    component_website,
+                ]
+                log.info(f"Fetched component: {component_name}@{component_version}")
+
+                # Retrieve OSV API data for all SBOM components
+                osv_vulnerabilities = query_osv_api(cyclonedx_sbom_data, component_purl, component_version)
+                write_to_csv_report(osv_vulnerabilities, csv_filename)
+    except Exception as e:  # pragma: no cover
+        log.error(f"Error parsing CycloneDX SBOM JSON report for component {component_name}: {e}")
         sys.exit(1)
     else:
         log.info("Successfully parsed CycloneDX SBOM JSON report")
@@ -613,37 +623,46 @@ def get_csv_column_headers() -> str:
     return f"{convert_list_to_csv_row(cyclonedx_sbom_headers)},{convert_list_to_csv_row(default_osv_headers)}\n"
 
 
+def get_directory_path() -> str:
+    """Get directory path of script
+
+    :return
+        str -- Directory path of script
+    """
+    return os.path.dirname(os.path.realpath(__file__))
+
+
 def write_csv_report_header(csv_output_filename: str) -> None:
     """Write CSV report header
 
     :parameter
         csv_output_filename:str -- Name of CSV report to write
     """
-    log.info("Writing CSV report header")
+    log.info(f"Writing CSV report header to {get_directory_path()}/{csv_output_filename}")
 
-    with open(csv_output_filename, "w") as file:
+    with open(f"{get_directory_path()}/{csv_output_filename}", "w") as file:
         file.write(get_csv_column_headers())
 
-    log.info("Successfully wrote CSV report header")
+    log.info(f"Successfully wrote CSV report header to {get_directory_path()}/{csv_output_filename}")
 
 
-def write_to_csv_report(csv_data: list, csv_filename: str) -> None:
+def write_to_csv_report(csv_data: list, csv_output_filename: str) -> None:
     """Write SBOM and OSV data to CSV report
 
     :parameter
         csv_data:list -- Data to write to CSV report
         csv_output_filename:str -- Name of CSV report to write
     """
-    log.info("Writing SBOM and OSV data to CSV report")
+    log.info(f"Writing SBOM and OSV data to {get_directory_path()}/{csv_output_filename}")
 
     csv_data.sort()
     csv_data = list(item for item, _ in itertools.groupby(csv_data))
 
-    with open(csv_filename, "a") as csv_file:
+    with open(f"{get_directory_path()}/{csv_output_filename}", "a") as csv_file:
         writer = csv.writer(csv_file)
         writer.writerows(csv_data)
 
-    log.info("Successfully wrote SBOM and OSV to CSV report")
+    log.info(f"Successfully wrote SBOM and OSV data to {get_directory_path()}/{csv_output_filename}")
 
 
 def main(args: argparse.Namespace) -> None:
