@@ -29,6 +29,6 @@ runs:
     - name: Upload CycloneDX SBOM
       uses: actions/upload-artifact@v4
       with:
-        name: cyclonedx-sbom
+        name: cyclonedx-sbom-node
         path: ${{ inputs.path }}/sbom.json
         if-no-files-found: error

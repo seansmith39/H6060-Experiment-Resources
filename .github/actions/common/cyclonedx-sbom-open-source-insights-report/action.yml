@@ -1,0 +1,93 @@
+name: CycloneDX SBOM Open Source Insights Report Action
+description: Create a CSV report for all true positive vulnerabilities for a project based on it's CycloneDX SBOM
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  programming-language:
+    description: Programming language of the project
+    type: string
+    required: true
+
+  cyclonedx-sbom-artifact-name:
+    description: Name of CycloneDX SBOM artifact
+    type: string
+    required: true
+
+  cyclonedx-sbom-filename:
+    description: Name of CycloneDX SBOM filename
+    type: string
+    required: true
+
+  github-token:
+    description: Token to access the GitHub API
+    type: string
+    required: true
+
+  artifact-name:
+    description: Name of the artifact to upload (for testing use only)
+    type: string
+    required: false
+    default: cyclonedx-sbom-open-source-insights-report
+
+  include-unit-tests:
+    description: Run unit tests in the action (for testing use only)
+    type: string # See https://github.com/actions/runner/issues/2238
+    required: false
+    default: false
+
+runs:
+    using: "composite"
+    steps:
+      - name: Download CycloneDX SBOM Artifact
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          name: ${{ inputs.cyclonedx-sbom-artifact-name }}
+          path: ${{ github.action_path }}
+          github_token: ${{ inputs.github-token }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: in_progress
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.12
+
+      - name: Install Pip Requirements
+        shell: bash
+        working-directory: ${{ github.action_path }}
+        run: pip install -r requirements-dev.txt
+
+      - name: Run Unit Tests
+        if: ${{ inputs.include-unit-tests == 'true' }}
+        shell: bash
+        working-directory: ${{ github.action_path }}
+        run: ./run_unit_tests.sh
+
+      - name: Create CycloneDX SBOM Open Source Insights Report
+        shell: bash
+        working-directory: ${{ github.action_path }}
+        run: |
+          python src/main/python3/cyclonedx_sbom_open_source_insights_report.py \
+            --programming-language "${{ inputs.programming-language }}" \
+            --cyclonedx-sbom-filename "${{ inputs.cyclonedx-sbom-filename }}"
+
+      - name: Change Input To Lowercase
+        id: input-to-lowercase
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ inputs.programming-language }}
+
+      # See https://github.com/actions/runner/issues/2185
+      - name: Set GitHub Action Path
+        shell: bash
+        run: |
+          GITHUB_ACTION_NEW_PATH=$(python -c "print('${{github.action_path}}'.replace('./.', '.'))")
+          echo "GITHUB_ACTION_NEW_PATH=$GITHUB_ACTION_NEW_PATH" >> $GITHUB_ENV
+
+      - name: Upload CycloneDX SBOM Open Source Insights Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ env.GITHUB_ACTION_NEW_PATH }}/src/main/python3/cyclonedx_sbom_open_source_insights_${{ steps.input-to-lowercase.outputs.lowercase }}_report.csv
+          if-no-files-found: error
