@@ -1,18 +1,36 @@
-# SAST Semgrep Action
+# Semgrep SAST Action
 
 ## Description
 
-An action to configure and run a [Semgrep](https://semgrep.dev/) SAST scan.
+An action to configure and run a Semgrep SAST scan.
 
-JSON result is uploaded as a build artifact.
+## Semgrep Token
+
+A Semgrep token is required to be set as a secret in the repository. The environment variable name should be `SEMGREP_APP_TOKEN`.
+It is available under `Platform` → `Settings` of the repository page on the Semgrep AppSec Platform.
+
+## Semgrep Docker Image
+
+The action uses the official Semgrep Docker image `returntocorp/semgrep:latest` to run the scan.
+
+## Supported Programming Languages
+
+- Java
+- JavaScript
+- Python
 
 ## Inputs
 
-| name              | required | type   | default                 | description                                           |
-|-------------------| -------- | ------ |-------------------------|-------------------------------------------------------|
-| **language**      | true     | string |                         | Semgrep ruleset language                              |
-| **path**          | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan                          |
-| **artifact-name** | false    | string | sast-semgrep-report     | Name of the artifact to upload (for testing use only) |
+| name                     | required | type   | default                 | description                     |
+|--------------------------|----------|--------|-------------------------|---------------------------------|
+| **programming-language** | true     | string |                         | Programming language to analyse |
+| **artifact-name**        | false    | string | sast-semgrep-report     | Name of the artifact to upload  |
+| **path**                 | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan    |
+
+## Build Artifacts
+
+The following build artifact is uploaded to the GitHub Actions workflow run. This can be changed using the `artifact-name` input.
+- `sast-semgrep-report`
 
 ## Example Execution
 
@@ -20,5 +38,13 @@ JSON result is uploaded as a build artifact.
 - name: Run Semgrep SAST Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/semgrep
   with:
-    language: python
+    programming-language: java
 ```
+
+## Resources
+
+- [Semgrep AppSec Platform](https://app.semgrep.dev)
+- [Semgrep CLI](https://semgrep.dev/docs/cli-reference)
+- [Semgrep CI](https://semgrep.dev/docs/deployment/add-semgrep-to-ci)
+- [Semgrep Registry](https://semgrep.dev/explore)
+- [Semgrep Docker Image](https://hub.docker.com/r/returntocorp/semgrep)

@@ -1,0 +1,42 @@
+name: Test JavaScript CycloneDX SBOM Action
+
+on:
+  workflow_dispatch:
+
+permissions:
+  security-events: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test-action-job:
+    name: Test JavaScript CycloneDX SBOM Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: experiment-resources
+
+      - name: Checkout Lodash
+        uses: actions/checkout@v4
+        with:
+          repository: lodash/lodash
+          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
+          path: lodash
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 16.x
+
+      - name: Install JavaScript Dependencies
+        working-directory: lodash
+        run: npm ci
+
+      - name: Create CycloneDX SBOM
+        uses: ./experiment-resources/.github/actions/javascript/javascript-sbom
+        with:
+          path: lodash

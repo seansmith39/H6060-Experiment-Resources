@@ -1,0 +1,233 @@
+name: Eclipse Steady Java SCA Action
+description: Run Eclipse Steady Maven SCA scan for Java applications
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  build-directory:
+    description: Build results directory
+    type: string
+    required: true
+
+  eclipse-steady-workspace-token:
+    description: Token used to identify project workspace
+    type: string
+    required: true
+  
+  eclipse-steady-host-url:
+    description: Hostname of Eclipse Steady instance
+    type: string
+    required: true
+  
+  eclipse-steady-application-group-id:
+    description: Group ID of the application
+    type: string
+    required: true
+
+  eclipse-steady-application-artifact-id:
+    description: Artifact ID of the application
+    type: string
+    required: true
+    
+  eclipse-steady-application-version:
+    description: Version of the application
+    type: string
+    required: true
+
+  eclipse-steady-project-source-directories:
+    description: Project source directories to scan (separated by comma)
+    type: string
+    required: true
+
+  eclipse-steady-plugin-version:
+    description: Eclipse Steady plugin version to use
+    type: string
+    required: false
+    default: 3.2.5
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sca-eclipse-steady-report
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: 17
+        distribution: temurin
+
+    - name: Run Eclipse Steady (app)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:app \
+          -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }} \
+          -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-host-url }}/backend \
+          -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-host-url }}/cia \
+          -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp \
+          -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }} \
+          -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }} \
+          -Dvulas.core.appContext.version=${{ inputs.eclipse-steady-application-version }} \
+          -Dvulas.core.uploadDir=${{ inputs.build-directory }}/vulas/upload \
+          -Dvulas.core.app.sourceDir=${{ inputs.build-directory }}/classes,${{ inputs.eclipse-steady-project-source-directories }} \
+          -Dvulas.core.instr.sourceDir=${{ inputs.build-directory }} \
+          -Dvulas.core.instr.targetDir=${{ inputs.build-directory }}/vulas/target \
+          -Dvulas.core.instr.includeDir=${{ inputs.build-directory }}/vulas/include \
+          -Dvulas.core.instr.libDir=${{ inputs.build-directory }}/vulas/lib \
+          -Dvulas.core.instr.writeCode=false \
+          -Dvulas.core.instr.instrumentorsChoosen=org.eclipse.steady.java.monitor.trace.SingleTraceInstrumentor \
+          -Dvulas.core.instr.searchRecursive=false \
+          -Dvulas.core.instr.maxStacktraces=10 \
+          -Dvulas.core.monitor.periodicUpload.enabled=false \
+          -Dvulas.reach.wala.callgraph.reflection=NO_FLOW_TO_CASTS_NO_METHOD_INVOKE \
+          -Dvulas.reach.timeout=60 \
+          -Dvulas.report.reportDir=${{ inputs.build-directory }}/vulas/report \
+          -Dvulas.report.exceptionExcludeUnassessed=off \
+          -Dvulas.report.exceptionExcludeUnconfirmed=off \ 
+          -Dvulas.report.exceptionThreshold=noException
+
+    - name: Run Eclipse Steady (a2c)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:a2c \
+          -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }} \
+          -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }} \
+          -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }} \
+          -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp \
+          -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }} \
+          -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }} \
+          -Dvulas.core.appContext.version=${{ inputs.eclipse-steady-application-version }} \
+          -Dvulas.core.uploadDir=${{ inputs.build-directory }}/vulas/upload \
+          -Dvulas.core.app.sourceDir=${{ inputs.build-directory }}/classes,${{ inputs.eclipse-steady-project-source-directories }} \
+          -Dvulas.core.instr.sourceDir=${{ inputs.build-directory }} \
+          -Dvulas.core.instr.targetDir=${{ inputs.build-directory }}/vulas/target \
+          -Dvulas.core.instr.includeDir=${{ inputs.build-directory }}/vulas/include \
+          -Dvulas.core.instr.libDir=${{ inputs.build-directory }}/vulas/lib \
+          -Dvulas.core.instr.writeCode=false \
+          -Dvulas.core.instr.instrumentorsChoosen=org.eclipse.steady.java.monitor.trace.SingleTraceInstrumentor \
+          -Dvulas.core.instr.searchRecursive=false \
+          -Dvulas.core.instr.maxStacktraces=10 \
+          -Dvulas.core.monitor.periodicUpload.enabled=false \
+          -Dvulas.reach.wala.callgraph.reflection=NO_FLOW_TO_CASTS_NO_METHOD_INVOKE \
+          -Dvulas.reach.timeout=60 \
+          -Dvulas.report.reportDir=${{ inputs.build-directory }}/vulas/report \
+          -Dvulas.report.exceptionExcludeUnassessed=off \
+          -Dvulas.report.exceptionExcludeUnconfirmed=off \
+          -Dvulas.report.exceptionThreshold=noException
+
+    - name: Run Eclipse Steady (t2c)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:t2c \
+          -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }} \
+          -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }} \
+          -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }} \
+          -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp \
+          -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }} \
+          -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }} \
+          -Dvulas.core.appContext.version=${{ inputs.eclipse-steady-application-version }} \
+          -Dvulas.core.uploadDir=${{ inputs.build-directory }}/vulas/upload \
+          -Dvulas.core.app.sourceDir=${{ inputs.build-directory }}/classes,${{ inputs.eclipse-steady-project-source-directories }} \
+          -Dvulas.core.instr.sourceDir=${{ inputs.build-directory }} \
+          -Dvulas.core.instr.targetDir=${{ inputs.build-directory }}/vulas/target \
+          -Dvulas.core.instr.includeDir=${{ inputs.build-directory }}/vulas/include \
+          -Dvulas.core.instr.libDir=${{ inputs.build-directory }}/vulas/lib \
+          -Dvulas.core.instr.writeCode=false \
+          -Dvulas.core.instr.instrumentorsChoosen=org.eclipse.steady.java.monitor.trace.SingleTraceInstrumentor \
+          -Dvulas.core.instr.searchRecursive=false \
+          -Dvulas.core.instr.maxStacktraces=10 \
+          -Dvulas.core.monitor.periodicUpload.enabled=false \
+          -Dvulas.reach.wala.callgraph.reflection=NO_FLOW_TO_CASTS_NO_METHOD_INVOKE \
+          -Dvulas.reach.timeout=60 \
+          -Dvulas.report.reportDir=${{ inputs.build-directory }}/vulas/report \
+          -Dvulas.report.exceptionExcludeUnassessed=off \
+          -Dvulas.report.exceptionExcludeUnconfirmed=off \
+          -Dvulas.report.exceptionThreshold=noException
+
+    - name: Run Eclipse Steady (checkcode)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      env:
+        MAVEN_OPTS: "--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED"
+      run: |
+        mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:checkcode \
+          -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }} \
+          -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }} \
+          -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }} \
+          -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp \
+          -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }} \
+          -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }} \
+          -Dvulas.core.appContext.version=${{ inputs.eclipse-steady-application-version }} \
+          -Dvulas.core.uploadDir=${{ inputs.build-directory }}/vulas/upload \
+          -Dvulas.core.app.sourceDir=${{ inputs.build-directory }}/classes,${{ inputs.eclipse-steady-project-source-directories }} \
+          -Dvulas.core.instr.sourceDir=${{ inputs.build-directory }} \
+          -Dvulas.core.instr.targetDir=${{ inputs.build-directory }}/vulas/target \
+          -Dvulas.core.instr.includeDir=${{ inputs.build-directory }}/vulas/include \
+          -Dvulas.core.instr.libDir=${{ inputs.build-directory }}/vulas/lib \
+          -Dvulas.core.instr.writeCode=false \
+          -Dvulas.core.instr.instrumentorsChoosen=org.eclipse.steady.java.monitor.trace.SingleTraceInstrumentor \
+          -Dvulas.core.instr.searchRecursive=false \
+          -Dvulas.core.instr.maxStacktraces=10 \
+          -Dvulas.core.monitor.periodicUpload.enabled=false \
+          -Dvulas.reach.wala.callgraph.reflection=NO_FLOW_TO_CASTS_NO_METHOD_INVOKE \
+          -Dvulas.reach.timeout=60 \
+          -Dvulas.report.reportDir=${{ inputs.build-directory }}/vulas/report \
+          -Dvulas.report.exceptionExcludeUnassessed=off \
+          -Dvulas.report.exceptionExcludeUnconfirmed=off \
+          -Dvulas.report.exceptionThreshold=noException
+
+    - name: Run Eclipse Steady (report)
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:report \
+          -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }} \
+          -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }} \
+          -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }} \
+          -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp \
+          -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }} \
+          -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }} \
+          -Dvulas.core.appContext.version=${{ inputs.eclipse-steady-application-version }} \
+          -Dvulas.core.uploadDir=${{ inputs.build-directory }}/vulas/upload \
+          -Dvulas.core.app.sourceDir=${{ inputs.build-directory }}/classes,${{ inputs.eclipse-steady-project-source-directories }} \
+          -Dvulas.core.instr.sourceDir=${{ inputs.build-directory }} \
+          -Dvulas.core.instr.targetDir=${{ inputs.build-directory }}/vulas/target \
+          -Dvulas.core.instr.includeDir=${{ inputs.build-directory }}/vulas/include \
+          -Dvulas.core.instr.libDir=${{ inputs.build-directory }}/vulas/lib \
+          -Dvulas.core.instr.writeCode=false \
+          -Dvulas.core.instr.instrumentorsChoosen=org.eclipse.steady.java.monitor.trace.SingleTraceInstrumentor \
+          -Dvulas.core.instr.searchRecursive=false \
+          -Dvulas.core.instr.maxStacktraces=10 \
+          -Dvulas.core.monitor.periodicUpload.enabled=false \
+          -Dvulas.reach.wala.callgraph.reflection=NO_FLOW_TO_CASTS_NO_METHOD_INVOKE \
+          -Dvulas.reach.timeout=60 \
+          -Dvulas.report.reportDir=${{ inputs.build-directory }}/vulas/report \
+          -Dvulas.report.exceptionExcludeUnassessed=off \
+          -Dvulas.report.exceptionExcludeUnconfirmed=off \
+          -Dvulas.report.exceptionThreshold=noException
+
+    - name: Upload Eclipse Steady Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: |
+          ${{ inputs.path }}/${{ inputs.build-directory }}/vulas/report/vulas-report.json
+          ${{ inputs.path }}/${{ inputs.build-directory }}/vulas/report/vulas-report.html
+        if-no-files-found: error

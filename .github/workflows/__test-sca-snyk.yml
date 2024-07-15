@@ -8,15 +8,15 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Snyk SCA Action (Java)
+    name: Test Snyk SCA Action
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind
         uses: actions/checkout@v4
@@ -31,29 +31,30 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build and Upload Maven Package
-        uses: ./main/.github/actions/maven/maven-build-upload
+      - name: Build Java Application
+        uses: ./experiment-resources/.github/actions/java/java-build
         with:
           build-command: mvn -Dmaven.test.skip=true clean install
+          build-directory: target
           path: jackson-databind
 
       - name: Run Snyk (SCA)
-        uses: ./main/.github/actions/sca/snyk
+        uses: ./experiment-resources/.github/actions/sca/snyk
         with:
-          language: java
-          path: jackson-databind
+          programming-language: java
           artifact-name: sca-snyk-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test Snyk SCA Action (Python)
+    name: Test Snyk SCA Action
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -67,35 +68,29 @@ jobs:
         with:
           python-version: 3.7
 
-      - name: Install Pip Dependencies
-        uses: ./main/.github/actions/python/install-pip-dependencies
-        with:
-          requirement-file-name: requirements.txt
-
       - name: Install Python Dependencies
         working-directory: pillow
         env:
           GHA_PYTHON_VERSION: 3.7
         run: .ci/install.sh
 
-      - name: Build And Upload Python Package
-        uses: ./main/.github/actions/python/python-build-upload
+      - name: Build Python Application
+        uses: ./experiment-resources/.github/actions/python/python-build
         with:
           build-command: .ci/build.sh
           build-directory: build
           path: pillow
 
       - name: Run Snyk (SCA)
-        uses: ./main/.github/actions/sca/snyk
+        uses: ./experiment-resources/.github/actions/sca/snyk
         with:
-          language: python
-          snyk-package-manager: pip
+          programming-language: python
           snyk-file-to-scan: requirements.txt
-          path: pillow
           artifact-name: sca-snyk-report-python
+          path: pillow
 
   test-action-javascript:
-    name: Test Snyk SCA Action (JavaScript)
+    name: Test Snyk SCA Action
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -103,7 +98,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
@@ -117,21 +112,21 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install Node Dependencies
+      - name: Install JavaScript Dependencies
         working-directory: lodash
         run: npm ci
 
-      - name: Build Node Application
+      - name: Build JavaScript Application
         working-directory: lodash
         run: npm run build
 
-      - name: Package Node Application
+      - name: Package JavaScript Application
         working-directory: lodash
         run: npm pack
 
       - name: Run Snyk (SCA)
-        uses: ./main/.github/actions/sca/snyk
+        uses: ./experiment-resources/.github/actions/sca/snyk
         with:
-          language: javascript
-          path: lodash
+          programming-language: javascript
           artifact-name: sca-snyk-report-javascript
+          path: lodash

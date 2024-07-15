@@ -3,9 +3,13 @@ name: Test DeepSource SAST Action
 on:
   workflow_dispatch:
 
+defaults:
+  run:
+    shell: bash
+    
 jobs:
-  test-action-mvn:
-    name: Test DeepSource SAST Action (Maven)
+  test-action-java:
+    name: Test DeepSource SAST Action
     runs-on: ubuntu-latest
     env:
       DEEPSOURCE_DSN: ${{ secrets.TEST_DEEPSOURCE_DSN }}
@@ -13,35 +17,41 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
-      - name: Checkout XNIO Repository
+      - name: Checkout Jackson-Databind
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-xnio
-          ref: cfadd9734129dbac5c17d72753a6b964512a8050
-          path: xnio
+          repository: seansmith39/H6060-Java-Jackson-Databind
+          ref: 1acb8ffe6eb20005114bfe18cfd5809b443789c2
+          path: jackson-databind
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
         with:
-          distribution: adopt
-          java-version: 8
+          distribution: temurin
+          java-version: 17
 
-      - name: Run Maven Tests
-        shell: bash
-        working-directory: xnio
-        run: mvn clean test
+      - name: Build Java Application
+        uses: ./experiment-resources/.github/actions/java/java-build
+        with:
+          build-command: mvn -Dmaven.test.skip=true clean install
+          build-directory: target
+          path: jackson-databind
+
+      - name: Run Java Application Tests
+        working-directory: jackson-databind
+        run: mvn -Dmaven.test.failure.ignore=true test
 
       - name: Run DeepSource (SAST)
-        uses: ./main/.github/actions/sast/deepsource
+        uses: ./experiment-resources/.github/actions/sast/deepsource
         with:
-          language: java
-          coverage-file: nio-impl/target/site/jacoco/jacoco.xml
-          path: xnio
+          programming-language: java
+          coverage-file: target/site/jacoco/jacoco.xml
+          path: jackson-databind
 
   test-action-python:
-    name: Test DeepSource SAST Action (Python)
+    name: Test DeepSource SAST Action
     runs-on: ubuntu-latest
     env:
       DEEPSOURCE_DSN: ${{ secrets.TEST_DEEPSOURCE_DSN }}
@@ -49,57 +59,42 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
-      - name: Checkout mycli Repository
+      - name: Checkout Pillow Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-mycli
-          ref: 2f024ed0b6b8a99d0d0ae1611c2f834cc236b725
-          path: mycli
+          repository: seansmith39/H6060-Python-Pillow
+          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
+          path: pillow
 
-      - name: Install Python 3.8
+      - name: Install Python 3.7
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: 3.8
+          python-version: 3.7
 
-      - name: Start MySQL For Testing
-        shell: bash
-        working-directory: mycli
-        run: sudo /etc/init.d/mysql start
-
-      - name: Install Pip Dependencies
-        uses: ./main/.github/actions/python/install-pip-dependencies
-        with:
-          requirement-file-name: requirements-dev.txt
-          path: mycli
-
-      - name: Wait For MySQL Connection
-        shell: bash
-        working-directory: mycli
-        run: |
-          while ! mysqladmin ping --host=localhost --port=3306 --user=root --password=root --silent; do
-            sleep 5
-          done
-
-      - name: Build and Upload Python Package
-        uses: ./main/.github/actions/python/python-build-upload
-        with:
-          path: mycli
-
-      - name: Run Python Tests
-        shell: bash
-        working-directory: mycli
+      - name: Install Python Dependencies
+        working-directory: pillow
         env:
-          PYTEST_PASSWORD: root
-          PYTEST_HOST: 127.0.0.1
-        run: |
-          python setup.py test --pytest-args="--cov-report= --cov=mycli"
-          coverage xml
+          GHA_PYTHON_VERSION: 3.7
+        run: .ci/install.sh
+
+      - name: Build Python Application
+        uses: ./experiment-resources/.github/actions/python/python-build
+        with:
+          build-command: .ci/build.sh
+          build-directory: build
+          path: pillow
+
+      - name: Run Python Application Tests
+        working-directory: pillow
+        env:
+          PYTHONOPTIMIZE: 2
+        run: xvfb-run -s '-screen 0 1024x768x24' .ci/test.sh
 
       - name: Run DeepSource (SAST)
-        uses: ./main/.github/actions/sast/deepsource
+        uses: ./experiment-resources/.github/actions/sast/deepsource
         with:
-          language: python
+          programming-language: python
           coverage-file: coverage.xml
-          path: mycli
+          path: pillow

@@ -8,17 +8,17 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Semgrep SAST Action (Java)
+    name: Test Semgrep SAST Action
     runs-on: ubuntu-latest
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}
     container:
       image: semgrep/semgrep
     steps:
-      - name: Checkout Current Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
@@ -28,14 +28,14 @@ jobs:
           path: jackson-databind
 
       - name: Run Semgrep (SAST)
-        uses: ./main/.github/actions/sast/semgrep
+        uses: ./experiment-resources/.github/actions/sast/semgrep
         with:
-          language: java
-          path: jackson-databind
+          programming-language: java
           artifact-name: sast-semgrep-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test Semgrep SAST Action (Python)
+    name: Test Semgrep SAST Action
     runs-on: ubuntu-latest
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}
@@ -45,7 +45,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -55,14 +55,14 @@ jobs:
           path: pillow
 
       - name: Run Semgrep (SAST)
-        uses: ./main/.github/actions/sast/semgrep
+        uses: ./experiment-resources/.github/actions/sast/semgrep
         with:
-          language: python
-          path: pillow
+          programming-language: python
           artifact-name: sast-semgrep-report-python
+          path: pillow
 
   test-action-javascript:
-    name: Test Semgrep SAST Action (JavaScript)
+    name: Test Semgrep SAST Action
     runs-on: ubuntu-latest
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}
@@ -72,7 +72,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
@@ -82,8 +82,8 @@ jobs:
           path: lodash
 
       - name: Run Semgrep (SAST)
-        uses: ./main/.github/actions/sast/semgrep
+        uses: ./experiment-resources/.github/actions/sast/semgrep
         with:
-          language: javascript
-          path: lodash
+          programming-language: javascript
           artifact-name: sast-semgrep-report-javascript
+          path: lodash

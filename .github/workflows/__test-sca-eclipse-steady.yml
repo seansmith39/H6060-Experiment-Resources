@@ -8,13 +8,13 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Eclipse Steady Maven SCA Action (Java)
+    name: Test Eclipse Steady SCA Action
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repsitory
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
@@ -29,26 +29,32 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build and Upload Maven Package
-        uses: ./main/.github/actions/maven/maven-build-upload
+      - name: Build Java Application
+        uses: ./experiment-resources/.github/actions/java/java-build
         with:
           build-command: mvn -Dmaven.test.skip=true clean install
           path: jackson-databind
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./main/.github/actions/sca/eclipse-steady/mvn
+        uses: ./experiment-resources/.github/actions/sca/eclipse-steady/java
         with:
-          path: jackson-databind
+          build-directory: target
+          eclipse-steady-workspace-token: 19DACF250B828F3BAB827AFA5789DB55
+          eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
+          eclipse-steady-application-group-id: com.fasterxml.jackson
+          eclipse-steady-application-artifact-id: jackson-databind
+          eclipse-steady-application-version: 2.9.10.7
           artifact-name: sast-eclipse-steady-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test Eclipse Steady CLI SCA Action (Python)
+    name: Test Eclipse Steady SCA Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -68,21 +74,21 @@ jobs:
           GHA_PYTHON_VERSION: 3.7
         run: .ci/install.sh
 
-      - name: Build And Upload Python Package
-        uses: ./main/.github/actions/python/python-build-upload
+      - name: Build Python Application
+        uses: ./experiment-resources/.github/actions/python/python-build
         with:
           build-command: .ci/build.sh
           build-directory: build
           path: pillow
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./main/.github/actions/sca/eclipse-steady/cli
+        uses: ./experiment-resources/.github/actions/sca/eclipse-steady/python
         with:
-          language: python
           eclipse-steady-workspace-token: 1A8CC68377BFEEA81CDF80CFA757872E
-          eclipse-steady-project-source-directories: src
           eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
-          project-name: test-python
-          build-directory: dist
+          eclipse-steady-application-group-id: org.python
+          eclipse-steady-application-artifact-id: pillow
+          eclipse-steady-application-version: 8.3.0
+          eclipse-steady-project-source-directories: src
+          artifact-name: sca-eclipse-steady-report-python
           path: pillow
-          artifact-name: sast-eclipse-steady-report-python

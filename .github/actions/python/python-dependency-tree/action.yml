@@ -1,0 +1,40 @@
+name: Python Dependency Tree Action
+description: Generate a Python dependency tree for a project
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: javascript-dependency-tree
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install pipdeptree
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: pip install pipdeptree
+
+    - name: Create Python Dependency Tree
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        pipdeptree \ 
+          --freeze \
+          --json-tree \
+          > python-dep-tree.json
+
+    - name: Upload Python Dependency Tree
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.path }}/python-dep-tree.json
+        if-no-files-found: error

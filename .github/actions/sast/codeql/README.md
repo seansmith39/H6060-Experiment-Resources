@@ -1,22 +1,31 @@
-# SAST CodeQL Action
+# CodeQL SAST Action
 
 ## Description
 
-An action to configure and run a [CodeQL](https://github.com/github/codeql) SAST scan.
+An action to configure and run a CodeQL SAST scan. 
 
-SARIF results are uploaded as a build artifact.
+**Notes:**
+- The action uses CodeQL CLI `v3`.
+- Python and JavaScript autobuild is not supported by CodeQL.
 
-## Default Version
+## Supported Programming Languages
 
-- CodeQL CLI: v3
+- Java
+- JavaScript
+- Python
 
 ## Inputs
 
-| name              | required | type   | default                 | description                                           |
-|-------------------|----------| ------ |-------------------------|-------------------------------------------------------|
-| **language**      | true     | string |                         | Language to scan using CodeQL                         |
-| **path**          | false    | string | ${{ github.workspace }} | Path to run the CodeQL scan                           |
-| **artifact-name** | false    | string | sast-codeql-report      | Name of the artifact to upload (for testing use only) |
+| name                     | required | type   | default                 | description                     |
+|--------------------------|----------|--------|-------------------------|---------------------------------|
+| **programming-language** | true     | string |                         | Programming language to analyse |
+| **artifact-name**        | false    | string | sast-codeql-report      | Name of the artifact to upload  |
+| **path**                 | false    | string | ${{ github.workspace }} | Path to run the CodeQL scan     |
+
+## Build Artifacts
+
+The following build artifact is uploaded to the GitHub Actions workflow run. This can be changed using the `artifact-name` input.
+- `sast-codeql-report`
 
 ## Example Execution
 
@@ -24,9 +33,9 @@ SARIF results are uploaded as a build artifact.
 - name: Run CodeQL SAST Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/codeql
   with:
-    language: python
+    programming-language: java
 ```
 
-## Note
+## Resources
 
-Python and JavaScript autobuild is not supported by CodeQL.
+- [CodeQL](https://github.com/github/codeql)

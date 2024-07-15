@@ -3,22 +3,22 @@ description: Setup and run CodeQL SAST scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  language:
-    description: Programming language to initialise with CodeQL
+  programming-language:
+    description: Programming language to analyse
     type: string
     required: true
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sast-codeql-report
 
   path:
     description: Directory to run the action
     type: string
     required: false
     default: ${{ github.workspace }}
-
-  artifact-name:
-    description: Name of the artifact to upload (for testing use only)
-    type: string
-    required: false
-    default: sast-codeql-report
 
 runs:
   using: composite
@@ -29,13 +29,13 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Initialize CodeQL
+    - name: Initialise CodeQL
       uses: github/codeql-action/init@v3
       with:
         source-root: ${{ inputs.path }}
-        languages: ${{ inputs.language }}
+        languages: ${{ inputs.programming-language }}
 
-    - name: Autobuild Project (Java)
+    - name: Autobuild Java Application
       if: ${{ inputs.language == 'java' }}
       uses: github/codeql-action/autobuild@v3
       with:
@@ -45,19 +45,19 @@ runs:
       uses: github/codeql-action/analyze@v3
       with:
         checkout_path: ${{ inputs.path }}
-        category: /language:${{ inputs.language }}
+        category: /language:${{ inputs.programming-language }}
         upload: never
         add-snippets: true
         output: ${{ inputs.path }}/results
 
-    - name: Upload CodeQL SARIF For Analysis
+    - name: Upload CodeQL SARIF
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ${{ inputs.path }}/results/${{ inputs.language }}.sarif
+        sarif_file: ${{ inputs.path }}/results/${{ inputs.programming-language }}.sarif
 
     - name: Upload CodeQL Report
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
-        path: ${{ inputs.path }}/results/${{ inputs.language }}.sarif
+        path: ${{ inputs.path }}/results/${{ inputs.programming-language }}.sarif
         if-no-files-found: error

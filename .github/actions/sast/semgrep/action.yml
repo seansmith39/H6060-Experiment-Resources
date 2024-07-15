@@ -3,22 +3,22 @@ description: Run Semgrep SAST scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  language:
+  programming-language:
     description: Programming language for Semgrep ruleset
     type: string
     required: true
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sast-semgrep-report
 
   path:
     description: Directory to run the action
     type: string
     required: false
     default: ${{ github.workspace }}
-
-  artifact-name:
-    description: Name of the artifact to upload (for testing use only)
-    type: string
-    required: false
-    default: sast-semgrep-report
 
 runs:
   using: composite
@@ -29,7 +29,7 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Run Semgrep Scan
+    - name: Perform Semgrep Analysis
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |

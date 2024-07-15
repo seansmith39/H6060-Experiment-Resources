@@ -68,18 +68,44 @@ on:
         type: string
         required: false
 
-      coverage-report-name:
-        description: Name of coverage report artifact
-        type: string
-        required: false
-        default: jacoco.xml
-
       build-directory:
         description: Name of project build directory
         type: string
         required: false
-        default: target
+  
+      coverage-report-name:
+        description: Name of coverage report
+        type: string
+        required: false
+        
+      eclipse-steady-workspace-token:
+        description: Token used to identify project workspace
+        type: string
+        required: false
 
+      eclipse-steady-application-group-id:
+        description: Group ID of the application
+        type: string
+        required: false
+
+      eclipse-steady-application-artifact-id:
+        description: Artifact ID of the application
+        type: string
+        required: false
+
+      eclipse-steady-application-version:
+        description: Version of the application
+        type: string
+        required: false
+
+      eclipse-steady-project-source-directories:
+        description: Project source directories to scan (separated by comma)
+        type: string
+        required: false
+    
+permissions:
+  security-events: write
+  
 defaults:
   run:
     shell: bash
@@ -90,23 +116,23 @@ jobs:
     if: ${{ inputs.sast-sonarqube-enabled == true }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
-          path: upstream-repo/${{ inputs.build-directory }}
+          name: java-build
+          path: project-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
@@ -116,19 +142,19 @@ jobs:
         if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.build-directory }}
+          files: project-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run SonarQube (SAST)
-        uses: ./main-repo/.github/actions/sast/sonarqube
+        uses: ./experimental-resources-repo/.github/actions/sast/sonarqube
         with:
-          language: java
+          programming-language: java
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           sonar-host-url: ${{ secrets.SONAR_HOST_URL}}
           sonar-username: ${{ secrets.SONAR_USERNAME }}
           sonar-password: ${{ secrets.SONAR_PASSWORD }}
           sonar-project-name: ${{ inputs.project-name }}
-          path: upstream-repo
+          path: project-repo
 
   sast-semgrep:
     name: Run Semgrep (SAST)
@@ -139,48 +165,48 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Run Semgrep (SAST)
-        uses: ./main-repo/.github/actions/sast/semgrep
+        uses: ./experimental-resources-repo/.github/actions/sast/semgrep
         with:
-          language: java
-          path: upstream-repo
+          programming-language: java
+          path: project-repo
 
   sast-deepsource:
-    name: Run Deepsource (SAST)
+    name: Run DeepSource (SAST)
     if: ${{ inputs.sast-deepsource-enabled == true }}
     runs-on: ubuntu-latest
     env:
       DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Download Coverage
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: coverage-report
-          path: upstream-repo
+          path: project-repo
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
@@ -189,60 +215,60 @@ jobs:
       - name: Check For File Existence
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.coverage-report-name }}
+          files: project-repo/${{ inputs.coverage-report-name }}
           fail: true
 
-      - name: Run Deepsource (SAST)
-        uses: ./main-repo/.github/actions/sast/deepsource
+      - name: Run DeepSource (SAST)
+        uses: ./experimental-resources-repo/.github/actions/sast/deepsource
         with:
-          language: java
+          programming-language: java
           coverage-file: ${{ inputs.coverage-report-name }}
-          path: upstream-repo
+          path: project-repo
 
   sast-horusec:
     name: Run Horusec (SAST)
     if: ${{ inputs.sast-horusec-enabled == true }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Run Horusec (SAST)
-        uses: ./main-repo/.github/actions/sast/horusec
+        uses: ./experimental-resources-repo/.github/actions/sast/horusec
         with:
-          path: upstream-repo
+          path: project-repo
 
   sast-codeql:
     name: Run CodeQL (SAST)
     if: ${{ inputs.sast-codeql-enabled == true }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Run CodeQL (SAST)
-        uses: ./main-repo/.github/actions/sast/codeql
+        uses: ./experimental-resources-repo/.github/actions/sast/codeql
         with:
-          language: java
-          path: upstream-repo
+          programming-language: java
+          path: project-repo
 
   sast-snyk-code:
     name: Run Snyk Code (SAST)
@@ -251,60 +277,69 @@ jobs:
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Run Snyk Code (SAST)
-        uses: ./main-repo/.github/actions/sast/snyk-code
+        uses: ./experimental-resources-repo/.github/actions/sast/snyk-code
         with:
-          path: upstream-repo
+          path: project-repo
 
   sca-eclipse-steady:
     name: Run Eclipse Steady (SCA)
     if: ${{ inputs.sca-eclipse-steady-enabled == true }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
-          path: upstream-repo/${{ inputs.build-directory }}
+          name: java-build
+          path: project-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.build-directory }}
+          files: project-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./main-repo/.github/actions/sca/eclipse-steady/mvn
+        uses: ./experimental-resources-repo/.github/actions/sca/eclipse-steady/java
         with:
-          path: upstream-repo
+          build-directory: ${{ inputs.build-directory }}
+          eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
+          eclipse-steady-backend-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}/backend
+          eclipse-steady-cia-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}/cia
+          eclipse-steady-application-group-id: ${{ inputs.eclipse-steady-application-group-id }}
+          eclipse-steady-application-artifact-id: ${{ inputs.eclipse-steady-application-artifact-id }}
+          eclipse-steady-application-version: ${{ inputs.eclipse-steady-application-version }}
+          eclipse-steady-project-source-directories: ${{ inputs.eclipse-steady-project-source-directories }}
+          path: project-repo
 
   sca-snyk:
     name: Run Snyk (SCA)
@@ -313,39 +348,40 @@ jobs:
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
-      - name: Checkout Current GitHub Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
-          path: upstream-repo/${{ inputs.build-directory }}
+          name: java-build
+          path: project-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.build-directory }}
+          files: project-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run Snyk (SCA)
-        uses: ./main-repo/.github/actions/sca/snyk
+        uses: ./experimental-resources-repo/.github/actions/sca/snyk
         with:
-          language: java
-          path: upstream-repo
+          programming-language: java
+          path: project-repo
 
   sca-owasp-dependency-check:
     name: Run OWASP Dependency Check (SCA)
@@ -356,36 +392,37 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
-          path: upstream-repo/${{ inputs.build-directory }}
+          name: java-build
+          path: project-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.build-directory }}
+          files: project-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run OWASP Dependency Check (SCA)
-        uses: ./main-repo/.github/actions/sca/owasp-dependency-check
+        uses: ./experimental-resources-repo/.github/actions/sca/owasp-dependency-check
         with:
-          project-name: ${{ inputs.project-name }}
           nvd-api-key: ${{ secrets.NVD_API_KEY }}
-          path: upstream-repo
+          project-name: ${{ inputs.project-name }}
+          path: project-repo
 
   sca-grype:
     name: Run Grype (SCA)
@@ -396,34 +433,35 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
-          path: main-repo
+          path: experimental-resources-repo
 
-      - name: Checkout Calling GitHub Repository
+      - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: upstream-repo
+          path: project-repo
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: maven-build
-          path: upstream-repo/${{ inputs.build-directory }}
+          name: java-build
+          path: project-repo/${{ inputs.build-directory }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: upstream-repo/${{ inputs.build-directory }}
+          files: project-repo/${{ inputs.build-directory }}
           fail: true
 
       - name: Run Grype (SCA)
-        uses: ./main-repo/.github/actions/sca/grype
+        uses: ./experimental-resources-repo/.github/actions/sca/grype
         with:
-          path: upstream-repo
+          path: project-repo
 
   create-security-testing-tool-report:
     name: Create Security Testing Tool Report
@@ -469,19 +507,19 @@ jobs:
           sca-owasp-dependency-check-report-filename: sca-owasp-dependency-check-report/dependency-check-report.json
           sca-snyk-report-filename: sca-snyk-report/snyk-report.json
 
-  record-opentelemetry-metrics:
-    name: Record GitHub Action OpenTelemetry Metrics
-    runs-on: ubuntu-latest
-    needs: create-security-testing-tool-report
+  export-opentelemetry-metrics:
+    name: Export GitHub Action OpenTelemetry Metrics
     if: ${{ ! failure() && ! cancelled() }}
+    needs: create-security-testing-tool-report
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Current GitHub Repository
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Experiment-Resources
 
-      - name: Record GitHub Action OpenTelemetry Metrics
-        uses: ./.github/actions/common/workflow-opentelemetry-metrics-exporter
+      - name: Export GitHub Action OpenTelemetry Metrics
+        uses: ./.github/actions/metrics/opentelemetry-metrics-exporter
         with:
           honeycomb-api-key: ${{ secrets.HONEYCOMB_API_KEY }}
           original-github-workflow-name: ${{ github.workflow }}

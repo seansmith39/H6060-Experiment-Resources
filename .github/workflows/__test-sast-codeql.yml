@@ -8,13 +8,13 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test CodeQL SAST Action (Java)
+    name: Test CodeQL SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
@@ -24,20 +24,20 @@ jobs:
           path: jackson-databind
 
       - name: Run CodeQL (SAST)
-        uses: ./main/.github/actions/sast/codeql
+        uses: ./experiment-resources/.github/actions/sast/codeql
         with:
-          language: java
-          path: jackson-databind
+          programming-language: java
           artifact-name: sast-codeql-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test CodeQL SAST Action (Python)
+    name: Test CodeQL SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -47,20 +47,20 @@ jobs:
           path: pillow
 
       - name: Run CodeQL (SAST)
-        uses: ./main/.github/actions/sast/codeql
+        uses: ./experiment-resources/.github/actions/sast/codeql
         with:
-          language: python
-          path: pillow
+          programming-language: python
           artifact-name: sast-codeql-report-python
+          path: pillow
 
   test-action-javascript:
-    name: Test CodeQL SAST Action (JavaScript)
+    name: Test CodeQL SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
@@ -70,8 +70,8 @@ jobs:
           path: lodash
 
       - name: Run CodeQL (SAST)
-        uses: ./main/.github/actions/sast/codeql
+        uses: ./experiment-resources/.github/actions/sast/codeql
         with:
-          language: javascript
-          path: lodash
+          programming-language: javascript
           artifact-name: sast-codeql-report-javascript
+          path: lodash

@@ -1,0 +1,36 @@
+name: Java Dependency Tree Action
+description: Generate a Java dependency tree and upload as a build artifact
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: java-dependency-tree
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Generate Maven Dependency Tree
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: mvn dependency:tree -DoutputType=json -DoutputFile=java-dep-tree.json
+
+    - name: Compress Java Dependency Tree
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: find . -type f -name 'java-dep-tree.json' -exec zip -r java-dependency-tree.zip {} +
+
+    - name: Upload Java Dependency Tree
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.path }}/java-dependency-tree.zip
+        if-no-files-found: error

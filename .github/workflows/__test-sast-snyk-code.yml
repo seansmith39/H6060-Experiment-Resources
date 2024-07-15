@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Snyk Code SAST Action (Java)
+    name: Test Snyk Code SAST Action
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
@@ -26,13 +26,13 @@ jobs:
           path: jackson-databind
 
       - name: Run Snyk Code (SAST)
-        uses: ./main/.github/actions/sast/snyk-code
+        uses: ./experiment-resources/.github/actions/sast/snyk-code
         with:
-          path: jackson-databind
           artifact-name: sast-snyk-code-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test Snyk Code SAST Action (Python)
+    name: Test Snyk Code SAST Action
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -50,13 +50,13 @@ jobs:
           path: pillow
 
       - name: Run Snyk Code (SAST)
-        uses: ./main/.github/actions/sast/snyk-code
+        uses: ./experiment-resources/.github/actions/sast/snyk-code
         with:
-          path: pillow
           artifact-name: sast-snyk-code-report-python
+          path: pillow
 
   test-action-javascript:
-    name: Test Snyk Code SAST Action (JavaScript)
+    name: Test Snyk Code SAST Action
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -64,7 +64,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
           path: lodash
 
       - name: Run Snyk Code (SAST)
-        uses: ./main/.github/actions/sast/snyk-code
+        uses: ./experiment-resources/.github/actions/sast/snyk-code
         with:
-          path: lodash
           artifact-name: sast-snyk-code-report-javascript
+          path: lodash

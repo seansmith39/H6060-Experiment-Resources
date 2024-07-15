@@ -1,0 +1,42 @@
+name: Test Python Build Action
+
+on:
+  workflow_dispatch:
+
+permissions:
+  security-events: write
+
+jobs:
+  test-action-job:
+    name: Test Python Build Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: experiment-resources
+
+      - name: Checkout Pillow Repository
+        uses: actions/checkout@v4
+        with:
+          repository: seansmith39/H6060-Python-Pillow
+          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
+          path: pillow
+
+      - name: Install Python 3.7
+        uses: actions/setup-python@v5.1.0
+        with:
+          python-version: 3.7
+
+      - name: Install Python Dependencies
+        working-directory: pillow
+        env:
+          GHA_PYTHON_VERSION: 3.7
+        run: .ci/install.sh
+
+      - name: Build Python Application
+        uses: ./experiment-resources/.github/actions/python/python-build
+        with:
+          build-command: .ci/build.sh
+          build-directory: build
+          path: pillow

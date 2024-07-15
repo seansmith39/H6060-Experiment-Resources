@@ -3,7 +3,7 @@ description: Run SonarQube SAST scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  language:
+  programming-language:
     description: Programming language for SonarQube scanner
     type: string
     required: true
@@ -33,17 +33,17 @@ inputs:
     type: string
     required: true
 
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sast-sonarqube-report
+
   path:
     description: Directory to run the action
     type: string
     required: false
     default: ${{ github.workspace }}
-
-  artifact-name:
-    description: Name of the artifact to upload (for testing use only)
-    type: string
-    required: false
-    default: sast-sonarqube-report
 
 runs:
   using: composite
@@ -60,8 +60,8 @@ runs:
         distribution: temurin
         java-version: 17
 
-    - name: Run SonarQube Scan (Java)
-      if: ${{ inputs.language == 'java' }}
+    - name: Perform SonarQube Analysis
+      if: ${{ inputs.programming-language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
@@ -71,8 +71,8 @@ runs:
           -Dsonar.projectKey=${{ inputs.sonar-project-name }} \
           -Dsonar.projectName=${{ inputs.sonar-project-name }}
 
-    - name: Run SonarQube Scan (Python & JavaScript)
-      if: ${{ (inputs.language == 'python') || (inputs.language == 'javascript') }}
+    - name: Perform SonarQube Analysis
+      if: ${{ inputs.programming-language != 'java' }}
       uses: SonarSource/sonarqube-scan-action@v2.0.2
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
@@ -83,17 +83,17 @@ runs:
           -Dsonar.projectKey=${{ inputs.sonar-project-name }}
           -Dsonar.projectName=${{ inputs.sonar-project-name }}
 
-    - name: Download SonarQube CNES Report
+    - name: Download SonarQube Report
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         curl -k -u ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
-          -o cnes-report.zip \
-          '${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator'
+          -o sonarqube-cnes-report.zip \
+          ${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator
 
     - name: Upload SonarQube Report
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
-        path: ${{ inputs.path }}/cnes-report.zip
+        path: ${{ inputs.path }}/sonarqube-cnes-report.zip
         if-no-files-found: error

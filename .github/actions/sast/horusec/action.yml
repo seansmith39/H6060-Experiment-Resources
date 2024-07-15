@@ -3,17 +3,17 @@ description: Run Horusec SAST scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sast-horusec-report
+
   path:
     description: Directory to run the action
     type: string
     required: false
     default: ${{ github.workspace }}
-
-  artifact-name:
-    description: Name of the artifact to upload (for testing use only)
-    type: string
-    required: false
-    default: sast-horusec-report
 
 runs:
   using: composite
@@ -24,12 +24,19 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Run Horusec Scan
+    - name: Perform Horusec Analysis
       uses: fike/horusec-action@v0.2.2
       with:
-        arguments: --project-path=${{ inputs.path }}/ --ignore="**/test/**" --output-format=json --json-output-file=horusec-report.json --enable-owasp-dependency-check=true --enable-shellcheck=true --return-error=false
+        arguments: >
+          --project-path=${{ inputs.path }}/ 
+          --ignore="**/test/**" 
+          --output-format=json 
+          --json-output-file=horusec-report.json 
+          --enable-owasp-dependency-check=true 
+          --enable-shellcheck=true 
+          --return-error=false
 
-    - name: Upload Horusec Report (JSON)
+    - name: Upload Horusec Report
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}

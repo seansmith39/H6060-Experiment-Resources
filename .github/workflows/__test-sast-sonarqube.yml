@@ -8,13 +8,13 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test SonarQube SAST Action (Java)
+    name: Test SonarQube SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
@@ -29,32 +29,33 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build and Upload Maven Package
-        uses: ./main/.github/actions/maven/maven-build-upload
+      - name: Build Java Application
+        uses: ./experiment-resources/.github/actions/java/java-build
         with:
           build-command: mvn -Dmaven.test.skip=true clean install
+          build-directory: target
           path: jackson-databind
 
       - name: Run SonarQube (SAST)
-        uses: ./main/.github/actions/sast/sonarqube
+        uses: ./experiment-resources/.github/actions/sast/sonarqube
         with:
-          language: java
+          programming-language: java
           sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
           sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
           sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
           sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
           sonar-project-name: test-java
-          path: jackson-databind
           artifact-name: sast-sonarqube-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test SonarQube SAST Action (Python)
+    name: Test SonarQube SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -64,25 +65,25 @@ jobs:
           path: pillow
 
       - name: Run SonarQube (SAST)
-        uses: ./main/.github/actions/sast/sonarqube
+        uses: ./experiment-resources/.github/actions/sast/sonarqube
         with:
-          language: python
+          programming-language: python
           sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
           sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
           sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
           sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
           sonar-project-name: test-python
-          path: pillow
           artifact-name: sast-sonarqube-report-python
+          path: pillow
 
   test-action-javascript:
-    name: Test Snyk Code SAST Action (JavaScript)
+    name: Test SonarQube SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
@@ -92,13 +93,13 @@ jobs:
           path: lodash
 
       - name: Run SonarQube (SAST)
-        uses: ./main/.github/actions/sast/sonarqube
+        uses: ./experiment-resources/.github/actions/sast/sonarqube
         with:
-          language: javascript
+          programming-language: javascript
           sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
           sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
           sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
           sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
           sonar-project-name: test-javascript
-          path: lodash
           artifact-name: sast-sonarqube-report-javascript
+          path: lodash
