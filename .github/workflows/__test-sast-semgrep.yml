@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Semgrep SAST Action
+    name: Test Semgrep SAST Action (Java)
     runs-on: ubuntu-latest
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}
@@ -35,7 +35,7 @@ jobs:
           path: jackson-databind
 
   test-action-python:
-    name: Test Semgrep SAST Action
+    name: Test Semgrep SAST Action (Python)
     runs-on: ubuntu-latest
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}
@@ -62,7 +62,7 @@ jobs:
           path: pillow
 
   test-action-javascript:
-    name: Test Semgrep SAST Action
+    name: Test Semgrep SAST Action (JavaScript)
     runs-on: ubuntu-latest
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.TEST_SEMGREP_APP_TOKEN }}

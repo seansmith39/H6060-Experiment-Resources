@@ -43,5 +43,5 @@ It is available under `Settings` → `Code Coverage` of the repository page on D
 ## Resources
 
 - [DeepSource](https://deepsource.io/)
-- [DeepSource GitHub Action](https://github.com/marketplace/actions/deepsource-test-coverage-action)
+- [DeepSource CLI](https://docs.deepsource.com/docs/cli)
 - [DeepSource Test Coverage](https://docs.deepsource.com/docs/analyzers-test-coverage)

@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Snyk Code SAST Action
+    name: Test Snyk Code SAST Action (Java)
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -32,7 +32,7 @@ jobs:
           path: jackson-databind
 
   test-action-python:
-    name: Test Snyk Code SAST Action
+    name: Test Snyk Code SAST Action (Python)
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -56,7 +56,7 @@ jobs:
           path: pillow
 
   test-action-javascript:
-    name: Test Snyk Code SAST Action
+    name: Test Snyk Code SAST Action (JavaScript)
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}

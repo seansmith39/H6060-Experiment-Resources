@@ -1,5 +1,5 @@
-name: Java Build Action
-description: Build a Java project and upload as a build artifact
+name: JavaScript Build Action
+description: Build a JavaScript project and upload as a build artifact
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
@@ -8,8 +8,8 @@ inputs:
     type: string
     required: true
 
-  build-directory:
-    description: Build results directory
+  package-command:
+    description: Package command for the project
     type: string
     required: true
 
@@ -17,7 +17,7 @@ inputs:
     description: Name of the artifact to upload
     type: string
     required: false
-    default: java-build
+    default: javascript-build
 
   path:
     description: Directory to run the action
@@ -28,14 +28,24 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Build Java Application
+    - name: Build JavaScript Application
       shell: bash
       working-directory: ${{ inputs.path }}
       run: ${{ inputs.build-command }}
 
-    - name: Upload Java Application
+    - name: Build JavaScript Application
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: ${{ inputs.build-command }}
+
+    - name: Package JavaScript Application
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: ${{ inputs.package-command }}
+
+    - name: Upload JavaScript Application
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
-        path: "${{ inputs.path }}/${{ inputs.build-directory }}"
+        path: ${{ inputs.path }}
         if-no-files-found: error

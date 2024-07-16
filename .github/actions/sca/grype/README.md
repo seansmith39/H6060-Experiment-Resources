@@ -4,6 +4,9 @@
 
 An action to run a Grype SCA scan.
 
+**Notes:**
+- The action uses Grype CLI `v3.6.4`.
+
 ## Supported Programming Languages
 
 - Java

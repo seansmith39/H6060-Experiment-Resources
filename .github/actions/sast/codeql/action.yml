@@ -36,7 +36,7 @@ runs:
         languages: ${{ inputs.programming-language }}
 
     - name: Autobuild Java Application
-      if: ${{ inputs.language == 'java' }}
+      if: ${{ inputs.programming-language == 'java' }}
       uses: github/codeql-action/autobuild@v3
       with:
         working-directory: ${{ inputs.path }}

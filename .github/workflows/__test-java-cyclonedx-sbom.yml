@@ -40,4 +40,4 @@ jobs:
         uses: ./experiment-resources/.github/actions/java/java-cyclonedx-sbom
         with:
           build-directory: target
-          path: lodash
+          path: jackson-databind

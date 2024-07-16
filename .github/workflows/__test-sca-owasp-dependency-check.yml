@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test OWASP Dependency Check SCA Action
+    name: Test OWASP Dependency Check SCA Action (Java)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -45,7 +45,7 @@ jobs:
           path: jackson-databind
 
   test-action-python:
-    name: Test OWASP Dependency Check SCA Action
+    name: Test OWASP Dependency Check SCA Action (Python)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -87,7 +87,7 @@ jobs:
           path: pillow
 
   test-action-javascript:
-    name: Test OWASP Dependency Check SCA Action
+    name: Test OWASP Dependency Check SCA Action (JavaScript)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -112,12 +112,11 @@ jobs:
         run: npm ci
 
       - name: Build JavaScript Application
-        working-directory: lodash
-        run: npm run build
-
-      - name: Package JavaScript Application
-        working-directory: lodash
-        run: npm pack
+        uses: ./experiment-resources/.github/actions/javascript/javascript-build
+        with:
+          build-command: npm run build
+          package-command: npm pack
+          path: lodash
 
       - name: Run OWASP Dependency Check (SCA)
         uses: ./experiment-resources/.github/actions/sca/owasp-dependency-check

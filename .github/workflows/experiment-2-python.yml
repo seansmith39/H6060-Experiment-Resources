@@ -79,11 +79,6 @@ on:
         type: string
         required: false
 
-      snyk-file-to-scan:
-        description: File to scan with Snyk
-        type: string
-        required: false
-
       eclipse-steady-workspace-token:
         description: Token used to identify project workspace
         type: string
@@ -385,7 +380,6 @@ jobs:
         uses: ./experiment-resources-repo/.github/actions/sca/snyk
         with:
           programming-language: python
-          snyk-file-to-scan: ${{ inputs.snyk-file-to-scan }}
           path: project-repo
 
   sca-owasp-dependency-check:
