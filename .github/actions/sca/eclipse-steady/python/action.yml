@@ -1,0 +1,122 @@
+name: Eclipse Steady Python SCA Action
+description: Run Eclipse Steady CLI SCA scan for Python applications
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  eclipse-steady-workspace-token:
+    description: Token used to identify project workspace
+    type: string
+    required: true
+
+  eclipse-steady-host-url:
+    description: Hostname of Eclipse Steady instance
+    type: string
+    required: true
+
+  eclipse-steady-application-group-id:
+    description: Group ID of the application
+    type: string
+    required: true
+
+  eclipse-steady-application-artifact-id:
+    description: Artifact ID of the application
+    type: string
+    required: true
+
+  eclipse-steady-application-version:
+    description: Version of the application
+    type: string
+    required: true
+
+  eclipse-steady-project-source-directories:
+    description: Project source directories to scan (separated by comma)
+    type: string
+    required: true
+
+  eclipse-steady-cli-version:
+    description: Eclipse Steady CLI version to use
+    type: string
+    required: false
+    default: 3.2.5
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sca-eclipse-steady-report
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check For File Existence
+      uses: andstor/file-existence-action@v3
+      with:
+        files: ${{ inputs.path }}
+        fail: true
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: 17
+        distribution: temurin
+
+    - name: Setup Rsync
+      uses: GuillaumeFalourd/setup-rsync@v1.2
+
+    - name: Download Eclipse Steady Scan
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        curl -LO https://github.com/eclipse/steady/releases/download/release-${{ inputs.eclipse-steady-cli-version }}/steady-cli-${{ inputs.eclipse-steady-cli-version }}.zip
+        unzip steady-cli-${{ inputs.eclipse-steady-cli-version }}.zip
+
+    - name: Copy Project Source Files To Eclipse Steady App Directory
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        for i in $(echo ${{ inputs.eclipse-steady-project-source-directories }} | sed "s/,/ /g")
+        do
+          rsync -a --exclude='*.JAR' $i steady-cli/app/
+        done
+
+    - name: Set Eclipse Steady Properties
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        mv steady-cli/steady-custom.properties.sample steady-cli/steady-custom.properties
+        sed -i 's,http://localhost:8033/backend,${{ inputs.eclipse-steady-host-url }}/backend,g' steady-cli/steady-custom.properties
+        sed -i 's,<GROUP>,${{ inputs.eclipse-steady-application-group-id }},g' steady-cli/steady-custom.properties
+        sed -i 's,<ARTIFACT>,${{ inputs.eclipse-steady-application-artifact-id }},g' steady-cli/steady-custom.properties
+        sed -i 's,<VERSION>,${{ inputs.eclipse-steady-application-version }},g' steady-cli/steady-custom.properties
+        echo 'vulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}' >> steady-cli/steady-custom.properties
+        echo 'vulas.core.bom.python.pip=/usr/bin/pip' >> steady-cli/steady-custom.properties
+
+    - name: Perform Eclipse Steady Analysis (app)
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-${{ inputs.eclipse-steady-cli-version }}-jar-with-dependencies.jar -goal app
+
+    - name: Perform Eclipse Steady Analysis (checkcode)
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-${{ inputs.eclipse-steady-cli-version }}-jar-with-dependencies.jar -goal checkcode
+
+    - name: Create Eclipse Steady Report
+      shell: bash
+      working-directory: ${{ inputs.path }}/steady-cli
+      run: java -jar steady-cli-${{ inputs.eclipse-steady-cli-version }}-jar-with-dependencies.jar -goal report
+
+    - name: Upload Eclipse Steady Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: |
+          ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.json
+          ${{ inputs.path }}/steady-cli/vulas/report/vulas-report.html
+        if-no-files-found: error

@@ -1,0 +1,62 @@
+name: Python CycloneDX SBOM Creation Action
+description: Create a Python CycloneDX SBOM and upload as a build artifact
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  cyclonedx-pip-package-version:
+    description: Version of the CycloneDX Pip package to use
+    type: string
+    required: false
+    default: 4.5.0
+
+  cyclonedx-schema-version:
+    description: Version of the CycloneDX schema to use
+    type: string
+    required: false
+    default: 1.6
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: cyclonedx-sbom-python
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Freeze Python Environment
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: pip freeze > python-packages.txt
+
+    - name: Install Python 3.12
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: 3.12
+
+    - name: Install CycloneDX
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: pip install cyclonedx-bom==${{ inputs.cyclonedx-pip-package-version }}
+
+    - name: Create CycloneDX SBOM
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        cyclonedx-py requirements python-packages.txt \
+          --outfile=sbom.json \
+          --output-format=JSON \
+          --schema-version=${{ inputs.cyclonedx-schema-version }}
+
+    - name: Upload CycloneDX SBOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.path }}/sbom.json
+        if-no-files-found: error

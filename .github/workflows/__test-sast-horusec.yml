@@ -8,13 +8,13 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Horusec SAST Action (Java)
+    name: Test Horusec SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind Repository
         uses: actions/checkout@v4
@@ -24,19 +24,19 @@ jobs:
           path: jackson-databind
 
       - name: Run Horusec (SAST)
-        uses: ./main/.github/actions/sast/horusec
+        uses: ./experiment-resources/.github/actions/sast/horusec
         with:
-          path: jackson-databind
           artifact-name: sast-horusec-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test Horusec SAST Action (Python)
+    name: Test Horusec SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -46,19 +46,19 @@ jobs:
           path: pillow
 
       - name: Run Horusec (SAST)
-        uses: ./main/.github/actions/sast/horusec
+        uses: ./experiment-resources/.github/actions/sast/horusec
         with:
-          path: pillow
           artifact-name: sast-horusec-report-python
+          path: pillow
 
   test-action-javascript:
-    name: Test Horusec SAST Action (JavaScript)
+    name: Test Horusec SAST Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
@@ -68,7 +68,7 @@ jobs:
           path: lodash
 
       - name: Run Horusec (SAST)
-        uses: ./main/.github/actions/sast/horusec
+        uses: ./experiment-resources/.github/actions/sast/horusec
         with:
-          path: lodash
           artifact-name: sast-horusec-report-javascript
+          path: lodash

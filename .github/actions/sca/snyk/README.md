@@ -1,20 +1,45 @@
-# SCA Snyk Action
+# Snyk SCA Action
 
 ## Description
 
-An action to configure and run a [Snyk](https://snyk.io/) SCA scan.
+An action to configure and run a Snyk SCA scan.
 
-JSON result is uploaded as a build artifact.
+**Notes:**
+- For Java applications, only Maven scanning is supported.
+- For JavaScript applications, monorepos are not supported.
+
+## Snyk Token
+
+Snyk API token is required to be set as a secret in the repository. The environment variable name should be `SNYK_TOKEN`.
+It is available under `Account Settings` → `General` → `Auth Token` on the Snyk platform.
+
+## Supported Programming Languages
+
+- Java
+- JavaScript
+- Python
 
 ## Inputs
 
-| name                     | required | type   | default                 | description                                           |
-|--------------------------| -------- | ------ |-------------------------| ----------------------------------------------------- |
-| **language**             | true     | string |                         | Language to scan using Snyk                           |
-| **snyk-package-manager** | false    | string |                         | Name of package manager for Snyk to use (Python only) |
-| **snyk-file-to-scan**    | flase    | string |                         | Name of file for Snyk to scan (Python only)           |
-| **path**                 | false    | string | ${{ github.workspace }} | Path to run the Snyk scan                             |
-| **artifact-name**        | false    | string | sca-snyk-report         | Name of the artifact to upload (for testing use only) |
+| name                     | required | type   | default                 | description                                 |
+|--------------------------|----------|--------|-------------------------|---------------------------------------------|
+| **programming-language** | true     | string |                         | Programming language to scan using Snyk     |
+| **snyk-cli-version**     | false    | string | 1.1292.1                | Snyk CLI version to use                     |
+| **snyk-file-to-scan**    | false    | string | requirements.txt        | Name of file for Snyk to scan (Python only) |
+| **artifact-name**        | false    | string | sca-snyk-report         | Name of the artifact to upload              |
+| **path**                 | false    | string | ${{ github.workspace }} | Path to run the Snyk scan                   |
+
+## Build Artifacts
+
+The following build artifact is uploaded to the GitHub Actions workflow run. This can be changed using the `artifact-name` input.
+- `sca-snyk-report`
+
+## Java Build Tool Support
+
+| build tool | support | 
+|------------|---------|
+| **Maven**  | yes     |
+| **Gradle** | no      |
 
 ## Example Execution
 
@@ -22,7 +47,10 @@ JSON result is uploaded as a build artifact.
 - name: Run Snyk SCA Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/snyk
   with:
-    language: python
-    snyk-package-manager: pip
-    snyk-file-to-scan: requirements.txt
+    programming-language: java
 ```
+
+## Resources
+
+- [Snyk CLI](https://docs.snyk.io/snyk-cli/commands/test)
+- [Snyk API Token](https://docs.snyk.io/getting-started/how-to-obtain-and-authenticate-with-your-snyk-api-token)

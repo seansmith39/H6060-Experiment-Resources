@@ -3,17 +3,17 @@ description: Run Grype SCA scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sca-grype-report
+
   path:
     description: Directory to run the action
     type: string
     required: false
     default: ${{ github.workspace }}
-
-  artifact-name:
-    description: Name of the artifact to upload (for testing use only)
-    type: string
-    required: false
-    default: sca-grype-report
 
 runs:
   using: composite
@@ -24,9 +24,9 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Run Grype Scan
+    - name: Perform Grype Analysis
       uses: anchore/scan-action@v3.6.4
-      id: scan
+      id: grype-scan
       with:
         path: ${{ inputs.path }}
         by-cve: true
@@ -35,9 +35,9 @@ runs:
         fail-build: false
         output-format: json
 
-    - name: Upload Grype Report (JSON)
+    - name: Upload Grype Report
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
-        path: ${{ steps.scan.outputs.json }}
+        path: ${{ steps.grype-scan.outputs.json }}
         if-no-files-found: error

@@ -8,13 +8,13 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test OWASP Dependency Check SCA Action (Java)
+    name: Test OWASP Dependency Check SCA Action
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Jackson-Databind
         uses: actions/checkout@v4
@@ -29,28 +29,29 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build and Upload Maven Package
-        uses: ./main/.github/actions/maven/maven-build-upload
+      - name: Build Java Application
+        uses: ./experiment-resources/.github/actions/java/java-build
         with:
           build-command: mvn -Dmaven.test.skip=true clean install
+          build-directory: target
           path: jackson-databind
 
       - name: Run OWASP Dependency Check (SCA)
-        uses: ./main/.github/actions/sca/owasp-dependency-check
+        uses: ./experiment-resources/.github/actions/sca/owasp-dependency-check
         with:
-          project-name: test-java
           nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
-          path: jackson-databind
+          project-name: test-java
           artifact-name: sca-owasp-dependency-check-report-java
+          path: jackson-databind
 
   test-action-python:
-    name: Test OWASP Dependency Check SCA Action (Python)
+    name: Test OWASP Dependency Check SCA Action
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Pillow Repository
         uses: actions/checkout@v4
@@ -70,29 +71,29 @@ jobs:
           GHA_PYTHON_VERSION: 3.7
         run: .ci/install.sh
 
-      - name: Build And Upload Python Package
-        uses: ./main/.github/actions/python/python-build-upload
+      - name: Build Python Application
+        uses: ./experiment-resources/.github/actions/python/python-build
         with:
           build-command: .ci/build.sh
           build-directory: build
           path: pillow
 
       - name: Run OWASP Dependency Check (SCA)
-        uses: ./main/.github/actions/sca/owasp-dependency-check
+        uses: ./experiment-resources/.github/actions/sca/owasp-dependency-check
         with:
-          project-name: test-python
           nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
-          path: pillow
+          project-name: test-python
           artifact-name: sca-owasp-dependency-check-report-python
+          path: pillow
 
   test-action-javascript:
-    name: Test OWASP Dependency Check SCA Action (JavaScript)
+    name: Test OWASP Dependency Check SCA Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          path: main
+          path: experiment-resources
 
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
@@ -106,22 +107,22 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install Node Dependencies
+      - name: Install JavaScript Dependencies
         working-directory: lodash
         run: npm ci
 
-      - name: Build Node Application
+      - name: Build JavaScript Application
         working-directory: lodash
         run: npm run build
 
-      - name: Package Node Application
+      - name: Package JavaScript Application
         working-directory: lodash
         run: npm pack
 
       - name: Run OWASP Dependency Check (SCA)
-        uses: ./main/.github/actions/sca/owasp-dependency-check
+        uses: ./experiment-resources/.github/actions/sca/owasp-dependency-check
         with:
-          project-name: test-javascript
           nvd-api-key: ${{ secrets.TEST_NVD_API_KEY }}
-          path: lodash
+          project-name: test-javascript
           artifact-name: sca-owasp-dependency-check-report-javascript
+          path: lodash

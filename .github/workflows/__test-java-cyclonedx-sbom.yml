@@ -1,0 +1,43 @@
+name: Test Java CycloneDX SBOM Action
+
+on:
+  workflow_dispatch:
+
+permissions:
+  security-events: write
+
+jobs:
+  test-action-job:
+    name: Test Java CycloneDX SBOM Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: experiment-resources
+
+      - name: Checkout Jackson-Databind
+        uses: actions/checkout@v4
+        with:
+          repository: seansmith39/H6060-Java-Jackson-Databind
+          ref: 1acb8ffe6eb20005114bfe18cfd5809b443789c2
+          path: jackson-databind
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build Java Application
+        uses: ./experiment-resources/.github/actions/java/java-build
+        with:
+          build-command: mvn -Dmaven.test.skip=true clean install
+          build-directory: target
+          path: jackson-databind
+
+      - name: Create CycloneDX SBOM
+        uses: ./experiment-resources/.github/actions/java/java-cyclonedx-sbom
+        with:
+          build-directory: target
+          path: lodash

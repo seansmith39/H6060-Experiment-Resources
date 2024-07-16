@@ -3,15 +3,21 @@ description: Run OWASP Dependency Check SCA scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  nvd-api-key:
+    description: The API Key to access the NVD API
+    type: string
+    required: true
+
   project-name:
     description: The name of the project being scanned
     type: string
     required: true
 
-  nvd-api-key:
-    description: The API Key to access the NVD API
+  artifact-name:
+    description: Name of the artifact to upload
     type: string
-    required: true
+    required: false
+    default: sca-owasp-dependency-check-report
 
   path:
     description: Directory to run the action
@@ -19,11 +25,6 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
-  artifact-name:
-    description: Name of the artifact to upload (for testing use only)
-    type: string
-    required: false
-    default: sca-owasp-dependency-check-report
 
 runs:
   using: composite
@@ -43,7 +44,7 @@ runs:
         unzip dependency-check
         chmod +x ./dependency-check/bin/dependency-check.sh
 
-    - name: Run OWASP Dependency Check Scan
+    - name: Perform OWASP Dependency Check Analysis
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |

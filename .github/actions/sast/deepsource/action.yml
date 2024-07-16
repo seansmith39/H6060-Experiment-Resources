@@ -3,8 +3,8 @@ description: Run DeepSource SAST scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  language:
-    description: Programming language for DeepSource scan
+  programming-language:
+    description: Programming language to analyse
     type: string
     required: true
 
@@ -13,8 +13,8 @@ inputs:
     type: string
     required: true
 
-  deepsource-analyzer:
-    description: Name of analyzer defined in .deepsource.toml
+  deepsource-analyser:
+    description: Name of analyser defined in .deepsource.toml
     type: string
     required: false
     default: test-coverage
@@ -39,11 +39,11 @@ runs:
       working-directory: ${{ inputs.path }}
       run: curl https://deepsource.io/cli | sh
 
-    - name: Run DeepSource Scan
+    - name: Perform DeepSource Analysis
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         ./bin/deepsource report \
-          --analyzer ${{ inputs.deepsource-analyzer }} \
-          --key ${{ inputs.language }} \
+          --analyzer ${{ inputs.deepsource-analyser }} \
+          --key ${{ inputs.programming-language }} \
           --value-file ${{ inputs.coverage-file }}

@@ -3,32 +3,34 @@ description: Run Snyk SCA scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  language:
+  programming-language:
     description: Programming language to run Snyk scan against
     type: string
     required: true
 
-  snyk-package-manager:
-    description: Snyk package manager (Python only)
+  snyk-cli-version:
+    description: Snyk CLI version to use
     type: string
     required: false
+    default: 1.1292.1
 
   snyk-file-to-scan:
     description: Snyk file to scan (Python only)
     type: string
     required: false
+    default: requirements.txt
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: sca-snyk-report
 
   path:
     description: Directory to run the action
     type: string
     required: false
     default: ${{ github.workspace }}
-
-  artifact-name:
-    description: Name of the artifact to upload (for testing use only)
-    type: string
-    required: false
-    default: sca-snyk-report
 
 runs:
   using: composite
@@ -44,11 +46,11 @@ runs:
 
     - name: Install Snyk CLI
       shell: bash
-      run: npm install snyk -g
+      run: npm install snyk@${{ inputs.snyk-cli-version }} -g
 
     # Snyk returns exit code 1 if vulnerabilities are found
-    - name: Run Snyk Scan (Java)
-      if: ${{ inputs.language == 'java' }}
+    - name: Perform Snyk Analysis
+      if: ${{ inputs.programming-language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
@@ -60,22 +62,24 @@ runs:
           --json-file-output=snyk-report.json || EXIT_CODE=$?
         if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
 
-    - name: Run Snyk Scan (Python)
-      if: ${{ inputs.language == 'python' }}
+    # Snyk returns exit code 1 if vulnerabilities are found
+    - name: Perform Snyk Analysis
+      if: ${{ inputs.programming-language == 'python' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         snyk test \
           --command=python \
-          --package-manager=${{ inputs.snyk-package-manager }} \
+          --package-manager=pip \
           --severity-threshold=low \
           --file=${{ inputs.snyk-file-to-scan }} \
           --json \
           --json-file-output=snyk-report.json || EXIT_CODE=$?
         if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
 
-    - name: Run Snyk Scan (Java)
-      if: ${{ inputs.language == 'javascript' }}
+    # Snyk returns exit code 1 if vulnerabilities are found
+    - name: Perform Snyk Analysis
+      if: ${{ inputs.programming-language == 'javascript' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |

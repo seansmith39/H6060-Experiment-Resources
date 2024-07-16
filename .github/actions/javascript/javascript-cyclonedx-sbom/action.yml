@@ -1,0 +1,66 @@
+name: JavaScript CycloneDX SBOM Creation Action
+description: Create a JavaScript CycloneDX SBOM and upload as a build artifact
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  build-tool:
+    description: Build tool to use
+    type: string
+    required: false
+    default: npm
+
+  cyclonedx-npm-package-version:
+    description: Version of the CycloneDX Npm package to use
+    type: string
+    required: false
+    default: 1.19.0
+
+  cyclonedx-schema-version:
+    description: Version of the CycloneDX schema to use
+    type: string
+    required: false
+    default: 1.6
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: cyclonedx-sbom-javascript
+
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4.0.2
+      with:
+        node-version: 18.x
+
+    - name: Install CycloneDX SBOM
+      if: ${{ inputs.build-tool == 'npm' }}
+      shell: bash
+      run: npm install --global @cyclonedx/cyclonedx-npm@${{ inputs.cyclonedx-npm-package-version }}
+
+    - name: Create CycloneDX SBOM
+      if: ${{ inputs.build-tool == 'npm' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        cyclonedx-npm package.json \
+          --package-lock-only \
+          --spec-version=${{ inputs.cyclonedx-schema-version }} \
+          --output-format=JSON \
+          --output-file=sbom.json \
+          --validate
+
+    - name: Upload CycloneDX SBOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.path }}/sbom.json
+        if-no-files-found: error
