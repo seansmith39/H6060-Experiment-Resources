@@ -37,7 +37,6 @@ runs:
 
     - name: Set Up OWASP Dependency Check Scan
       shell: bash
-      working-directory: ${{ inputs.path }}
       run: |
         VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
         curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
@@ -46,15 +45,14 @@ runs:
 
     - name: Perform OWASP Dependency Check Analysis
       shell: bash
-      working-directory: ${{ inputs.path }}
       run: |
-        mkdir -p owasp-reports
+        mkdir -p ${{ inputs.path }}/owasp-reports
         ./dependency-check/bin/dependency-check.sh \
           --nvdApiKey ${{ inputs.nvd-api-key }} \
-          --scan . \
+          --scan ${{ inputs.path }} \
           --project ${{ inputs.project-name }} \
           --format ALL \
-          --out ${{ github.workspace }}/owasp-reports \
+          --out ${{ inputs.path }}/owasp-reports \
           --enableRetired \
           --enableExperimental \
           --prettyPrint \
@@ -64,5 +62,5 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
-        path: ${{ github.workspace }}/owasp-reports
+        path: ${{ inputs.path }}/owasp-reports
         if-no-files-found: error

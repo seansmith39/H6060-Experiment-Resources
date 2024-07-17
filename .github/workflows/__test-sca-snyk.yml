@@ -102,8 +102,8 @@ jobs:
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
         with:
-          repository: lodash/lodash
-          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
+          repository: seansmith39/H6060-JavaScript-Lodash
+          ref: e71d6cdd56ae17412ad71e5c248228b7b61ee87a
           path: lodash
 
       - name: Setup Node.js
