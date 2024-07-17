@@ -63,7 +63,6 @@ The workflow can be triggered using the following example snippet:
       project-name: H6060-Python-Pillow
       build-directory: dist
       coverage-report-name: coverage.xml
-      snyk-file-to-scan: requirements.txt
       eclipse-steady-workspace-token: 1111-2222-3333-4444
       eclipse-steady-application-group-id: com.example
       eclipse-steady-application-artifact-id: my-project

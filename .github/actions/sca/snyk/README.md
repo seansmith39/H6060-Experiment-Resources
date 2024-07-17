@@ -5,8 +5,8 @@
 An action to configure and run a Snyk SCA scan.
 
 **Notes:**
-- For Java applications, only Maven scanning is supported.
 - For JavaScript applications, monorepos are not supported.
+- Snyk returns exit code 1 if vulnerabilities are found.
 
 ## Snyk Token
 
@@ -25,7 +25,6 @@ It is available under `Account Settings` → `General` → `Auth Token` on the S
 |--------------------------|----------|--------|-------------------------|---------------------------------------------|
 | **programming-language** | true     | string |                         | Programming language to scan using Snyk     |
 | **snyk-cli-version**     | false    | string | 1.1292.1                | Snyk CLI version to use                     |
-| **snyk-file-to-scan**    | false    | string | requirements.txt        | Name of file for Snyk to scan (Python only) |
 | **artifact-name**        | false    | string | sca-snyk-report         | Name of the artifact to upload              |
 | **path**                 | false    | string | ${{ github.workspace }} | Path to run the Snyk scan                   |
 
@@ -33,13 +32,6 @@ It is available under `Account Settings` → `General` → `Auth Token` on the S
 
 The following build artifact is uploaded to the GitHub Actions workflow run. This can be changed using the `artifact-name` input.
 - `sca-snyk-report`
-
-## Java Build Tool Support
-
-| build tool | support | 
-|------------|---------|
-| **Maven**  | yes     |
-| **Gradle** | no      |
 
 ## Example Execution
 

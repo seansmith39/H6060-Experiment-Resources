@@ -7,7 +7,7 @@ inputs:
     description: Name of the artifact to upload
     type: string
     required: false
-    default: javascript-dependency-tree
+    default: python-dependency-tree
 
   path:
     description: Directory to run the action
@@ -26,11 +26,7 @@ runs:
     - name: Create Python Dependency Tree
       shell: bash
       working-directory: ${{ inputs.path }}
-      run: |
-        pipdeptree \ 
-          --freeze \
-          --json-tree \
-          > python-dep-tree.json
+      run: pipdeptree --freeze --json-tree > python-dep-tree.json
 
     - name: Upload Python Dependency Tree
       uses: actions/upload-artifact@v4

@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action-java:
-    name: Test Snyk SCA Action
+    name: Test Snyk SCA Action (Java)
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -46,7 +46,7 @@ jobs:
           path: jackson-databind
 
   test-action-python:
-    name: Test Snyk SCA Action
+    name: Test Snyk SCA Action (Python)
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: seansmith39/H6060-Python-Pillow
-          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
+          ref: 75694927a10d2ba9549188bf0185c0e990c05d1d
           path: pillow
 
       - name: Install Python 3.7
@@ -85,12 +85,11 @@ jobs:
         uses: ./experiment-resources/.github/actions/sca/snyk
         with:
           programming-language: python
-          snyk-file-to-scan: requirements.txt
           artifact-name: sca-snyk-report-python
           path: pillow
 
   test-action-javascript:
-    name: Test Snyk SCA Action
+    name: Test Snyk SCA Action (JavaScript)
     runs-on: ubuntu-latest
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
@@ -103,8 +102,8 @@ jobs:
       - name: Checkout Lodash Repository
         uses: actions/checkout@v4
         with:
-          repository: lodash/lodash
-          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
+          repository: seansmith39/H6060-JavaScript-Lodash
+          ref: e71d6cdd56ae17412ad71e5c248228b7b61ee87a
           path: lodash
 
       - name: Setup Node.js
@@ -117,12 +116,11 @@ jobs:
         run: npm ci
 
       - name: Build JavaScript Application
-        working-directory: lodash
-        run: npm run build
-
-      - name: Package JavaScript Application
-        working-directory: lodash
-        run: npm pack
+        uses: ./experiment-resources/.github/actions/javascript/javascript-build
+        with:
+          build-command: npm run build
+          package-command: npm pack
+          path: lodash
 
       - name: Run Snyk (SCA)
         uses: ./experiment-resources/.github/actions/sca/snyk

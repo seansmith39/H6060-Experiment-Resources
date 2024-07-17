@@ -1,4 +1,4 @@
-name: Test JavaScript CycloneDX SBOM Action
+name: Test JavaScript Build Action
 
 on:
   workflow_dispatch:
@@ -6,13 +6,9 @@ on:
 permissions:
   security-events: write
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   test-action-job:
-    name: Test JavaScript CycloneDX SBOM Action
+    name: Test JavaScript Build Action
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -36,7 +32,9 @@ jobs:
         working-directory: lodash
         run: npm ci
 
-      - name: Create CycloneDX SBOM
-        uses: ./experiment-resources/.github/actions/javascript/javascript-cyclonedx-sbom
+      - name: Build JavaScript Application
+        uses: ./experiment-resources/.github/actions/javascript/javascript-build
         with:
+          build-command: npm run build
+          package-command: npm pack
           path: lodash

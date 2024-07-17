@@ -14,12 +14,6 @@ inputs:
     required: false
     default: 1.1292.1
 
-  snyk-file-to-scan:
-    description: Snyk file to scan (Python only)
-    type: string
-    required: false
-    default: requirements.txt
-
   artifact-name:
     description: Name of the artifact to upload
     type: string
@@ -48,22 +42,45 @@ runs:
       shell: bash
       run: npm install snyk@${{ inputs.snyk-cli-version }} -g
 
-    # Snyk returns exit code 1 if vulnerabilities are found
-    - name: Perform Snyk Analysis
+    - name: Perform Snyk Monitor Analysis
+      if: ${{ inputs.programming-language == 'java' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk monitor \
+          --all-projects \
+          --severity-threshold=low \
+          --prune-repeated-subdependencies \
+          --json || EXIT_CODE=$?
+        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
+
+    - name: Perform Snyk Test Analysis
       if: ${{ inputs.programming-language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         snyk test \
-          --package-manager=maven \
-          --maven-aggregate-project \
+          --all-projects \
           --severity-threshold=low \
+          --prune-repeated-subdependencies \
           --json \
           --json-file-output=snyk-report.json || EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
 
-    # Snyk returns exit code 1 if vulnerabilities are found
-    - name: Perform Snyk Analysis
+    - name: Perform Snyk Monitor Analysis
+      if: ${{ inputs.programming-language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk monitor \
+          --command=python \
+          --package-manager=pip \
+          --severity-threshold=low \
+          --prune-repeated-subdependencies \
+          --json || EXIT_CODE=$?
+        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
+
+    - name: Perform Snyk Test Analysis
       if: ${{ inputs.programming-language == 'python' }}
       shell: bash
       working-directory: ${{ inputs.path }}
@@ -72,23 +89,36 @@ runs:
           --command=python \
           --package-manager=pip \
           --severity-threshold=low \
-          --file=${{ inputs.snyk-file-to-scan }} \
+          --prune-repeated-subdependencies \
           --json \
           --json-file-output=snyk-report.json || EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
 
-    # Snyk returns exit code 1 if vulnerabilities are found
-    - name: Perform Snyk Analysis
+    - name: Perform Snyk Monitor Analysis
+      if: ${{ inputs.programming-language == 'javascript' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk monitor \
+          --all-projects \
+          --severity-threshold=low \
+          --prune-repeated-subdependencies \
+          --dev \
+          --json || EXIT_CODE=$?
+        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
+
+    - name: Perform Snyk Test Analysis
       if: ${{ inputs.programming-language == 'javascript' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         snyk test \
           --severity-threshold=low \
-          --strict-out-of-sync=true \
+          --prune-repeated-subdependencies \
+          --dev \
           --json \
           --json-file-output=snyk-report.json || EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 1 ]; then exit 0; fi
+        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
 
     - name: Upload Snyk Report
       uses: actions/upload-artifact@v4

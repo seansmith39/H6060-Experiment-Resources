@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   build-java-application:
-    name: Build Application
+    name: Build Application (Java)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -39,10 +39,11 @@ jobs:
       - name: Create CycloneDX SBOM
         uses: ./experiment-resources/.github/actions/java/java-cyclonedx-sbom
         with:
+          build-directory: target
           path: jackson-databind
 
   build-python-application:
-    name: Build Application
+    name: Build Application (Python)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -81,7 +82,7 @@ jobs:
           path: pillow
 
   build-javascript-application:
-    name: Build Application
+    name: Build Application (JavaScript)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -106,12 +107,11 @@ jobs:
         run: npm ci
 
       - name: Build JavaScript Application
-        working-directory: lodash
-        run: npm run build
-
-      - name: Package JavaScript Application
-        working-directory: lodash
-        run: npm pack
+        uses: ./experiment-resources/.github/actions/javascript/javascript-build
+        with:
+          build-command: npm run build
+          package-command: npm pack
+          path: lodash
 
       - name: Create CycloneDX SBOM
         uses: ./experiment-resources/.github/actions/javascript/javascript-cyclonedx-sbom
@@ -127,7 +127,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Java CycloneDX OSV Report
-        uses: ./.github/actions/common/cyclonedx-sbom-osv-report
+        uses: ./.github/actions/reporting/cyclonedx-sbom-osv-report
         with:
           programming-language: java
           cyclonedx-sbom-artifact-name: cyclonedx-sbom-java
@@ -137,7 +137,7 @@ jobs:
           include-unit-tests: true
 
       - name: Create Python CycloneDX OSV Report
-        uses: ./.github/actions/common/cyclonedx-sbom-osv-report
+        uses: ./.github/actions/reporting/cyclonedx-sbom-osv-report
         with:
           programming-language: python
           cyclonedx-sbom-artifact-name: cyclonedx-sbom-python
@@ -147,7 +147,7 @@ jobs:
           include-unit-tests: true
 
       - name: Create JavaScript CycloneDX OSV Report
-        uses: ./.github/actions/common/cyclonedx-sbom-osv-report
+        uses: ./.github/actions/reporting/cyclonedx-sbom-osv-report
         with:
           programming-language: javascript
           cyclonedx-sbom-artifact-name: cyclonedx-sbom-javascript
