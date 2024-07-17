@@ -5,7 +5,7 @@
 An action to configure and run a Horusec SAST scan.
 
 **Notes:**
-- The action uses Horusec CLI `v0.2.2`.
+- The action uses Horusec CLI `v2.8.0`.
 
 ## Supported Programming Languages
 

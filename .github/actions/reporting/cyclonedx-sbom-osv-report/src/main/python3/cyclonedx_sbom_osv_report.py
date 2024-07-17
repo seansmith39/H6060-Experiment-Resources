@@ -110,6 +110,7 @@ def get_json_value(
         json_data:dict -- JSON response data
         data_key_1:str -- Primary key of JSON response data
         data_key_2:str -- Optional second key of JSON response data
+        default_value:str -- Default value if key not found
 
     :return
         str -- JSON value

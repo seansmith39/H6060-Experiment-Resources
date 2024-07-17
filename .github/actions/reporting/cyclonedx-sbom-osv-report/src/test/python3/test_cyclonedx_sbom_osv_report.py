@@ -17,15 +17,15 @@ CSV_JAVA_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_osv_java_report.cs
 CSV_JAVASCRIPT_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_osv_javascript_report.csv"
 CSV_PYTHON_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_osv_python_report.csv"
 
-CYCLONEDX_SBOM_JAVA_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/cyclonedx_sbom_report_java.json"
-CYCLONEDX_SBOM_JAVASCRIPT_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/cyclonedx_sbom_report_javascript.json"
-CYCLONEDX_SBOM_PYTHON_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/cyclonedx_sbom_report_python.json"
+CYCLONEDX_SBOM_JAVA_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/java/cyclonedx_sbom_report.json"
+CYCLONEDX_SBOM_JAVASCRIPT_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/javascript/cyclonedx_sbom_report.json"
+CYCLONEDX_SBOM_PYTHON_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/python/cyclonedx_sbom_report.json"
 
-RESPONSE_OSV_API_NO_VULNERABILITIES = TEST_DIRECTORY_RESOURCES + "osv/osv_vulnerability_no_response.json"
-RESPONSE_OSV_API_EMPTY_VULNERABILITIES = TEST_DIRECTORY_RESOURCES + "osv/osv_vulnerability_empty_response.json"
-RESPONSE_OSV_API_JAVA = TEST_DIRECTORY_RESOURCES + "osv/osv_vulnerability_java_response.json"
-RESPONSE_OSV_API_PYTHON = TEST_DIRECTORY_RESOURCES + "osv/osv_vulnerability_python_response.json"
-RESPONSE_OSV_API_JAVASCRIPT = TEST_DIRECTORY_RESOURCES + "osv/osv_vulnerability_javascript_response.json"
+RESPONSE_OSV_API_NO_VULNERABILITIES = TEST_DIRECTORY_RESOURCES + "osv/other/osv_vulnerability_no_response.json"
+RESPONSE_OSV_API_EMPTY_VULNERABILITIES = TEST_DIRECTORY_RESOURCES + "osv/other/osv_vulnerability_empty_response.json"
+RESPONSE_OSV_API_JAVA = TEST_DIRECTORY_RESOURCES + "osv/java/osv_vulnerability_response.json"
+RESPONSE_OSV_API_JAVASCRIPT = TEST_DIRECTORY_RESOURCES + "osv/javascript/osv_vulnerability_response.json"
+RESPONSE_OSV_API_PYTHON = TEST_DIRECTORY_RESOURCES + "osv//python/osv_vulnerability_response.json"
 
 
 def mocked_response(*args, **kwargs):
