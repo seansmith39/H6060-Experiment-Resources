@@ -16,14 +16,15 @@ The script supports the parsing of CycloneDX SBOM v1.5 and v1.6 schemas.
 
 ## Inputs
 
-| name                             | required | type    | default            | description                                        |
-|----------------------------------|----------|---------|--------------------|----------------------------------------------------|
-| **programming-language**         | true     | string  |                    | Programming language of CycloneDX SBOM JSON report |
-| **cyclonedx-sbom-artifact-name** | true     | string  |                    | Name of CycloneDX SBOM build artifact              |
-| **cyclonedx-sbom-filename**      | true     | string  |                    | Name of CycloneDX SBOM JSON report                 |
-| **github-token**                 | true     | string  |                    | Token to access the GitHub API                     |
-| **artifact-name**                | false    | string  | cyclonedx-sbom-osv | Name of the artifact to upload                     |
-| **include-unit-tests**           | false    | boolean | false              | Whether to run action unit tests                   |
+| name                             | required | type    | default                       | description                                        |
+|----------------------------------|----------|---------|-------------------------------|----------------------------------------------------|
+| **programming-language**         | true     | string  |                               | Programming language of CycloneDX SBOM JSON report |
+| **cyclonedx-sbom-artifact-name** | true     | string  |                               | Name of CycloneDX SBOM build artifact              |
+| **cyclonedx-sbom-filename**      | true     | string  |                               | Name of CycloneDX SBOM JSON report                 |
+| **github-token**                 | true     | string  |                               | Token to access the GitHub API                     |
+| **csv-report-filename**          | false    | string  | cyclonedx_sbom_osv_report.csv | Name of the CSV report filename                    |
+| **artifact-name**                | false    | string  | cyclonedx-sbom-osv            | Name of the artifact to upload                     |
+| **include-unit-tests**           | false    | boolean | false                         | Whether to run action unit tests                   |
 
 ## Build Artifacts
 

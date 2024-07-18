@@ -133,6 +133,7 @@ jobs:
           cyclonedx-sbom-artifact-name: cyclonedx-sbom-java
           cyclonedx-sbom-filename: sbom.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          csv-report-filename: cyclonedx_sbom_osv_report_java.csv
           artifact-name: cyclonedx-sbom-osv-report-java
           include-unit-tests: true
 
@@ -143,6 +144,7 @@ jobs:
           cyclonedx-sbom-artifact-name: cyclonedx-sbom-python
           cyclonedx-sbom-filename: sbom.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          csv-report-filename: cyclonedx_sbom_osv_report_python.csv
           artifact-name: cyclonedx-sbom-osv-report-python
           include-unit-tests: true
 
@@ -153,5 +155,6 @@ jobs:
           cyclonedx-sbom-artifact-name: cyclonedx-sbom-javascript
           cyclonedx-sbom-filename: sbom.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          csv-report-filename: cyclonedx_sbom_osv_report_javascript.csv
           artifact-name: cyclonedx-sbom-osv-report-javascript
           include-unit-tests: true

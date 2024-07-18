@@ -34,7 +34,7 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         semgrep scan \
-          --config=p/ci \
+          --config=p/default \
           --config=p/${{ inputs.programming-language }} \
           --config=p/cwe-top-25 \
           --config=p/owasp-top-ten \

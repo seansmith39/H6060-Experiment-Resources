@@ -13,9 +13,13 @@ from main.python3 import cyclonedx_sbom_osv_report
 
 TEST_DIRECTORY_RESOURCES = os.path.dirname(os.path.realpath(__file__)) + "/resources/"
 
-CSV_JAVA_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_osv_java_report.csv"
-CSV_JAVASCRIPT_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_osv_javascript_report.csv"
-CSV_PYTHON_RESULT_FILENAME = "../../main/python3/cyclonedx_sbom_osv_python_report.csv"
+CSV_JAVA_RESULT_FILENAME = "cyclonedx_sbom_osv_report_java.csv"
+CSV_JAVASCRIPT_RESULT_FILENAME = "cyclonedx_sbom_osv_report_javascript.csv"
+CSV_PYTHON_RESULT_FILENAME = "cyclonedx_sbom_osv_report_python.csv"
+
+CSV_JAVA_RESULT_PATH = f"../../main/python3/{CSV_JAVA_RESULT_FILENAME}"
+CSV_JAVASCRIPT_RESULT_PATH = f"../../main/python3/{CSV_JAVASCRIPT_RESULT_FILENAME}"
+CSV_PYTHON_RESULT_PATH = f"../../main/python3/{CSV_PYTHON_RESULT_FILENAME}"
 
 CYCLONEDX_SBOM_JAVA_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/java/cyclonedx_sbom_report.json"
 CYCLONEDX_SBOM_JAVASCRIPT_FILENAME = TEST_DIRECTORY_RESOURCES + "sbom/javascript/cyclonedx_sbom_report.json"
@@ -87,12 +91,15 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
         with open(os.devnull, "w") as f:
             sys.stdout = f
 
-    def __mock_args(self, programming_language: str, cyclonedx_sbom_filename: str) -> Namespace:
+    def __mock_args(
+        self, programming_language: str, cyclonedx_sbom_filename: str, csv_report_filename: str
+    ) -> Namespace:
         """Mock arguments in argparse.Namespace type
 
         :parameter
             programming_language:str -- Programming language of CycloneDX SBOM JSON report
             cyclonedx_sbom_filename:str -- Name of CycloneDX SBOM JSON report to parse
+            csv_report_filename:str -- Name of CSV report to generate
 
         :return
             argparse.Namespace -- Mocked arguments
@@ -100,6 +107,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
         return Namespace(
             programming_language=programming_language,
             cyclonedx_sbom_filename=cyclonedx_sbom_filename,
+            csv_report_filename=csv_report_filename,
         )
 
     @patch(
@@ -149,7 +157,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
         self.assertEqual(osv_data, [data])
 
     def test_invalid_programming_language(self):
-        args = self.__mock_args("invalid", CYCLONEDX_SBOM_PYTHON_FILENAME)
+        args = self.__mock_args("invalid", CYCLONEDX_SBOM_PYTHON_FILENAME, CSV_JAVA_RESULT_FILENAME)
         with self.assertRaises(SystemExit) as cm:
             cyclonedx_sbom_osv_report.main(args)
         self.assertEqual(cm.exception.code, 1)
@@ -195,6 +203,8 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
                 "java",
                 "--cyclonedx-sbom-filename",
                 CYCLONEDX_SBOM_JAVA_FILENAME,
+                "--csv-report-filename",
+                CSV_JAVA_RESULT_FILENAME,
             ]
         )
         result = cyclonedx_sbom_osv_report.main(args)
@@ -211,6 +221,8 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
                 "python",
                 "--cyclonedx-sbom-filename",
                 CYCLONEDX_SBOM_PYTHON_FILENAME,
+                "--csv-report-filename",
+                CSV_PYTHON_RESULT_FILENAME,
             ]
         )
         result = cyclonedx_sbom_osv_report.main(args)
@@ -227,6 +239,8 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
                 "javascript",
                 "--cyclonedx-sbom-filename",
                 CYCLONEDX_SBOM_JAVASCRIPT_FILENAME,
+                "--csv-report-filename",
+                CSV_JAVASCRIPT_RESULT_FILENAME,
             ]
         )
         result = cyclonedx_sbom_osv_report.main(args)
@@ -235,12 +249,12 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         sys.stdout = sys.__stdout__
-        if os.path.isfile(CSV_JAVA_RESULT_FILENAME):
-            os.remove(CSV_JAVA_RESULT_FILENAME)
-        if os.path.isfile(CSV_JAVASCRIPT_RESULT_FILENAME):
-            os.remove(CSV_JAVASCRIPT_RESULT_FILENAME)
-        if os.path.isfile(CSV_PYTHON_RESULT_FILENAME):
-            os.remove(CSV_PYTHON_RESULT_FILENAME)
+        if os.path.isfile(CSV_JAVA_RESULT_PATH):
+            os.remove(CSV_JAVA_RESULT_PATH)
+        if os.path.isfile(CSV_JAVASCRIPT_RESULT_PATH):
+            os.remove(CSV_JAVASCRIPT_RESULT_PATH)
+        if os.path.isfile(CSV_PYTHON_RESULT_PATH):
+            os.remove(CSV_PYTHON_RESULT_PATH)
         if os.path.isfile(RESPONSE_OSV_API_NO_VULNERABILITIES):
             os.remove(RESPONSE_OSV_API_NO_VULNERABILITIES)
 

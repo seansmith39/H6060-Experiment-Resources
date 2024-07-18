@@ -23,6 +23,12 @@ inputs:
     type: string
     required: true
 
+  csv-report-filename:
+    description: Name of the CSV report filename
+    type: string
+    required: false
+    default: cyclonedx_sbom_osv_report.csv
+
   artifact-name:
     description: Name of the artifact to upload
     type: string
@@ -70,7 +76,8 @@ runs:
         run: |
           python src/main/python3/cyclonedx_sbom_osv_report.py \
             --programming-language "${{ inputs.programming-language }}" \
-            --cyclonedx-sbom-filename "${{ inputs.cyclonedx-sbom-filename }}"
+            --cyclonedx-sbom-filename "${{ inputs.cyclonedx-sbom-filename }}" \
+            --csv-report-filename "${{ inputs.csv-report-filename }}"
 
       - name: Convert Input To Lowercase
         id: input-to-lowercase
