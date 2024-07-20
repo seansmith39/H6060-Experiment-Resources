@@ -31,7 +31,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Run CodeQL SAST Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/codeql
+  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/codeql@main
   with:
     programming-language: java
 ```

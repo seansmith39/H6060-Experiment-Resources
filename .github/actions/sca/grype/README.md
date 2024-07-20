@@ -5,7 +5,7 @@
 An action to run a Grype SCA scan.
 
 **Notes:**
-- The action uses Grype CLI `v3.6.4`.
+- The action uses Grype CLI `v0.74.4`.
 
 ## Supported Programming Languages
 
@@ -29,7 +29,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Run Grype SCA Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/grype
+  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/grype@main
 ```
 
 ## Resources

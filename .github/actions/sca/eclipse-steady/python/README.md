@@ -36,7 +36,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Run Eclipse Steady SCA Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady/python
+  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady/python@main
   with:
     eclipse-steady-workspace-token: 1111-2222-3333-4444
     eclipse-steady-host-url: https://my-eclipse-steady-instance.com

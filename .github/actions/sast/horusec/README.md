@@ -5,7 +5,7 @@
 An action to configure and run a Horusec SAST scan.
 
 **Notes:**
-- The action uses Horusec CLI `v0.2.2`.
+- The action uses Horusec CLI `v2.8.0`.
 
 ## Supported Programming Languages
 
@@ -29,7 +29,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Run Horusec SAST Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/horusec
+  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/horusec@main
 ```
 
 ## Resources

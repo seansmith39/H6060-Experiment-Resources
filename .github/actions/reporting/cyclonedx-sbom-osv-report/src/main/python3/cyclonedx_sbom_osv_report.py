@@ -46,6 +46,12 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         required=True,
         help="Name of CycloneDX SBOM JSON report to parse",
     )
+    parser.add_argument(
+        "--csv-report-filename",
+        action="store",
+        required=True,
+        help="Name of resulting CSV report",
+    )
 
     return parser.parse_args(args)
 
@@ -110,6 +116,7 @@ def get_json_value(
         json_data:dict -- JSON response data
         data_key_1:str -- Primary key of JSON response data
         data_key_2:str -- Optional second key of JSON response data
+        default_value:str -- Default value if key not found
 
     :return
         str -- JSON value
@@ -676,9 +683,8 @@ def main(args: argparse.Namespace) -> None:
         or args.programming_language.upper() == "PYTHON"
         or args.programming_language.upper() == "JAVASCRIPT"
     ):
-        csv_output_filename = f"cyclonedx_sbom_osv_{args.programming_language.lower()}_report.csv"
-        write_csv_report_header(csv_output_filename)
-        parse_cyclonedx_sbom_report(args.cyclonedx_sbom_filename, csv_output_filename)
+        write_csv_report_header(args.csv_report_filename)
+        parse_cyclonedx_sbom_report(args.cyclonedx_sbom_filename, args.csv_report_filename)
     else:
         log.error(f"Unsupported programming language: {args.programming_language}")
         sys.exit(1)
