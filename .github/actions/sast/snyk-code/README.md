@@ -35,7 +35,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Run Snyk Code SAST Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/snyk-code
+  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/snyk-code@main
 ```
 
 ## Resources

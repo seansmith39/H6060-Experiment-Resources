@@ -79,12 +79,6 @@ runs:
             --cyclonedx-sbom-filename "${{ inputs.cyclonedx-sbom-filename }}" \
             --csv-report-filename "${{ inputs.csv-report-filename }}"
 
-      - name: Convert Input To Lowercase
-        id: input-to-lowercase
-        uses: ASzc/change-string-case-action@v6
-        with:
-          string: ${{ inputs.programming-language }}
-
       # See https://github.com/actions/runner/issues/2185
       - name: Set GitHub Action Path
         shell: bash
@@ -96,5 +90,5 @@ runs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact-name }}
-          path: ${{ env.GITHUB_ACTION_NEW_PATH }}/src/main/python3/cyclonedx_sbom_osv_${{ steps.input-to-lowercase.outputs.lowercase }}_report.csv
+          path: ${{ env.GITHUB_ACTION_NEW_PATH }}/src/main/python3/${{ inputs.csv-report-filename }}
           if-no-files-found: error

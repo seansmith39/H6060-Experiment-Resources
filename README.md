@@ -22,7 +22,6 @@ The following SCA and SAST tools are supported within the experiment GitHub work
 | SCA       | Grype                  | yes  | yes    | yes        |
 | SAST      | SonarQube              | yes  | yes    | yes        |
 | SAST      | Semgrep                | yes  | yes    | yes        |
-| SAST      | DeepSource             | yes  | yes    | yes        |
 | SAST      | Horusec                | yes  | yes    | yes        |
 | SAST      | CodeQL                 | yes  | yes    | yes        |
 | SAST      | Snyk Code              | yes  | yes    | yes        |
@@ -84,7 +83,6 @@ The following GitHub Action repository secrets must be set in a GitHub repositor
 
 | Secret Name               | Description                                         |
 |---------------------------|-----------------------------------------------------|
-| `DEEPSOURCE_DSN`          | DSN to authenticate with DeepSource                 |
 | `ECLIPSE_STEADY_HOST_URL` | URL of the Eclipse Steady instance                  |
 | `HONEYCOMB_API_KEY`       | Honeycomb API key to export GitHub Workflow metrics |
 | `NVD_API_KEY`             | API key to access the NVD API                       |
@@ -105,7 +103,6 @@ The following inputs are supported for the GitHub workflows:
 |-----------------------------------------------|----------|---------|---------|---------------------------------------------------------|
 | **sast-sonarqube-enabled**                    | false    | boolean | true    | Enable SonarQube scan (SAST)                            |
 | **sast-semgrep-enabled**                      | false    | boolean | true    | Enable Semgrep scan (SAST)                              |
-| **sast-deepsource-enabled**                   | false    | boolean | true    | Enable Deepsource scan (SAST)                           |
 | **sast-horusec-enabled**                      | false    | boolean | true    | Enable Horusec scan (SAST)                              |
 | **sast-codeql-enabled**                       | false    | boolean | true    | Enable CodeQL scan (SAST)                               |
 | **sast-snyk-code-enabled**                    | false    | boolean | true    | Enable Snyk Code scan (SAST)                            |
@@ -128,7 +125,6 @@ The following inputs are supported for the GitHub workflows:
 |-----------------------------------------------|----------|---------|---------|---------------------------------------------------------|
 | **sast-sonarqube-enabled**                    | false    | boolean | true    | Enable SonarQube scan (SAST)                            |
 | **sast-semgrep-enabled**                      | false    | boolean | true    | Enable Semgrep scan (SAST)                              |
-| **sast-deepsource-enabled**                   | false    | boolean | true    | Enable Deepsource scan (SAST)                           |
 | **sast-horusec-enabled**                      | false    | boolean | true    | Enable Horusec scan (SAST)                              |
 | **sast-codeql-enabled**                       | false    | boolean | true    | Enable CodeQL scan (SAST)                               |
 | **sast-snyk-code-enabled**                    | false    | boolean | true    | Enable Snyk Code scan (SAST)                            |
@@ -151,7 +147,6 @@ The following inputs are supported for the GitHub workflows:
 |----------------------------------------|----------|---------|---------|------------------------------------------|
 | **sast-sonarqube-enabled**             | false    | boolean | true    | Enable SonarQube scan (SAST)             |
 | **sast-semgrep-enabled**               | false    | boolean | true    | Enable Semgrep scan (SAST)               |
-| **sast-deepsource-enabled**            | false    | boolean | true    | Enable Deepsource scan (SAST)            |
 | **sast-horusec-enabled**               | false    | boolean | true    | Enable Horusec scan (SAST)               |
 | **sast-codeql-enabled**                | false    | boolean | true    | Enable CodeQL scan (SAST)                |
 | **sast-snyk-code-enabled**             | false    | boolean | true    | Enable Snyk Code scan (SAST)             |

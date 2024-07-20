@@ -122,39 +122,20 @@ jobs:
     name: Test CycloneDX SBOM OSV Report Action
     runs-on: ubuntu-latest
     needs: [ build-java-application, build-python-application, build-javascript-application ]
+    strategy:
+      matrix:
+        programming-language: [ java, python, javascript ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create Java CycloneDX OSV Report
+      - name: Create CycloneDX OSV Report (${{ matrix.programming-language }})
         uses: ./.github/actions/reporting/cyclonedx-sbom-osv-report
         with:
-          programming-language: java
-          cyclonedx-sbom-artifact-name: cyclonedx-sbom-java
+          programming-language: ${{ matrix.programming-language }}
+          cyclonedx-sbom-artifact-name: cyclonedx-sbom-${{ matrix.programming-language }}
           cyclonedx-sbom-filename: sbom.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          csv-report-filename: cyclonedx_sbom_osv_report_java.csv
-          artifact-name: cyclonedx-sbom-osv-report-java
-          include-unit-tests: true
-
-      - name: Create Python CycloneDX OSV Report
-        uses: ./.github/actions/reporting/cyclonedx-sbom-osv-report
-        with:
-          programming-language: python
-          cyclonedx-sbom-artifact-name: cyclonedx-sbom-python
-          cyclonedx-sbom-filename: sbom.json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          csv-report-filename: cyclonedx_sbom_osv_report_python.csv
-          artifact-name: cyclonedx-sbom-osv-report-python
-          include-unit-tests: true
-
-      - name: Create JavaScript CycloneDX OSV Report
-        uses: ./.github/actions/reporting/cyclonedx-sbom-osv-report
-        with:
-          programming-language: javascript
-          cyclonedx-sbom-artifact-name: cyclonedx-sbom-javascript
-          cyclonedx-sbom-filename: sbom.json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          csv-report-filename: cyclonedx_sbom_osv_report_javascript.csv
-          artifact-name: cyclonedx-sbom-osv-report-javascript
+          csv-report-filename: cyclonedx_sbom_osv_report_${{ matrix.programming-language }}.csv
+          artifact-name: cyclonedx-sbom-osv-report-${{ matrix.programming-language }}
           include-unit-tests: true

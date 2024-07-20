@@ -15,12 +15,6 @@ on:
         required: false
         default: true
 
-      sast-deepsource-enabled:
-        description: Enable Deepsource scan (SAST)
-        type: boolean
-        required: false
-        default: true
-
       sast-horusec-enabled:
         description: Enable Horusec scan (SAST)
         type: boolean
@@ -156,48 +150,6 @@ jobs:
         uses: ./experiment-resources-repo/.github/actions/sast/semgrep
         with:
           programming-language: python
-          path: project-repo
-
-  sast-deepsource:
-    name: Run Deepsource (SAST)
-    if: ${{ inputs.sast-deepsource-enabled == true }}
-    runs-on: ubuntu-latest
-    env:
-      DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
-
-      - name: Checkout Project Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: project-repo
-
-      - name: Download Coverage
-        uses: dawidd6/action-download-artifact@v3.1.4
-        with:
-          name: coverage-report
-          path: project-repo
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
-          commit: ${{ github.event.workflow_run.head_commit.id }}
-
-      - name: Check For File Existence
-        uses: andstor/file-existence-action@v3
-        with:
-          files: project-repo/${{ inputs.coverage-report-name }}
-          fail: true
-
-      - name: Run Deepsource (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/deepsource
-        with:
-          programming-language: javascript
-          coverage-file: ${{ inputs.coverage-report-name }}
           path: project-repo
 
   sast-horusec:
@@ -405,7 +357,6 @@ jobs:
     needs: [
       sast-sonarqube,
       sast-semgrep,
-      sast-deepsource,
       sast-horusec,
       sast-codeql,
       sast-snyk-code,
