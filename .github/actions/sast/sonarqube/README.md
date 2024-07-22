@@ -18,16 +18,16 @@ An action to configure and run a SonarQube SAST scan.
 
 ## Inputs
 
-| name                     | required | type   | default                 | description                                    |
-|--------------------------|----------|--------|-------------------------|------------------------------------------------|
-| **programming-language** | true     | string |                         | Programming language to scan using SonarQube   |
-| **sonar-token**          | true     | string |                         | Token used to authenticate access to SonarQube |
-| **sonar-host-url**       | true     | string |                         | Hostname of SonarQube                          |
-| **sonar-username**       | true     | string |                         | Username for logging into SonarQube            |
-| **sonar-password**       | true     | string |                         | Password for logging into SonarQube            |
-| **sonar-project-name**   | true     | string |                         | Name of project being scanned by SonarQube     |
-| **artifact-name**        | false    | string | sast-sonarqube-report   | Name of the artifact to upload                 |
-| **path**                 | false    | string | ${{ github.workspace }} | Path to run the SonarQube scan                 |
+| name                      | required | type   | default                 | description                                    |
+|---------------------------|----------|--------|-------------------------|------------------------------------------------|
+| **programming-language**  | true     | string |                         | Programming language to scan using SonarQube   |
+| **sonarqube-token**       | true     | string |                         | Token used to authenticate access to SonarQube |
+| **sonarqube-url**         | true     | string |                         | Hostname of SonarQube                          |
+| **sonarqube-username**    | true     | string |                         | Username for logging into SonarQube            |
+| **sonarqube-password**    | true     | string |                         | Password for logging into SonarQube            |
+| **sonarqube-project-key** | true     | string |                         | Project key being scanned by SonarQube         |
+| **artifact-name**         | false    | string | sast-sonarqube-report   | Name of the artifact to upload                 |
+| **path**                  | false    | string | ${{ github.workspace }} | Path to run the SonarQube scan                 |
 
 ## Build Artifacts
 
@@ -48,11 +48,11 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/sonarqube@main
   with:
     programming-language: java
-    sonar-token: squ_111122223333
-    sonar-host-url: https://my-sonarqube-instance.com
-    sonar-username: my-username
-    sonar-password: my-password
-    sonar-project-name: my-project
+    sonarqube-token: squ_111122223333
+    sonarqube-url: https://my-sonarqube-instance.com
+    sonarqube-username: my-username
+    sonarqube-password: my-password
+    sonarqube-project-key: my-project
 ```
 
 ## Resources

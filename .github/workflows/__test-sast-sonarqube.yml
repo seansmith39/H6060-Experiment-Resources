@@ -40,11 +40,11 @@ jobs:
         uses: ./experiment-resources/.github/actions/sast/sonarqube
         with:
           programming-language: java
-          sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
-          sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
-          sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
-          sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
-          sonar-project-name: test-java
+          sonarqube-token: ${{ secrets.TEST_SONARQUBE_TOKEN }}
+          sonarqube-url: https://sonarqube.b00158319.com
+          sonarqube-username: ${{ secrets.TEST_SONARQUBE_USERNAME }}
+          sonarqube-password: ${{ secrets.TEST_SONARQUBE_PASSWORD }}
+          sonarqube-project-key: test-java
           artifact-name: sast-sonarqube-report-java
           path: jackson-databind
 
@@ -68,11 +68,11 @@ jobs:
         uses: ./experiment-resources/.github/actions/sast/sonarqube
         with:
           programming-language: python
-          sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
-          sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL}}
-          sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
-          sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
-          sonar-project-name: test-python
+          sonarqube-token: ${{ secrets.TEST_SONARQUBE_TOKEN }}
+          sonarqube-url: https://sonarqube.b00158319.com
+          sonarqube-username: ${{ secrets.TEST_SONARQUBE_USERNAME }}
+          sonarqube-password: ${{ secrets.TEST_SONARQUBE_PASSWORD }}
+          sonarqube-project-key: test-python
           artifact-name: sast-sonarqube-report-python
           path: pillow
 
@@ -96,10 +96,10 @@ jobs:
         uses: ./experiment-resources/.github/actions/sast/sonarqube
         with:
           programming-language: javascript
-          sonar-token: ${{ secrets.TEST_SONAR_TOKEN }}
-          sonar-host-url: ${{ secrets.TEST_SONAR_HOST_URL }}
-          sonar-username: ${{ secrets.TEST_SONAR_USERNAME }}
-          sonar-password: ${{ secrets.TEST_SONAR_PASSWORD }}
-          sonar-project-name: test-javascript
+          sonarqube-token: ${{ secrets.TEST_SONARQUBE_TOKEN }}
+          sonarqube-url: ${{ secrets.TEST_SONARQUBE_URL }}
+          sonarqube-username: ${{ secrets.TEST_SONARQUBE_USERNAME }}
+          sonarqube-password: ${{ secrets.TEST_SONARQUBE_PASSWORD }}
+          sonarqube-project-key: test-javascript
           artifact-name: sast-sonarqube-report-javascript
           path: lodash

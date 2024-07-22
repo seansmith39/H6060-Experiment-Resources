@@ -8,28 +8,28 @@ inputs:
     type: string
     required: true
 
-  sonar-token:
+  sonarqube-token:
     description: Token used to authenticate access to SonarQube
     type: string
     required: true
 
-  sonar-host-url:
+  sonarqube-url:
     description: Hostname of SonarQube
     type: string
     required: true
 
-  sonar-username:
+  sonarqube-username:
     description: Username for logging into SonarQube
     type: string
     required: true
 
-  sonar-password:
+  sonarqube-password:
     description: Password for logging into SonarQube
     type: string
     required: true
 
-  sonar-project-name:
-    description: Name of project being scanned
+  sonarqube-project-key:
+    description: Project key of the SonarQube project
     type: string
     required: true
 
@@ -66,30 +66,30 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         mvn sonar:sonar \
-          -Dsonar.login=${{ inputs.sonar-token }} \
-          -Dsonar.host.url=${{ inputs.sonar-host-url }} \
-          -Dsonar.projectKey=${{ inputs.sonar-project-name }} \
-          -Dsonar.projectName=${{ inputs.sonar-project-name }}
+          -Dsonar.login=${{ inputs.sonarqube-token }} \
+          -Dsonar.host.url=${{ inputs.sonarqube-url }} \
+          -Dsonar.projectKey=${{ inputs.sonarqube-project-key }} \
+          -Dsonar.projectName=${{ inputs.sonarqube-project-key }}
 
     - name: Perform SonarQube Analysis
       if: ${{ inputs.programming-language != 'java' }}
       uses: SonarSource/sonarqube-scan-action@v2.0.2
       env:
-        SONAR_TOKEN: ${{ inputs.sonar-token }}
-        SONAR_HOST_URL: ${{ inputs.sonar-host-url }}
+        SONARQUBE_TOKEN: ${{ inputs.sonarqube-token }}
+        SONARQUBE_URL: ${{ inputs.sonarqube-url }}
       with:
         projectBaseDir: ${{ inputs.path }}
         args: >
-          -Dsonar.projectKey=${{ inputs.sonar-project-name }}
-          -Dsonar.projectName=${{ inputs.sonar-project-name }}
+          -Dsonar.projectKey=${{ inputs.sonarqube-project-key }}
+          -Dsonar.projectName=${{ inputs.sonarqube-project-key }}
 
     - name: Download SonarQube Report
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        curl -k -u ${{ inputs.sonar-username }}:${{ inputs.sonar-password }} \
+        curl -k -u ${{ inputs.sonarqube-username }}:${{ inputs.sonarqube-password }} \
           -o sonarqube-cnes-report.zip \
-          "${{ inputs.sonar-host-url }}/api/cnesreport/report?key=${{ inputs.sonar-project-name }}&token=${{ inputs.sonar-token }}&author=Administrator"
+          "${{ inputs.sonarqube-url }}/api/cnesreport/report?key=${{ inputs.sonarqube-project-key }}&token=${{ inputs.sonarqube-token }}&author=Administrator"
 
     - name: Upload SonarQube Report
       uses: actions/upload-artifact@v4
