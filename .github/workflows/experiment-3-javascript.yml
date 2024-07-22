@@ -118,11 +118,11 @@ jobs:
         uses: ./experiment-resources-repo/.github/actions/sast/sonarqube
         with:
           programming-language: javascript
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          sonar-host-url: ${{ secrets.SONAR_HOST_URL}}
-          sonar-username: ${{ secrets.SONAR_USERNAME }}
-          sonar-password: ${{ secrets.SONAR_PASSWORD }}
-          sonar-project-name: ${{ inputs.project-name }}
+          sonarqube-token: ${{ secrets.SONARQUBE_TOKEN }}
+          sonarqube-url: ${{ secrets.SONARQUBE_URL}}
+          sonarqube-username: ${{ secrets.SONARQUBE_USERNAME }}
+          sonarqube-password: ${{ secrets.SONARQUBE_PASSWORD }}
+          sonarqube-project-key: ${{ inputs.project-name }}
           path: project-repo
 
   sast-semgrep:

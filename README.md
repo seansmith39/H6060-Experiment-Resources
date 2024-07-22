@@ -90,10 +90,10 @@ The following GitHub Action repository secrets must be set in a GitHub repositor
 | `OPENCVE_PASSWORD`        | Password to authenticate with OpenCVE               |
 | `SEMGREP_APP_TOKEN`       | Token to authenticate with Semgrep                  |
 | `SNYK_TOKEN`              | Token to authenticate with Snyk                     |
-| `SONAR_HOST_URL`          | URL of the SonarQube instance                       |
-| `SONAR_PASSWORD`          | Password to authenticate with SonarQube             |
-| `SONAR_USERNAME`          | Username to authenticate with SonarQube             |
-| `SONAR_TOKEN`             | Token to authenticate with SonarQube                |
+| `SONARQUBE_URL`           | URL of the SonarQube instance                       |
+| `SONARQUBE_PASSWORD`      | Password to authenticate with SonarQube             |
+| `SONARQUBE_USERNAME`      | Username to authenticate with SonarQube             |
+| `SONARQUBE_TOKEN`         | Token to authenticate with SonarQube                |
 
 The following inputs are supported for the GitHub workflows:
 
