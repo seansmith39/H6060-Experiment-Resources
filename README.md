@@ -16,22 +16,38 @@ The following SCA and SAST tools are supported within the experiment GitHub work
 
 | Tool Type | Tool Name              | Java | Python | JavaScript |
 |-----------|------------------------|------|--------|------------|
+| SCA       | Dependabot             | yes  | yes    | yes        |
 | SCA       | Eclipse Steady         | yes  | yes    | no         |
+| SCA       | Grype                  | yes  | yes    | yes        |
 | SCA       | OWASP Dependency Check | yes  | yes    | yes        |
 | SCA       | Snyk                   | yes  | yes    | yes        |
-| SCA       | Grype                  | yes  | yes    | yes        |
+| SAST      | CodeQL                 | yes  | yes    | yes        |
+| SAST      | DeepSource             | yes  | yes    | yes        |
+| SAST      | Horusec                | yes  | yes    | yes        |
 | SAST      | SonarQube              | yes  | yes    | yes        |
 | SAST      | Semgrep                | yes  | yes    | yes        |
-| SAST      | Horusec                | yes  | yes    | yes        |
-| SAST      | CodeQL                 | yes  | yes    | yes        |
 | SAST      | Snyk Code              | yes  | yes    | yes        |
 
 ## Pre-requisites
 
 Before running the GitHub workflows, the following pre-requisites must be met:
-1. The project must be built successfully in a separate GitHub Workflow job.
-2. A SonarQube instance must be hosted and accessible.
-3. An Eclipse Steady instance must be hosted and accessible.
+
+**General pre-requisites:**
+- The project must be built successfully in a separate GitHub Workflow job.
+
+**Hosting pre-requisites:**
+- A SonarQube instance must be hosted and accessible.
+- An Eclipse Steady instance must be hosted and accessible.
+
+**Account pre-requisites:**
+- A Honeycomb account must be created to export GitHub Workflow metrics.
+- An NVD API key must be obtained to access the NVD API.
+- An OpenCVE account must be created to authenticate with OpenCVE.
+- A Semgrep account must be created to authenticate with Semgrep.
+- A Snyk account must be created to authenticate with Snyk.
+
+**GitHub repository pre-requisites:**
+- Dependabot alerts must be enabled in the GitHub repository settings.
 
 ## Triggering the GitHub Workflows
 
@@ -84,6 +100,7 @@ The following GitHub Action repository secrets must be set in a GitHub repositor
 | Secret Name               | Description                                         |
 |---------------------------|-----------------------------------------------------|
 | `ECLIPSE_STEADY_HOST_URL` | URL of the Eclipse Steady instance                  |
+| `DEEPSOURCE_API_KEY`      | API key to authenticate with DeepSource             |
 | `HONEYCOMB_API_KEY`       | Honeycomb API key to export GitHub Workflow metrics |
 | `NVD_API_KEY`             | API key to access the NVD API                       |
 | `OPENCVE_USERNAME`        | Username to authenticate with OpenCVE               |
