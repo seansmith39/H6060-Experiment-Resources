@@ -97,7 +97,7 @@ jobs:
         with:
           programming-language: javascript
           sonarqube-token: ${{ secrets.TEST_SONARQUBE_TOKEN }}
-          sonarqube-url: ${{ secrets.TEST_SONARQUBE_URL }}
+          sonarqube-url: https://sonarqube.b00158319.com
           sonarqube-username: ${{ secrets.TEST_SONARQUBE_USERNAME }}
           sonarqube-password: ${{ secrets.TEST_SONARQUBE_PASSWORD }}
           sonarqube-project-key: test-javascript

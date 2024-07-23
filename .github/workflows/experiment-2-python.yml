@@ -285,7 +285,7 @@ jobs:
         uses: ./experiment-resources-repo/.github/actions/sca/eclipse-steady/python
         with:
           eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
-          eclipse-steady-host-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}
+          eclipse-steady-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}
           eclipse-steady-application-group-id: ${{ inputs.eclipse-steady-application-group-id }}
           eclipse-steady-application-artifact-id: ${{ inputs.eclipse-steady-application-artifact-id }}
           eclipse-steady-application-version: ${{ inputs.eclipse-steady-application-version }}

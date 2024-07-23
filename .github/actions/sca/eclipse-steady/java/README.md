@@ -14,7 +14,7 @@ An action to configure and run an Eclipse Steady SCA plugin scan for Java applic
 |-----------------------------------------------|----------|--------|---------------------------|---------------------------------------------------------|
 | **build-directory**                           | true     | string |                           | Build results directory                                 |
 | **eclipse-steady-workspace-token**            | true     | string |                           | Token used to identify project workspace                |
-| **eclipse-steady-host-url**                   | true     | string |                           | Hostname of Eclipse Steady                              |
+| **eclipse-steady-url**                   | true     | string |                           | Hostname of Eclipse Steady                              |
 | **eclipse-steady-application-group-id**       | true     | string |                           | Group ID of the application                             |
 | **eclipse-steady-application-artifact-id**    | true     | string |                           | Artifact ID of the application                          |
 | **eclipse-steady-application-version**        | true     | string |                           | Version of the application                              |
