@@ -3,8 +3,64 @@ description: Create a CSV report for all true positive vulnerabilities for a pro
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  programming-language:
-    description: Programming language of the project
+  github-api-url:
+    description: URL of the GitHub API
+    type: string
+    required: false
+    default: ${{ github.api_url }}
+
+  github-api-token:
+    description: Token to access the GitHub API
+    type: string
+    required: true
+
+  github-secret-access-token:
+    description: GitHub workflow secret access token
+    type: string
+    required: true
+
+  experiment-id:
+    description: Experiment ID to record in the report
+    type: string
+    required: true
+
+  experiment-github-project-name:
+    description: Name of the experiment GitHub project
+    type: string
+    required: true
+
+  experiment-github-repository:
+    description: Name of the experiment GitHub repository
+    type: string
+    required: false
+    default: ${{ github.repository }}
+
+  experiment-github-branch:
+    description: Name of the experiment GitHub branch
+    type: string
+    required: false
+    default: ${{ github.ref_name }}
+
+  experiment-github-commit:
+    description: SHA of the experiment GitHub commit
+    type: string
+    required: false
+    default: ${{ github.sha }}
+
+  experiment-github-workflow-name:
+    description: Name of the experiment GitHub workflow
+    type: string
+    required: false
+    default: ${{ github.workflow }}
+
+  experiment-github-workflow-run-id:
+    description: ID of the experiment GitHub workflow run
+    type: string
+    required: false
+    default: ${{ github.run_id }}
+
+  experiment-programming-language:
+    description: Programming language of the experiment
     type: string
     required: true
 
@@ -15,11 +71,6 @@ inputs:
 
   cyclonedx-sbom-filename:
     description: Name of CycloneDX SBOM filename
-    type: string
-    required: true
-
-  github-token:
-    description: Token to access the GitHub API
     type: string
     required: true
 
@@ -49,7 +100,7 @@ runs:
         with:
           name: ${{ inputs.cyclonedx-sbom-artifact-name }}
           path: ${{ github.action_path }}
-          github_token: ${{ inputs.github-token }}
+          github_token: ${{ inputs.github-secret-access-token }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: in_progress
           commit: ${{ github.event.workflow_run.head_commit.id }}
@@ -73,11 +124,20 @@ runs:
       - name: Create CycloneDX SBOM OSV Report
         shell: bash
         working-directory: ${{ github.action_path }}
-        run: |
-          python src/main/python3/cyclonedx_sbom_osv_report.py \
-            --programming-language "${{ inputs.programming-language }}" \
-            --cyclonedx-sbom-filename "${{ inputs.cyclonedx-sbom-filename }}" \
-            --csv-report-filename "${{ inputs.csv-report-filename }}"
+        run: >
+          python src/main/python3/cyclonedx_sbom_osv_report.py
+          --github-api-url ${{ inputs.github-api-url }}
+          --github-api-token ${{ inputs.github-api-token }}
+          --experiment-id ${{ inputs.experiment-id }}
+          --experiment-github-project-name "${{ inputs.experiment-github-project-name }}"
+          --experiment-github-repository ${{ inputs.experiment-github-repository }}
+          --experiment-github-branch ${{ inputs.experiment-github-branch }}
+          --experiment-github-commit ${{ inputs.experiment-github-commit }}
+          --experiment-github-workflow-name "${{ inputs.experiment-github-workflow-name }}"
+          --experiment-github-workflow-run-id ${{ inputs.experiment-github-workflow-run-id }}
+          --experiment-programming-language ${{ inputs.experiment-programming-language }}
+          --cyclonedx-sbom-filename ${{ inputs.cyclonedx-sbom-filename }}
+          --csv-report-filename ${{ inputs.csv-report-filename }}
 
       # See https://github.com/actions/runner/issues/2185
       - name: Set GitHub Action Path
