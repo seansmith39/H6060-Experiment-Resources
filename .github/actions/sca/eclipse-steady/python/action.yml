@@ -8,7 +8,7 @@ inputs:
     type: string
     required: true
 
-  eclipse-steady-host-url:
+  eclipse-steady-url:
     description: Hostname of Eclipse Steady instance
     type: string
     required: true
@@ -90,7 +90,7 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         mv steady-cli/steady-custom.properties.sample steady-cli/steady-custom.properties
-        sed -i 's,http://localhost:8033/backend,${{ inputs.eclipse-steady-host-url }}/backend,g' steady-cli/steady-custom.properties
+        sed -i 's,http://localhost:8033/backend,${{ inputs.eclipse-steady-url }}/backend,g' steady-cli/steady-custom.properties
         sed -i 's,<GROUP>,${{ inputs.eclipse-steady-application-group-id }},g' steady-cli/steady-custom.properties
         sed -i 's,<ARTIFACT>,${{ inputs.eclipse-steady-application-artifact-id }},g' steady-cli/steady-custom.properties
         sed -i 's,<VERSION>,${{ inputs.eclipse-steady-application-version }},g' steady-cli/steady-custom.properties

@@ -40,7 +40,7 @@ jobs:
         with:
           build-directory: target
           eclipse-steady-workspace-token: 19DACF250B828F3BAB827AFA5789DB55
-          eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
+          eclipse-steady-url: http://steady.b00158319.com:8033
           eclipse-steady-application-group-id: com.fasterxml.jackson
           eclipse-steady-application-artifact-id: jackson-databind
           eclipse-steady-application-version: 2.9.10.7
@@ -86,7 +86,7 @@ jobs:
         uses: ./experiment-resources/.github/actions/sca/eclipse-steady/python
         with:
           eclipse-steady-workspace-token: 1A8CC68377BFEEA81CDF80CFA757872E
-          eclipse-steady-host-url: ${{ secrets.TEST_ECLIPSE_STEADY_HOST_URL }}
+          eclipse-steady-url: http://steady.b00158319.com:8033
           eclipse-steady-application-group-id: org.python
           eclipse-steady-application-artifact-id: pillow
           eclipse-steady-application-version: 8.3.0

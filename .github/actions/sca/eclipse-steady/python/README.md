@@ -18,7 +18,7 @@ An action to configure and run an Eclipse Steady SCA CLI scan for Python applica
 | name                                          | required | type   | default                   | description                                             |
 |-----------------------------------------------|----------|--------|---------------------------|---------------------------------------------------------|
 | **eclipse-steady-workspace-token**            | true     | string |                           | Token used to identify project workspace                |
-| **eclipse-steady-host-url**                   | true     | string |                           | Hostname of Eclipse Steady                              |
+| **eclipse-steady-url**                   | true     | string |                           | Hostname of Eclipse Steady                              |
 | **eclipse-steady-application-group-id**       | true     | string |                           | Group ID of the application                             |
 | **eclipse-steady-application-artifact-id**    | true     | string |                           | Artifact ID of the application                          |
 | **eclipse-steady-application-version**        | true     | string |                           | Version of the application                              |
@@ -39,7 +39,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady/python@main
   with:
     eclipse-steady-workspace-token: 1111-2222-3333-4444
-    eclipse-steady-host-url: https://my-eclipse-steady-instance.com
+    eclipse-steady-url: https://my-eclipse-steady-instance.com
     eclipse-steady-application-group-id: com.example
     eclipse-steady-application-artifact-id: my-project
     eclipse-steady-application-version: 1.0.0
