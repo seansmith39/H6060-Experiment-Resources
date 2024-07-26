@@ -124,18 +124,25 @@ jobs:
     needs: [ build-java-application, build-python-application, build-javascript-application ]
     strategy:
       matrix:
-        programming-language: [ java, python, javascript ]
+        category: [
+          { experiment-id: 1, programming-language: java, github-repository-name: H6060-Java-Logback },
+          { experiment-id: 2, programming-language: javascript, github-repository-name: H6060-JavaScript-Lodash },
+          { experiment-id: 3, programming-language: python, github-repository-name: H6060-Python-Django }
+        ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create CycloneDX OSV Report (${{ matrix.programming-language }})
+      - name: Create CycloneDX OSV Report (${{ matrix.category.programming-language }})
         uses: ./.github/actions/reporting/cyclonedx-sbom-osv-report
         with:
-          programming-language: ${{ matrix.programming-language }}
-          cyclonedx-sbom-artifact-name: cyclonedx-sbom-${{ matrix.programming-language }}
+          github-api-token: ${{ secrets.TEST_GITHUB_API_TOKEN }}
+          github-secret-access-token: ${{ secrets.GITHUB_TOKEN }}
+          experiment-id: ${{ matrix.category.experiment-id }}
+          experiment-github-project-name: ${{ matrix.category.github-repository-name }}
+          experiment-github-repository: seansmith39/${{ matrix.category.github-repository-name }}
+          experiment-programming-language: ${{ matrix.category.programming-language }}
+          cyclonedx-sbom-artifact-name: cyclonedx-sbom-${{ matrix.category.programming-language }}
           cyclonedx-sbom-filename: sbom.json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          csv-report-filename: cyclonedx_sbom_osv_report_${{ matrix.programming-language }}.csv
-          artifact-name: cyclonedx-sbom-osv-report-${{ matrix.programming-language }}
+          artifact-name: cyclonedx-sbom-osv-report-${{ matrix.category.programming-language }}
           include-unit-tests: true

@@ -4,6 +4,7 @@ import os
 import csv
 import sys
 import json
+import time
 import logging
 import requests
 import argparse
@@ -13,7 +14,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 
-default_not_found_value = "N/A"
+default_not_found_value = "Not found"
 
 
 class LogFilter:  # pragma: no cover
@@ -35,10 +36,64 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(description="Generate OSI Report of SCA True Positives.")
     parser.add_argument(
-        "--programming-language",
+        "--github-api-url",
         action="store",
         required=True,
-        help="Programming language of CycloneDX SBOM JSON report",
+        help="GitHub API URL",
+    )
+    parser.add_argument(
+        "--github-api-token",
+        action="store",
+        required=True,
+        help="GitHub API token",
+    )
+    parser.add_argument(
+        "--experiment-id",
+        action="store",
+        required=True,
+        help="Experiment ID",
+    )
+    parser.add_argument(
+        "--experiment-github-project-name",
+        action="store",
+        required=True,
+        help="Experiment GitHub project name",
+    )
+    parser.add_argument(
+        "--experiment-github-repository",
+        action="store",
+        required=True,
+        help="Experiment GitHub repository",
+    )
+    parser.add_argument(
+        "--experiment-github-branch",
+        action="store",
+        required=True,
+        help="Experiment GitHub branch",
+    )
+    parser.add_argument(
+        "--experiment-github-commit",
+        action="store",
+        required=True,
+        help="Experiment GitHub commit",
+    )
+    parser.add_argument(
+        "--experiment-github-workflow-name",
+        action="store",
+        required=True,
+        help="Experiment GitHub workflow name",
+    )
+    parser.add_argument(
+        "--experiment-github-workflow-run-id",
+        action="store",
+        required=True,
+        help="Experiment GitHub workflow run ID",
+    )
+    parser.add_argument(
+        "--experiment-programming-language",
+        action="store",
+        required=True,
+        help="Experiment programming language",
     )
     parser.add_argument(
         "--cyclonedx-sbom-filename",
@@ -52,16 +107,19 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         required=True,
         help="Name of resulting CSV report",
     )
-
     return parser.parse_args(args)
 
 
-def send_post_request(url: str, query_data: str) -> requests:  # pragma: no cover
-    """Send POST request to URL
+# =====================
+# API Request functions
+# =====================
+def send_osv_post_request(url: str, query_data: str, sleep: int = 5) -> requests:  # pragma: no cover
+    """Send POST request to OSV API URL
 
     :parameter
         url:str -- URL to make POST request
         query_data:List[Dict] -- Data to send in POST request
+        sleep:int -- Time to sleep before making request
 
     :return
         requests.models.Response -- Response from POST request
@@ -77,9 +135,163 @@ def send_post_request(url: str, query_data: str) -> requests:  # pragma: no cove
 
     if request.ok:
         log.info(f"POST request successful: {url}")
+        # Avoid rate limiting
+        if sleep:
+            log.info(f"Sleeping for {sleep} seconds before making next request")
+            time.sleep(sleep)
         return request
     log.error(f"POST request failed: \n{request.text.encode('utf8')}")
     return None
+
+
+def send_github_get_request(url: str, github_api_token=None, sleep: int = 5) -> requests:  # pragma: no cover
+    """Send GET request to GitHub API URL
+
+    :parameter
+        url:str -- URL to make GET request
+        github_api_token:str -- GitHub API token
+        sleep:int -- Time to sleep before making request
+
+    :return
+        requests.models.Response -- Response from GET request
+    """
+    log.info(f"Initiating GET request: {url}")
+    session = requests.Session()
+    retries = Retry(
+        total=3,
+        backoff_factor=3,
+        status_forcelist=[404, 408, 500, 502, 503, 504],
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Authorization": f"Bearer {github_api_token}",
+    }
+    request = session.get(url, headers=headers)
+    if request.ok:
+        log.info(f"GET request successful: {url}")
+        # Avoid rate limiting
+        if sleep:
+            log.info(f"Sleeping for {sleep} seconds before making next request")
+            time.sleep(sleep)
+        return request
+    log.error(f"GET request failed: \n{request.text.encode('utf8')}")
+    return None
+
+
+# ========================
+# Data retrieval functions
+# ========================
+def get_github_repository_data(args: argparse.Namespace) -> dict:
+    """Get GitHub repository data from GitHub API
+
+    :param
+        args:argparse.Namespace -- Parsed arguments supplied to script
+
+    :return
+        dict -- GitHub repository data from GitHub API
+    """
+    log.info(f"Retrieving GitHub repository data for {args.experiment_github_repository}")
+    github_api_url = get_github_api_url(args.github_api_url, args.experiment_github_repository)
+    github_data = send_github_get_request(github_api_url, args.github_api_token)
+    if github_data:
+        log.info(f"Successfully retrieved GitHub repository data for {args.experiment_github_repository}")
+        return github_data.json()
+    else:
+        log.error(f"Failed to retrieve GitHub repository data for {args.experiment_github_repository}")
+        sys.exit(1)
+
+
+def query_osv_api(sbom_data: list, component_purl: str, component_version: str) -> list:
+    """Query OSV API for component vulnerabilities
+
+    :parameter
+        sbom_data:str -- SBOM data
+        component_purl:str -- PURL of component
+        component_version:str -- Version of component
+
+    :return
+        list -- Vulnerabilities of component
+    """
+    csv_rows = []
+    query_data = {"package": {"purl": component_purl}}
+
+    log.info(f"Querying OSV API for {component_purl}")
+    response = send_osv_post_request(get_osv_api_url(), query_data)
+    osv_data = response.json()
+
+    # Check if record exists for component in OSV database
+    if len(osv_data) == 0 or osv_data == {}:
+        log.info(f"No record for {component_purl} in OSV database")
+    else:
+        total_vulnerabilities = len(osv_data["vulns"])
+        log.info(f"Found {total_vulnerabilities} vulnerabilities for {component_purl}")
+
+        # Iterate through all vulnerabilities
+        for vulnerability in osv_data["vulns"]:
+            vulnerability_cve = get_vulnerability_cve(vulnerability)
+
+            # Only consider vulnerabilities with CVE and affected version
+            if "CVE" in vulnerability_cve:
+                log.info(f"Gathering vulnerability details: {vulnerability['id']}")
+                vulnerability_id = get_json_value(vulnerability, "id")
+                vulnerability_summary = get_json_value(vulnerability, "summary")
+                vulnerability_severity = get_json_value(vulnerability, "database_specific", "severity")
+                vulnerability_cwe_ids = get_vulnerability_cwe(vulnerability)
+
+                vulnerability_nvd_published_at = get_json_value(vulnerability, "database_specific", "nvd_published_at")
+                vulnerability_advisory_url = get_vulnerability_advisory_url(vulnerability)
+                vulnerability_introduced, vulnerability_fixed = get_vulnerability_affected_version(
+                    vulnerability, component_version
+                )
+                vulnerability_cvss_v2 = get_vulnerability_cvss_score(vulnerability, "CVSS_V2")
+                vulnerability_cvss_v3 = get_vulnerability_cvss_score(vulnerability, "CVSS_V3")
+                vulnerability_cvss_v4 = get_vulnerability_cvss_score(vulnerability, "CVSS_V4")
+
+                osv_results_data = get_sbom_results_column_headers(
+                    vulnerability_id,
+                    vulnerability_summary,
+                    vulnerability_cve,
+                    vulnerability_severity,
+                    vulnerability_cwe_ids,
+                    vulnerability_nvd_published_at,
+                    vulnerability_advisory_url,
+                    vulnerability_introduced,
+                    vulnerability_fixed,
+                    vulnerability_cvss_v2,
+                    vulnerability_cvss_v3,
+                    vulnerability_cvss_v4,
+                )
+                log.info(f"Vulnerability details gathered: {vulnerability_id}")
+                row = sbom_data + osv_results_data
+
+                # Add combined data to each CSV row
+                csv_rows.append(row)
+
+    if len(csv_rows) == 0:
+        # Return N/A for 12 OSV columns if no vulnerabilities found
+        sbom_data.extend(repeat(default_not_found_value, 12))
+        csv_rows.append(sbom_data)
+
+    log.info(f"{str(len(csv_rows))} CSV rows generated")
+    return csv_rows
+
+
+# ================
+# Helper functions
+# ================
+def get_github_api_url(github_api_url: str, github_repository: str) -> str:
+    """Get GitHub API URL for repository scan information
+
+    :parameter
+        github_api_url:str -- GitHub API URL
+        github_repository:str -- GitHub repository name
+
+    :return
+        str -- GitHub API URL for repository
+    """
+    return f"{github_api_url}/repos/{github_repository}"
 
 
 def get_osv_api_url() -> str:
@@ -150,85 +362,6 @@ def get_vulnerability_cwe(osv_data: dict) -> str:
     if cwe_ids is not default_not_found_value:
         cwe_ids = ",".join(cwe_ids)
     return cwe_ids
-
-
-def query_osv_api(sbom_data: list, component_purl: str, component_version: str) -> list:
-    """Query OSV API for component vulnerabilities
-
-    :parameter
-        sbom_data:str -- SBOM data
-        component_purl:str -- PURL of component
-        component_version:str -- Version of component
-
-    :return
-        list -- Vulnerabilities of component
-    """
-    csv_rows = []
-    query_data = {"package": {"purl": component_purl}}
-
-    log.info(f"Querying OSV API for {component_purl}")
-    response = send_post_request(get_osv_api_url(), query_data)
-
-    if response:
-        osv_data = response.json()
-
-        # Check if record exists for component in OSV database
-        if len(osv_data) == 0 or osv_data == {}:
-            log.info(f"No record for {component_purl} in OSV database")
-        else:
-            total_vulnerabilities = len(osv_data["vulns"])
-            log.info(f"Found {total_vulnerabilities} vulnerabilities for {component_purl}")
-
-            # Iterate through all vulnerabilities
-            for vulnerability in osv_data["vulns"]:
-                vulnerability_cve = get_vulnerability_cve(vulnerability)
-
-                # Only consider vulnerabilities with CVE and affected version
-                if "CVE" in vulnerability_cve:
-                    log.info(f"Gathering vulnerability details: {vulnerability['id']}")
-                    vulnerability_id = get_json_value(vulnerability, "id")
-                    vulnerability_summary = get_json_value(vulnerability, "summary")
-                    vulnerability_severity = get_json_value(vulnerability, "database_specific", "severity")
-                    vulnerability_cwe_ids = get_vulnerability_cwe(vulnerability)
-
-                    vulnerability_nvd_published_at = get_json_value(
-                        vulnerability, "database_specific", "nvd_published_at"
-                    )
-                    vulnerability_advisory_url = get_vulnerability_advisory_url(vulnerability)
-                    vulnerability_introduced, vulnerability_fixed = get_vulnerability_affected_version(
-                        vulnerability, component_version
-                    )
-                    vulnerability_cvss_v2 = get_vulnerability_cvss_score(vulnerability, "CVSS_V2")
-                    vulnerability_cvss_v3 = get_vulnerability_cvss_score(vulnerability, "CVSS_V3")
-                    vulnerability_cvss_v4 = get_vulnerability_cvss_score(vulnerability, "CVSS_V4")
-
-                    osv_results_data = get_sbom_results_column_headers(
-                        vulnerability_id,
-                        vulnerability_summary,
-                        vulnerability_cve,
-                        vulnerability_severity,
-                        vulnerability_cwe_ids,
-                        vulnerability_nvd_published_at,
-                        vulnerability_advisory_url,
-                        vulnerability_introduced,
-                        vulnerability_fixed,
-                        vulnerability_cvss_v2,
-                        vulnerability_cvss_v3,
-                        vulnerability_cvss_v4,
-                    )
-                    log.info(f"Vulnerability details gathered: {vulnerability_id}")
-                    row = sbom_data + osv_results_data
-
-                    # Add combined data to each CSV row
-                    csv_rows.append(row)
-
-    if len(csv_rows) == 0:
-        # Return N/A for 12 OSV columns if no vulnerabilities found
-        sbom_data.extend(repeat(default_not_found_value, 12))
-        csv_rows.append(sbom_data)
-
-    log.info(f"{str(len(csv_rows))} CSV rows generated")
-    return csv_rows
 
 
 def get_vulnerability_cve(osv_data: dict) -> str:
@@ -328,11 +461,57 @@ def get_excluded_component_groups() -> list:
     return ["io.opentelemetry"]
 
 
-def parse_cyclonedx_sbom_report(cyclonedx_sbom_filename: str, csv_filename: str) -> dict:
+def convert_list_to_csv_row(data: list) -> str:
+    """Convert list to CSV row
+
+    :parameter
+        data:list -- Data to convert to CSV row
+
+    :return
+        str -- CSV row
+    """
+    return ",".join(map(str, data))
+
+
+def get_directory_path() -> str:
+    """Get directory path of script
+
+    :return
+        str -- Directory path of script
+    """
+    return os.path.dirname(os.path.realpath(__file__))
+
+
+def get_experiment_information(args: argparse.Namespace, upstream_github_repository, github_repository) -> list:
+    """Get experiment information
+
+    :parameter
+        args:argparse.Namespace -- Experiment information
+
+    :return
+        list -- Experiment information
+    """
+    return [
+        str(args.experiment_id),
+        args.experiment_github_project_name.title(),
+        upstream_github_repository,
+        github_repository,
+        args.experiment_github_branch,
+        str(args.experiment_github_commit),
+        args.experiment_github_workflow_name,
+        str(args.experiment_github_workflow_run_id),
+    ]
+
+
+# ======================
+# Data parsing functions
+# ======================
+def parse_cyclonedx_sbom_report(experiment_information: list, cyclonedx_sbom_filename: str, csv_filename: str) -> dict:
     """Parse CycloneDX SBOM JSON report
 
     :parameter
         cyclonedx_sbom_filename:str -- Name of CycloneDX SBOM JSON report to parse
+        experiment_information:list -- Experiment information
 
     :return
         dict -- Parsed CycloneDX SBOM JSON report
@@ -419,7 +598,7 @@ def parse_cyclonedx_sbom_report(cyclonedx_sbom_filename: str, csv_filename: str)
                 component_website = get_component_external_reference(component, "website")
 
                 # Set CycloneDX SBOM data for CSV report
-                cyclonedx_sbom_data = [
+                cyclonedx_sbom_data = experiment_information + [
                     bom_format,
                     spec_version,
                     component_scope,
@@ -488,6 +667,23 @@ def parse_cyclonedx_sbom_report(cyclonedx_sbom_filename: str, csv_filename: str)
     return None
 
 
+def write_csv_report_header(csv_output_filename: str) -> None:
+    """Write CSV report header
+
+    :parameter
+        csv_output_filename:str -- Name of CSV report to write
+    """
+    log.info(f"Writing CSV report header to {get_directory_path()}/{csv_output_filename}")
+
+    with open(f"{get_directory_path()}/{csv_output_filename}", "w") as file:
+        file.write(get_csv_column_headers())
+
+    log.info(f"Successfully wrote CSV report header to {get_directory_path()}/{csv_output_filename}")
+
+
+# ====================
+# CSV header functions
+# ====================
 def get_sbom_results_column_headers(
     vulnerability_id: str,
     vulnerability_summary: str,
@@ -537,37 +733,21 @@ def get_sbom_results_column_headers(
     ]
 
 
-def convert_list_to_csv_row(data: list) -> str:
-    """Convert list to CSV row
-
-    :parameter
-        data:list -- Data to convert to CSV row
-
-    :return
-        str -- CSV row
-    """
-    return ",".join(map(str, data))
-
-
 def get_csv_column_headers() -> str:
     """Get column headers for CSV report
 
     :return
         list -- Column headers for CSV report
     """
-    default_osv_headers = [
-        "OSV Vulnerability ID",
-        "OSV Vulnerability Summary",
-        "OSV Vulnerability CVE",
-        "OSV Vulnerability Severity",
-        "OSV Vulnerability CWE IDs",
-        "OSV Vulnerability NVD Published Date",
-        "OSV Vulnerability Advisory URL",
-        "OSV Vulnerability Introduced",
-        "OSV Vulnerability Fixed",
-        "OSV Vulnerability CVSS V2",
-        "OSV Vulnerability CVSS V3",
-        "OSV Vulnerability CVSS V4",
+    github_headers = [
+        "Experiment ID",
+        "Experiment Project Name",
+        "Experiment Upstream GitHub Repository",
+        "Experiment GitHub Repository",
+        "Experiment GitHub Branch",
+        "Experiment GitHub Commit",
+        "Experiment GitHub Workflow Name",
+        "Experiment GitHub Workflow Run",
     ]
 
     cyclonedx_sbom_headers = [
@@ -627,32 +807,26 @@ def get_csv_column_headers() -> str:
         "Component Vulnerability Assertion",
         "Component Website",
     ]
-    return f"{convert_list_to_csv_row(cyclonedx_sbom_headers)},{convert_list_to_csv_row(default_osv_headers)}\n"
+    default_osv_headers = [
+        "OSV Vulnerability ID",
+        "OSV Vulnerability Summary",
+        "OSV Vulnerability CVE",
+        "OSV Vulnerability Severity",
+        "OSV Vulnerability CWE IDs",
+        "OSV Vulnerability NVD Published Date",
+        "OSV Vulnerability Advisory URL",
+        "OSV Vulnerability Introduced",
+        "OSV Vulnerability Fixed",
+        "OSV Vulnerability CVSS V2",
+        "OSV Vulnerability CVSS V3",
+        "OSV Vulnerability CVSS V4",
+    ]
+    return f"{convert_list_to_csv_row(github_headers)},{convert_list_to_csv_row(cyclonedx_sbom_headers)},{convert_list_to_csv_row(default_osv_headers)}\n"
 
 
-def get_directory_path() -> str:
-    """Get directory path of script
-
-    :return
-        str -- Directory path of script
-    """
-    return os.path.dirname(os.path.realpath(__file__))
-
-
-def write_csv_report_header(csv_output_filename: str) -> None:
-    """Write CSV report header
-
-    :parameter
-        csv_output_filename:str -- Name of CSV report to write
-    """
-    log.info(f"Writing CSV report header to {get_directory_path()}/{csv_output_filename}")
-
-    with open(f"{get_directory_path()}/{csv_output_filename}", "w") as file:
-        file.write(get_csv_column_headers())
-
-    log.info(f"Successfully wrote CSV report header to {get_directory_path()}/{csv_output_filename}")
-
-
+# ====================
+# CSV writer functions
+# ====================
 def write_to_csv_report(csv_data: list, csv_output_filename: str) -> None:
     """Write SBOM and OSV data to CSV report
 
@@ -678,16 +852,14 @@ def main(args: argparse.Namespace) -> None:
     :parameter
         args:argparse.Namespace -- Parsed arguments supplied to script
     """
-    if (
-        args.programming_language.upper() == "JAVA"
-        or args.programming_language.upper() == "PYTHON"
-        or args.programming_language.upper() == "JAVASCRIPT"
-    ):
-        write_csv_report_header(args.csv_report_filename)
-        parse_cyclonedx_sbom_report(args.cyclonedx_sbom_filename, args.csv_report_filename)
-    else:
-        log.error(f"Unsupported programming language: {args.programming_language}")
-        sys.exit(1)
+    # Prerequisite - Get GitHub repository URL
+    github_repository_data = get_github_repository_data(args)
+    upstream_github_repository_url = get_json_value(github_repository_data, "parent", "svn_url")
+    github_repository_url = get_json_value(github_repository_data, "svn_url")
+    experiment_information = get_experiment_information(args, upstream_github_repository_url, github_repository_url)
+
+    write_csv_report_header(args.csv_report_filename)
+    parse_cyclonedx_sbom_report(experiment_information, args.cyclonedx_sbom_filename, args.csv_report_filename)
 
 
 if __name__ == "__main__":
