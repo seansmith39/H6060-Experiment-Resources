@@ -18,7 +18,8 @@ The script supports the parsing of CycloneDX SBOM v1.5 and v1.6 schemas.
 
 | name                                  | required | type    | default                       | description                                         |
 |---------------------------------------|----------|---------|-------------------------------|-----------------------------------------------------|
-| **github-api-url**                    | false    | string  | ${{ github.api_url }}         | GitHub server URL                                   |
+| **github-server-url**                 | false    | string  | ${{ github.server_url }}      | GitHub server URL                                   |
+| **github-api-url**                    | false    | string  | ${{ github.api_url }}         | GitHub API URL                                      |
 | **github-api-token**                  | true     | string  |                               | Token to access the GitHub API                      |
 | **github-secret-access-token**        | true     | string  |                               | GitHub Workflow secret access token                 |
 | **experiment-id**                     | true     | string  |                               | Experiment ID                                       |
@@ -68,6 +69,7 @@ The generated report contains the following columns.
 | Name                                      | Description                                                                                                                          | CycloneDX Schema v1.5 | CycloneDX Schema v1.6 |
 |-------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|-----------------------|-----------------------|
 | **Experiment ID**                         | Experiment Number                                                                                                                    |
+| **Experiment Date**                       | Date of experiment execution                                                                                                         |
 | **Experiment Project Name**               | Name of project being evaluated                                                                                                      |
 | **Experiment Upstream GitHub Repository** | URL of upstream GitHub repository                                                                                                    |
 | **Experiment GitHub Repository**          | URL of forked GitHub repository                                                                                                      |

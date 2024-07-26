@@ -1,0 +1,23 @@
+{
+  "node_id": "MDM6VGFnMzk1NTY0NzplZTM5OTFkZTJjZTRkMDUwYzdmMWE1YjQwMmJhMzA4ZGI2OTgzYTYy",
+  "sha": "ee3991de2ce4d050c7f1a5b402ba308db6983a62",
+  "url": "https://api.github.com/repos/lodash/lodash/git/tags/ee3991de2ce4d050c7f1a5b402ba308db6983a62",
+  "tagger": {
+    "name": "John-David Dalton",
+    "email": "john.david.dalton@gmail.com",
+    "date": "2019-07-17T17:06:43Z"
+  },
+  "object": {
+    "sha": "ddfd9b11a0126db2302cb70ec9973b66baec0975",
+    "type": "commit",
+    "url": "https://api.github.com/repos/lodash/lodash/git/commits/ddfd9b11a0126db2302cb70ec9973b66baec0975"
+  },
+  "tag": "4.17.15",
+  "message": "4.17.15\n",
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null
+  }
+}

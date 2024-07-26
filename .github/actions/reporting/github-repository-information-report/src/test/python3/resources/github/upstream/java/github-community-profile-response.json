@@ -1,0 +1,29 @@
+{
+  "health_percentage": 62,
+  "description": "The reliable, generic, fast and flexible logging framework for Java.",
+  "documentation": "http://logback.qos.ch",
+  "files": {
+    "code_of_conduct": null,
+    "code_of_conduct_file": null,
+    "contributing": {
+      "url": "https://api.github.com/repos/qos-ch/logback/contents/CONTRIBUTING.md",
+      "html_url": "https://github.com/qos-ch/logback/blob/master/CONTRIBUTING.md"
+    },
+    "issue_template": null,
+    "pull_request_template": null,
+    "license": {
+      "key": "other",
+      "name": "Other",
+      "spdx_id": "NOASSERTION",
+      "url": null,
+      "node_id": "MDc6TGljZW5zZTA=",
+      "html_url": "https://github.com/qos-ch/logback/blob/master/LICENSE.txt"
+    },
+    "readme": {
+      "url": "https://api.github.com/repos/qos-ch/logback/contents/README.md",
+      "html_url": "https://github.com/qos-ch/logback/blob/master/README.md"
+    }
+  },
+  "updated_at": "2019-03-01T14:49:31Z",
+  "content_reports_enabled": false
+}

@@ -1,0 +1,23 @@
+{
+  "node_id": "MDM6VGFnNTE3MTYwMDo4ZDZlODFmNTk4M2UzYWFjZGU2MDdiMGQ2Nzg5MzE3MjQwNTY0ZTgw",
+  "sha": "8d6e81f5983e3aacde607b0d6789317240564e80",
+  "url": "https://api.github.com/repos/python-pillow/Pillow/git/tags/8d6e81f5983e3aacde607b0d6789317240564e80",
+  "tagger": {
+    "name": "Alex Clark",
+    "email": "aclark@aclark.net",
+    "date": "2010-07-31T03:26:26Z"
+  },
+  "object": {
+    "sha": "b1030062ea8106abb34c97b83ab16149d33fb98f",
+    "type": "commit",
+    "url": "https://api.github.com/repos/python-pillow/Pillow/git/commits/b1030062ea8106abb34c97b83ab16149d33fb98f"
+  },
+  "tag": "1.0",
+  "message": "Tagged Pillow 1.0.\n",
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null
+  }
+}
