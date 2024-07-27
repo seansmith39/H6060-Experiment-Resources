@@ -10,6 +10,7 @@ import requests
 import argparse
 import itertools
 from itertools import repeat
+from datetime import datetime
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
@@ -35,6 +36,12 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         argparse.Namespace -- Parsed arguments
     """
     parser = argparse.ArgumentParser(description="Generate OSI Report of SCA True Positives.")
+    parser.add_argument(
+        "--github-server-url",
+        action="store",
+        required=True,
+        help="GitHub server URL",
+    )
     parser.add_argument(
         "--github-api-url",
         action="store",
@@ -319,6 +326,18 @@ def get_component_external_reference(component: dict, reference_type: str) -> st
     return default_not_found_value
 
 
+def get_github_actions_workflow_run_url(args: argparse.Namespace) -> str:
+    """Get GitHub Actions workflow run URL
+
+    :parameter
+        args:argparse.Namespace -- Parsed arguments supplied to script
+
+    :return
+        str -- GitHub Actions workflow run URL
+    """
+    return f"{args.github_server_url}/{args.experiment_github_repository}/actions/runs/{args.experiment_github_workflow_run_id}"
+
+
 def get_json_value(
     json_data: dict, data_key_1: str, data_key_2: str = None, default_value: str = default_not_found_value
 ) -> str:
@@ -482,24 +501,36 @@ def get_directory_path() -> str:
     return os.path.dirname(os.path.realpath(__file__))
 
 
-def get_experiment_information(args: argparse.Namespace, upstream_github_repository, github_repository) -> list:
+def get_current_date() -> str:
+    """Get current date in YYYY-MM-DD format
+
+    :return
+        str -- Current date
+    """
+    return datetime.today().strftime("%Y-%m-%d")
+
+
+def get_experiment_information(args: argparse.Namespace, upstream_github_repository: str, github_repository: str) -> list:
     """Get experiment information
 
     :parameter
         args:argparse.Namespace -- Experiment information
+        upstream_github_repository:str -- Upstream GitHub repository
+        github_repository:str -- GitHub repository
 
     :return
         list -- Experiment information
     """
     return [
         str(args.experiment_id),
+        get_current_date(),
         args.experiment_github_project_name.title(),
         upstream_github_repository,
         github_repository,
         args.experiment_github_branch,
         str(args.experiment_github_commit),
         args.experiment_github_workflow_name,
-        str(args.experiment_github_workflow_run_id),
+        get_github_actions_workflow_run_url(args),
     ]
 
 
@@ -741,13 +772,14 @@ def get_csv_column_headers() -> str:
     """
     github_headers = [
         "Experiment ID",
+        "Experiment Date",
         "Experiment Project Name",
         "Experiment Upstream GitHub Repository",
         "Experiment GitHub Repository",
         "Experiment GitHub Branch",
         "Experiment GitHub Commit",
         "Experiment GitHub Workflow Name",
-        "Experiment GitHub Workflow Run",
+        "Experiment GitHub Workflow Run URL",
     ]
 
     cyclonedx_sbom_headers = [
@@ -846,6 +878,9 @@ def write_to_csv_report(csv_data: list, csv_output_filename: str) -> None:
     log.info(f"Successfully wrote SBOM and OSV data to {get_directory_path()}/{csv_output_filename}")
 
 
+# =============
+# Main function
+# =============
 def main(args: argparse.Namespace) -> None:
     """Main function of script
 

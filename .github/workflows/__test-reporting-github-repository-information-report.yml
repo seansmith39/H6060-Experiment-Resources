@@ -1,0 +1,33 @@
+name: Test GitHub Repository Information Report
+
+on:
+  workflow_dispatch:
+
+env:
+  RESOURCES_PATH: src/test/python3/resources
+
+jobs:
+  test-action:
+    name: Test GitHub Repository Information Report
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        category: [
+          { experiment-id: 1, programming-language: java, package-manager: Maven, github-repository-name: H6060-Java-Logback },
+          { experiment-id: 2, programming-language: javascript, package-manager: Npm, github-repository-name: H6060-JavaScript-Lodash },
+          { experiment-id: 3, programming-language: python, package-manager: Pip, github-repository-name: H6060-Python-Django }
+        ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Repository Information Report (${{ matrix.category.programming-language }})
+        uses: ./.github/actions/reporting/github-repository-information-report
+        with:
+          github-api-token: ${{ secrets.TEST_GITHUB_API_TOKEN }}
+          experiment-id: ${{ matrix.category.experiment-id }}
+          experiment-github-project-name: ${{ matrix.category.github-repository-name }}
+          experiment-github-repository: seansmith39/${{ matrix.category.github-repository-name }}
+          experiment-github-package-manager: ${{ matrix.category.package-manager }}
+          artifact-name: github-repository-information-report-${{ matrix.category.programming-language }}
+          include-unit-tests: true

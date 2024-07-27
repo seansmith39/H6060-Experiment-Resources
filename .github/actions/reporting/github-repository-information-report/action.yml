@@ -1,0 +1,107 @@
+name: GitHub Repository Information Report Action
+description: Parse GitHub repository information and create a CSV report for all parsed vulnerabilities detected
+author: sean.smith [B00158319@mytudublin.ie]
+
+inputs:
+  github-api-url:
+    description: URL of the GitHub API
+    type: string
+    required: false
+    default: ${{ github.api_url }}
+
+  github-api-token:
+    description: Token to access the GitHub API
+    type: string
+    required: true
+
+  experiment-id:
+    description: Experiment ID to record in the report
+    type: string
+    required: true
+
+  experiment-github-project-name:
+    description: Name of the experiment GitHub project
+    type: string
+    required: true
+
+  experiment-github-package-manager:
+    description: Name of the experiment package manager
+    type: string
+    required: true
+
+  experiment-github-repository:
+    description: Name of the experiment GitHub repository
+    type: string
+    required: false
+    default: ${{ github.repository }}
+
+  csv-github-repository-information-report-filename:
+    description: Name of resulting GitHub repository information CSV report
+    type: string
+    required: false
+    default: github_repository_information_report.csv
+
+  csv-github-repository-tag-report-filename:
+    description: Name of resulting GitHub repository tag CSV report
+    type: string
+    required: false
+    default: github_repository_tag_report.csv
+
+  artifact-name:
+    description: Name of the artifact to upload
+    type: string
+    required: false
+    default: github-repository-reports
+
+  include-unit-tests:
+    description: Run unit tests in the action (for testing use only)
+    type: string # See https://github.com/actions/runner/issues/2238
+    required: false
+    default: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install Python 3.12
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: 3.12
+
+    - name: Install Python Dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: pip install -r requirements-dev.txt
+
+    - name: Run Unit Tests
+      if: ${{ inputs.include-unit-tests == 'true' }}
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: ./run_unit_tests.sh
+
+    - name: Create GitHub Repository Information Report
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: >
+        python src/main/python3/github_repository_information_report.py
+        --github-api-url ${{ inputs.github-api-url }}
+        --github-api-token ${{ inputs.github-api-token }}
+        --experiment-id ${{ inputs.experiment-id }}
+        --experiment-github-project-name "${{ inputs.experiment-github-project-name }}"
+        --experiment-github-package-manager ${{ inputs.experiment-github-package-manager }}
+        --experiment-github-repository ${{ inputs.experiment-github-repository }}
+        --csv-github-repository-information-report-filename ${{ inputs.csv-github-repository-information-report-filename }}
+        --csv-github-repository-tag-report-filename ${{ inputs.csv-github-repository-tag-report-filename }}
+
+    # See https://github.com/actions/runner/issues/2185
+    - name: Set GitHub Action Path
+      shell: bash
+      run: |
+        GITHUB_ACTION_NEW_PATH=$(python -c "print('${{github.action_path}}'.replace('./.', '.'))")
+        echo "GITHUB_ACTION_NEW_PATH=$GITHUB_ACTION_NEW_PATH" >> $GITHUB_ENV
+
+    - name: Upload GitHub Repository Information Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: "${{ env.GITHUB_ACTION_NEW_PATH }}/src/main/python3/*.csv"
+        if-no-files-found: error

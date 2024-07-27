@@ -3,6 +3,12 @@ description: Create a CSV report for all true positive vulnerabilities for a pro
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  github-server-url:
+    description: URL of the GitHub server
+    type: string
+    required: false
+    default: ${{ github.server_url }}
+
   github-api-url:
     description: URL of the GitHub API
     type: string
@@ -126,6 +132,7 @@ runs:
         working-directory: ${{ github.action_path }}
         run: >
           python src/main/python3/cyclonedx_sbom_osv_report.py
+          --github-server-url ${{ inputs.github-server-url }}
           --github-api-url ${{ inputs.github-api-url }}
           --github-api-token ${{ inputs.github-api-token }}
           --experiment-id ${{ inputs.experiment-id }}

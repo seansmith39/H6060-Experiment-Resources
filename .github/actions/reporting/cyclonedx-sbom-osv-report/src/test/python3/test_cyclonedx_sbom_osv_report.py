@@ -39,6 +39,7 @@ GITHUB_RESPONSE_JAVASCRIPT = TEST_DIRECTORY_RESOURCES + "github/javascript/githu
 GITHUB_RESPONSE_PYTHON = TEST_DIRECTORY_RESOURCES + "github/python/github-response.json"
 
 # Mocked required arguments
+GITHUB_SERVER_URL = "https://github.com"
 GITHUB_API_URL = "https://api.github.com"
 GITHUB_API_TOKEN = "ghp_1234567890"
 EXPERIMENT_ID = "1"
@@ -57,6 +58,8 @@ GITHUB_REPOSITORY_OTHER = "org/repository-other"
 GITHUB_REPOSITORY_MISSING = "org/repository-missing"
 
 REQUIRED_ARGUMENTS = [
+    "--github-server-url",
+    GITHUB_SERVER_URL,
     "--github-api-url",
     GITHUB_API_URL,
     "--github-api-token",
@@ -167,6 +170,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
 
     def __mock_args(
         self,
+        github_server_url: str,
         github_api_url: str,
         github_api_token: str,
         experiment_id: str,
@@ -183,6 +187,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
         """Mock arguments in argparse.Namespace type
 
         :parameter
+            github_server_url:str -- GitHub server URL to be mocked in the arguments
             github_api_url:str -- GitHub API URL to be mocked in the arguments
             github_api_token:str -- GitHub API Token to be mocked in the arguments
             experiment_id:str -- Experiment ID to be mocked in the arguments
@@ -200,6 +205,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
             argparse.Namespace -- Mocked arguments
         """
         return Namespace(
+            github_server_url=github_server_url,
             github_api_url=github_api_url,
             github_api_token=github_api_token,
             experiment_id=experiment_id,

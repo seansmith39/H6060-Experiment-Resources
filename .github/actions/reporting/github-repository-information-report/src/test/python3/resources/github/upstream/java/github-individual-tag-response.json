@@ -1,0 +1,23 @@
+{
+  "node_id": "MDM6VGFnMjgzMzI1OjIxZTc1OGJhNGZhMTY1NzMxNDFmY2VlZGJiMWU1NTQ0MWM5MTFhNDA=",
+  "sha": "21e758ba4fa16573141fceedbb1e55441c911a40",
+  "url": "https://api.github.com/repos/qos-ch/logback/git/tags/21e758ba4fa16573141fceedbb1e55441c911a40",
+  "tagger": {
+    "name": "Ceki Gulcu",
+    "email": "ceki@qos.ch",
+    "date": "2018-01-29T23:51:27Z"
+  },
+  "object": {
+    "sha": "99c8a252a8c5ed68cf26627d354b09756382e374",
+    "type": "commit",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/commits/99c8a252a8c5ed68cf26627d354b09756382e374"
+  },
+  "tag": "v_1.8.0-alpha1",
+  "message": "tagging\n",
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null
+  }
+}

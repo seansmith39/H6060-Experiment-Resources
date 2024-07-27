@@ -1,0 +1,1322 @@
+[
+  {
+    "ref": "refs/tags/list",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9saXN0",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/list",
+    "object": {
+      "sha": "597b272384cc02f711dbdf6895763e256eddaa76",
+      "type": "commit",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/commits/597b272384cc02f711dbdf6895763e256eddaa76"
+    }
+  },
+  {
+    "ref": "refs/tags/possible_mvn_issue",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9wb3NzaWJsZV9tdm5faXNzdWU=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/possible_mvn_issue",
+    "object": {
+      "sha": "133028436773d890c69c2a775b9622724f91d790",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/133028436773d890c69c2a775b9622724f91d790"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.1",
+    "object": {
+      "sha": "0859f35c06bd2db1454b7c0251776b2dacdaee4f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/0859f35c06bd2db1454b7c0251776b2dacdaee4f"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS42",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.6",
+    "object": {
+      "sha": "39808712beaa1c0674094d542f8b316fe0ac2477",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/39808712beaa1c0674094d542f8b316fe0ac2477"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS44",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.8",
+    "object": {
+      "sha": "bb58bcbbe341a05fde3c429beb84a10f0d5d8edc",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/bb58bcbbe341a05fde3c429beb84a10f0d5d8edc"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.9",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS45",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.9",
+    "object": {
+      "sha": "abe920ab1f9850e87e07b72aee5b48a933e66342",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/abe920ab1f9850e87e07b72aee5b48a933e66342"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.10",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xMA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.10",
+    "object": {
+      "sha": "9660185a385b41b02641d235c7432b55cf335847",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/9660185a385b41b02641d235c7432b55cf335847"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.11",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.11",
+    "object": {
+      "sha": "e5beaf539639182e228d020481f52edee27e19b6",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/e5beaf539639182e228d020481f52edee27e19b6"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.13",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.13",
+    "object": {
+      "sha": "004a0490d9ec6e66a4b72875d0427a4b28f402f1",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/004a0490d9ec6e66a4b72875d0427a4b28f402f1"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.14",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xNA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.14",
+    "object": {
+      "sha": "d3d603542bcb6155499e1eef6fc0ddafe877ae81",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d3d603542bcb6155499e1eef6fc0ddafe877ae81"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.15",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xNQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.15",
+    "object": {
+      "sha": "c8933a5139e05062ba3be956c9d57d3b018c03b1",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/c8933a5139e05062ba3be956c9d57d3b018c03b1"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.16",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xNg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.16",
+    "object": {
+      "sha": "1285a46f5932bb6635ead69eb4403d44eedab0c6",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/1285a46f5932bb6635ead69eb4403d44eedab0c6"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.17",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xNw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.17",
+    "object": {
+      "sha": "9ad404712cbcc94dbd727f279a6709abbeab4bb7",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/9ad404712cbcc94dbd727f279a6709abbeab4bb7"
+    }
+  },
+  {
+    "ref": "refs/tags/release_0.9.19",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlXzAuOS4xOQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release_0.9.19",
+    "object": {
+      "sha": "e555d5799c632d573965e4b8b92d45ed884a5f18",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/e555d5799c632d573965e4b8b92d45ed884a5f18"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.2",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuMg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.2",
+    "object": {
+      "sha": "68625dbd24a39ee82bd06878de45677973d5f3c0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/68625dbd24a39ee82bd06878de45677973d5f3c0"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.2.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuMi41",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.2.5",
+    "object": {
+      "sha": "f03ff511ebabeb0abfeaae84d85c54193022a940",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/f03ff511ebabeb0abfeaae84d85c54193022a940"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.3",
+    "object": {
+      "sha": "d85f8b326970df9daf626f726ade9a1cce399e63",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d85f8b326970df9daf626f726ade9a1cce399e63"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuNA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.4",
+    "object": {
+      "sha": "dffe5c71a2c08063ccda3be84d71caf03ccb4091",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/dffe5c71a2c08063ccda3be84d71caf03ccb4091"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuNQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.5",
+    "object": {
+      "sha": "620c41267d8e26385edeb311448306cbecda45e7",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/620c41267d8e26385edeb311448306cbecda45e7"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuNg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.6",
+    "object": {
+      "sha": "54b5023bfb6d181eb48fd9e1676a9dc0a3407082",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/54b5023bfb6d181eb48fd9e1676a9dc0a3407082"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.7",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuNw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.7",
+    "object": {
+      "sha": "8c6a807fa56e9053a573c47fd1b8e205daafdc5d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/8c6a807fa56e9053a573c47fd1b8e205daafdc5d"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.7.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuNy4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.7.1",
+    "object": {
+      "sha": "4e2187d2ae6e4ea401cb977d2f1b48a67c75ee51",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/4e2187d2ae6e4ea401cb977d2f1b48a67c75ee51"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuOA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.8",
+    "object": {
+      "sha": "603311a9f6c53520b03695d100a0cd1adc6959fe",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/603311a9f6c53520b03695d100a0cd1adc6959fe"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.8.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuOC4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.8.1",
+    "object": {
+      "sha": "d78f24071258d5b2edfe71710e1aea296af33cd0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d78f24071258d5b2edfe71710e1aea296af33cd0"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.9",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuOQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.9",
+    "object": {
+      "sha": "a85863453b31a41791bccd7c9efa9b80a6ad7370",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/a85863453b31a41791bccd7c9efa9b80a6ad7370"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.9.2",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuOS4y",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.9.2",
+    "object": {
+      "sha": "1862011020f0567f2484962bfb36d15756e90334",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/1862011020f0567f2484962bfb36d15756e90334"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.9.3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuOS4z",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.9.3",
+    "object": {
+      "sha": "e8601c4c30701acbd69e28779cb6da3998b95d42",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/e8601c4c30701acbd69e28779cb6da3998b95d42"
+    }
+  },
+  {
+    "ref": "refs/tags/release-0.9.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy9yZWxlYXNlLTAuOS40",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/release-0.9.4",
+    "object": {
+      "sha": "417ba55b20b07fbcc0a6f9a55e571cd456b3092c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/417ba55b20b07fbcc0a6f9a55e571cd456b3092c"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.18",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92MC45LjE4",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v0.9.18",
+    "object": {
+      "sha": "e6800264145bb20b6793ed2a955e9873cee22f45",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/e6800264145bb20b6793ed2a955e9873cee22f45"
+    }
+  },
+  {
+    "ref": "refs/tags/v0.9.20",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92MC45LjIw",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v0.9.20",
+    "object": {
+      "sha": "4a3697eb144ddf8f8649703e39710ea0381c24f4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/4a3697eb144ddf8f8649703e39710ea0381c24f4"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.21",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.21",
+    "object": {
+      "sha": "d383758f0fa90cf85851483c539b224b5e4609ca",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d383758f0fa90cf85851483c539b224b5e4609ca"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.22",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yMg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.22",
+    "object": {
+      "sha": "888c294c1a9974fcc4b106fb83eafdecec259ce4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/888c294c1a9974fcc4b106fb83eafdecec259ce4"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.23",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.23",
+    "object": {
+      "sha": "c02a91710b0ee4588887276fd148ba31fc4dfd75",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/c02a91710b0ee4588887276fd148ba31fc4dfd75"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.24",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yNA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.24",
+    "object": {
+      "sha": "b08b2a1f1a1f6a3c7b2b6c21942c59855199547c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/b08b2a1f1a1f6a3c7b2b6c21942c59855199547c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.25",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yNQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.25",
+    "object": {
+      "sha": "96564278663f59bb94e6b45d15ab5f37c0defcee",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/96564278663f59bb94e6b45d15ab5f37c0defcee"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.26",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yNg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.26",
+    "object": {
+      "sha": "3b87986bffa45b6f340b26fecdb177db3f24139b",
+      "type": "commit",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/commits/3b87986bffa45b6f340b26fecdb177db3f24139b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.27",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yNw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.27",
+    "object": {
+      "sha": "ee40f0381308f61d040c28ccb534af9abf829871",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/ee40f0381308f61d040c28ccb534af9abf829871"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.28",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yOA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.28",
+    "object": {
+      "sha": "b0dec90530d5fd2c5372ab2d62fbe67646f7f7ff",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/b0dec90530d5fd2c5372ab2d62fbe67646f7f7ff"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.29",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4yOQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.29",
+    "object": {
+      "sha": "d62c70c89af5d0b41ace518ea929eee51bfcf75b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d62c70c89af5d0b41ace518ea929eee51bfcf75b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_0.9.30",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzAuOS4zMA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_0.9.30",
+    "object": {
+      "sha": "235868686906c20841309e459edb3e367e28d7ff",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/235868686906c20841309e459edb3e367e28d7ff"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC4w",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.0",
+    "object": {
+      "sha": "eb5f0cbfbaa1131797ca55cbae098ce8a9ac218c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/eb5f0cbfbaa1131797ca55cbae098ce8a9ac218c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.1",
+    "object": {
+      "sha": "aa870e01f811cec7ea0cb7b64f00ccd8ed0774a5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/aa870e01f811cec7ea0cb7b64f00ccd8ed0774a5"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.2",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC4y",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.2",
+    "object": {
+      "sha": "01cffa00b5fdafe1d94de975275b18a26c12c708",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/01cffa00b5fdafe1d94de975275b18a26c12c708"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC4z",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.3",
+    "object": {
+      "sha": "8b73e192d656ed2b6a4a3a8352421cc6e93cdbe1",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/8b73e192d656ed2b6a4a3a8352421cc6e93cdbe1"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC40",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.4",
+    "object": {
+      "sha": "38af727b5924ff13fad1a1b510dba0ad77c024f9",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/38af727b5924ff13fad1a1b510dba0ad77c024f9"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC41",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.5",
+    "object": {
+      "sha": "2b2a8daafb05a36715ae58dbbe9fb525ff74e7ba",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/2b2a8daafb05a36715ae58dbbe9fb525ff74e7ba"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC42",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.6",
+    "object": {
+      "sha": "e179a54b2b7c02f9b3ead3deb769e50b376102d0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/e179a54b2b7c02f9b3ead3deb769e50b376102d0"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.7",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC43",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.7",
+    "object": {
+      "sha": "9dac4c6ad07125c6f729f49c35e08a536e6d0162",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/9dac4c6ad07125c6f729f49c35e08a536e6d0162"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC44",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.8",
+    "object": {
+      "sha": "12172e30c9063bf39e51be80e58ae961f10d2b64",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/12172e30c9063bf39e51be80e58ae961f10d2b64"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.9",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC45",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.9",
+    "object": {
+      "sha": "71f3d320446144f6296ca65c4feee992331ca31c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/71f3d320446144f6296ca65c4feee992331ca31c"
+    }
+  },
+  {
+    "ref": "refs/tags/v1.0.10",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92MS4wLjEw",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v1.0.10",
+    "object": {
+      "sha": "94af2eb577481b3277e886cd08c15387e000d841",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/94af2eb577481b3277e886cd08c15387e000d841"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.11",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC4xMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.11",
+    "object": {
+      "sha": "05131b9c42fc9102fccb2c2e0622198ed36a582e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/05131b9c42fc9102fccb2c2e0622198ed36a582e"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.12",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC4xMg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.12",
+    "object": {
+      "sha": "fa8fa15d0829a0f70862893d697e50bb4a5c62f0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/fa8fa15d0829a0f70862893d697e50bb4a5c62f0"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.0.13",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMC4xMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.0.13",
+    "object": {
+      "sha": "af2a3d563a56c43638e56a56dcdffcb878439fce",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/af2a3d563a56c43638e56a56dcdffcb878439fce"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS4w",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.0",
+    "object": {
+      "sha": "27aadc3f917c936acfe9a02aac9268edafbaa57e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/27aadc3f917c936acfe9a02aac9268edafbaa57e"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.1",
+    "object": {
+      "sha": "5937f85ac0de42d458749b1fc6fbc7713811e81f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/5937f85ac0de42d458749b1fc6fbc7713811e81f"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS40",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.4",
+    "object": {
+      "sha": "781f2d8426b126147e13b40d0e8d49ff14524999",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/781f2d8426b126147e13b40d0e8d49ff14524999"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS41",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.5",
+    "object": {
+      "sha": "64788b9937b572dcc70773cb04ac0cb805985999",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/64788b9937b572dcc70773cb04ac0cb805985999"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS42",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.6",
+    "object": {
+      "sha": "bcd1c5c4b77d52e84d421d75cf4a95d84e4ba88e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/bcd1c5c4b77d52e84d421d75cf4a95d84e4ba88e"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.7",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS43",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.7",
+    "object": {
+      "sha": "aa94f577000d1af92575a6b443c8c2e321ab167e",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/aa94f577000d1af92575a6b443c8c2e321ab167e"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS44",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.8",
+    "object": {
+      "sha": "212b496162ccc2a7406254dde224cdbc5c9ae69d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/212b496162ccc2a7406254dde224cdbc5c9ae69d"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.10",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS4xMA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.10",
+    "object": {
+      "sha": "f9dec0a57d182b1c58e307620de26aa95dbdc4a1",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/f9dec0a57d182b1c58e307620de26aa95dbdc4a1"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.1.11",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMS4xMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.1.11",
+    "object": {
+      "sha": "84c28e48d5db54700d47782aee66b5b2b4c5bdc8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/84c28e48d5db54700d47782aee66b5b2b4c5bdc8"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4w",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.0",
+    "object": {
+      "sha": "447ddfd516f54b6a222e0b3cb08ffd54889a3659",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/447ddfd516f54b6a222e0b3cb08ffd54889a3659"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.1",
+    "object": {
+      "sha": "12cac9adff7e80c1c3d8d8dbe53d411078b37dc4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/12cac9adff7e80c1c3d8d8dbe53d411078b37dc4"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.2",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4y",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.2",
+    "object": {
+      "sha": "abad4244e7cd0af26ff4022e1fc8a7500f4c6168",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/abad4244e7cd0af26ff4022e1fc8a7500f4c6168"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4z",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.3",
+    "object": {
+      "sha": "db1bfca9eebb911d7d018022e030f0b5c5c17eda",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/db1bfca9eebb911d7d018022e030f0b5c5c17eda"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi40",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.4",
+    "object": {
+      "sha": "eaead39e47cb4707e70f97a01e6c717dc5e26a1b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/eaead39e47cb4707e70f97a01e6c717dc5e26a1b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi41",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.5",
+    "object": {
+      "sha": "7b65d2071599bdf74ca591592c2a7ac9c54c9b7f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/7b65d2071599bdf74ca591592c2a7ac9c54c9b7f"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi42",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.6",
+    "object": {
+      "sha": "b41ba74f2b8e03787ac0dd96c25b5bd670bd5fd0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/b41ba74f2b8e03787ac0dd96c25b5bd670bd5fd0"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.7",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi43",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.7",
+    "object": {
+      "sha": "006e22752659d5b5afd1698dbfeb5f3b5989d70f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/006e22752659d5b5afd1698dbfeb5f3b5989d70f"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi44",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.8",
+    "object": {
+      "sha": "85bd0b0c2c7adae7a748a545f74c86ba1cec87a7",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/85bd0b0c2c7adae7a748a545f74c86ba1cec87a7"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.9",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi45",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.9",
+    "object": {
+      "sha": "4257b090a1e708d3fb160f4718bb8f431bcbcbc4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/4257b090a1e708d3fb160f4718bb8f431bcbcbc4"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.10",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4xMA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.10",
+    "object": {
+      "sha": "ec22dff805a71a52c82215361f605bf7aa68d008",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/ec22dff805a71a52c82215361f605bf7aa68d008"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.11",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4xMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.11",
+    "object": {
+      "sha": "c3b1fdf164d59c557c1453ac086567eda78734a8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/c3b1fdf164d59c557c1453ac086567eda78734a8"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.12",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4xMg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.12",
+    "object": {
+      "sha": "ad02b775897a88bd63189da75889a3ab5cd9c26f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/ad02b775897a88bd63189da75889a3ab5cd9c26f"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.2.13",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMi4xMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.2.13",
+    "object": {
+      "sha": "8ae37f77cdfcea796062cf2d86a41967cedb7658",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/8ae37f77cdfcea796062cf2d86a41967cedb7658"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha0",
+    "object": {
+      "sha": "f2c0c30862e4940ecfc4c2b7d483e4b66eb303d0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/f2c0c30862e4940ecfc4c2b7d483e4b66eb303d0"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha2",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha2",
+    "object": {
+      "sha": "86d5b370f4501361464d390b9a2d12061a0de60b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/86d5b370f4501361464d390b9a2d12061a0de60b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha3",
+    "object": {
+      "sha": "fa350788ee7bfa90cc6c0c94ebb7e77657870827",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/fa350788ee7bfa90cc6c0c94ebb7e77657870827"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhNA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha4",
+    "object": {
+      "sha": "5093202228de3d281be757f3f525a54c249b0e96",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/5093202228de3d281be757f3f525a54c249b0e96"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhNQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha5",
+    "object": {
+      "sha": "ef7d7141adb729f171d42d5d61e242897de1d624",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/ef7d7141adb729f171d42d5d61e242897de1d624"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhNg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha6",
+    "object": {
+      "sha": "c9cae8db68a7291e683b82e9c27afa89fdaeebc3",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/c9cae8db68a7291e683b82e9c27afa89fdaeebc3"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha7",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhNw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha7",
+    "object": {
+      "sha": "310a491202392f3af5f09a155d78d7530d0b75a8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/310a491202392f3af5f09a155d78d7530d0b75a8"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhOA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha8",
+    "object": {
+      "sha": "77a81c55e25bca5ed1404b73785af2504390d855",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/77a81c55e25bca5ed1404b73785af2504390d855"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha9",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhOQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha9",
+    "object": {
+      "sha": "0a782fbfbdb9caaaa17df77e5c6ee3906cf401c9",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/0a782fbfbdb9caaaa17df77e5c6ee3906cf401c9"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha10",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTA=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha10",
+    "object": {
+      "sha": "94aff83099bac93c29db4f2cb5be0bed4d348899",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/94aff83099bac93c29db4f2cb5be0bed4d348899"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha11",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTE=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha11",
+    "object": {
+      "sha": "a2e14611981b846a9b5e5df1b4871980a7cbbafb",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/a2e14611981b846a9b5e5df1b4871980a7cbbafb"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha12-SNAPSHOT",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTItU05BUFNIT1Q=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha12-SNAPSHOT",
+    "object": {
+      "sha": "263cac64793146cb7dbb48d55e171dbc81a18484",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/263cac64793146cb7dbb48d55e171dbc81a18484"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha12",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTI=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha12",
+    "object": {
+      "sha": "2defa74fc96d9b695b401e551c6ccb74a40977cc",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/2defa74fc96d9b695b401e551c6ccb74a40977cc"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha13",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTM=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha13",
+    "object": {
+      "sha": "3193d382de44e4dc576dbce05158240122260223",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/3193d382de44e4dc576dbce05158240122260223"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha14",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTQ=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha14",
+    "object": {
+      "sha": "611c8b137fc77cdae7b20bef2eb8ad0c4365b013",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/611c8b137fc77cdae7b20bef2eb8ad0c4365b013"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha15",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTU=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha15",
+    "object": {
+      "sha": "09756fafcd9671fbc1bc45de4d648146a56d055c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/09756fafcd9671fbc1bc45de4d648146a56d055c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-alpha16",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWFscGhhMTY=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-alpha16",
+    "object": {
+      "sha": "74784d2e6f1a883f39d018f9cec1712c250b2c10",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/74784d2e6f1a883f39d018f9cec1712c250b2c10"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0-beta0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4wLWJldGEw",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0-beta0",
+    "object": {
+      "sha": "dfa217847be74a40040a1ed014e7a7589979070c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/dfa217847be74a40040a1ed014e7a7589979070c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4w",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.0",
+    "object": {
+      "sha": "9cd3e90426a8cd82b4c767bdf7a07ca08a2f87a5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/9cd3e90426a8cd82b4c767bdf7a07ca08a2f87a5"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.1",
+    "object": {
+      "sha": "f2d64ba0f2094598310fa007caf6ea26baa8e6e4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/f2d64ba0f2094598310fa007caf6ea26baa8e6e4"
+    }
+  },
+  {
+    "ref": "refs/tags/v1.3.2",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92MS4zLjI=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v1.3.2",
+    "object": {
+      "sha": "8e7f3f32ed514efcbaf0ded33253b53c2ec39e7b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/8e7f3f32ed514efcbaf0ded33253b53c2ec39e7b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4z",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.3",
+    "object": {
+      "sha": "06e3869376bfa564af446e84df2bfbe14170a8eb",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/06e3869376bfa564af446e84df2bfbe14170a8eb"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy40",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.4",
+    "object": {
+      "sha": "639126befa10b9a6ab262223e29cb0c2aa99500c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/639126befa10b9a6ab262223e29cb0c2aa99500c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy41",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.5",
+    "object": {
+      "sha": "f86313626436da105f47e2ba90d0a718fbfdc276",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/f86313626436da105f47e2ba90d0a718fbfdc276"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy42",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.6",
+    "object": {
+      "sha": "e848c9233aba7b8dcd68fce94015a3efc1f62ff3",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/e848c9233aba7b8dcd68fce94015a3efc1f62ff3"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.7",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy43",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.7",
+    "object": {
+      "sha": "bc195deb411a5b34658dda020bc8dc6cc0e44aa8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/bc195deb411a5b34658dda020bc8dc6cc0e44aa8"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy44",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.8",
+    "object": {
+      "sha": "3d7cdcaeee2386b10f4f4710ff3319eb6f6e4735",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/3d7cdcaeee2386b10f4f4710ff3319eb6f6e4735"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.9",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy45",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.9",
+    "object": {
+      "sha": "cc4ffc671913516c6f3bbdff3ad328a99a91f30a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/cc4ffc671913516c6f3bbdff3ad328a99a91f30a"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.10",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4xMA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.10",
+    "object": {
+      "sha": "cb414ec9e73de63be45b8e74aa34c6ab45b9326c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/cb414ec9e73de63be45b8e74aa34c6ab45b9326c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.11",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4xMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.11",
+    "object": {
+      "sha": "3e0c4c0b6d71e2c22a0cfc877f415ff1f6b71e6c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/3e0c4c0b6d71e2c22a0cfc877f415ff1f6b71e6c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.12",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4xMg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.12",
+    "object": {
+      "sha": "d4cc4f2c40c7c7e3d4ea6ae4d7ce556e6909564f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d4cc4f2c40c7c7e3d4ea6ae4d7ce556e6909564f"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.13",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4xMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.13",
+    "object": {
+      "sha": "a2f810e494c2d90178592c5427e59c2548500738",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/a2f810e494c2d90178592c5427e59c2548500738"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.3.14",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuMy4xNA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.3.14",
+    "object": {
+      "sha": "7db1324d50c8c925f64e1d40339ba88eec3b0a5b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/7db1324d50c8c925f64e1d40339ba88eec3b0a5b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4w",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.0",
+    "object": {
+      "sha": "5816b893f85fc590ac2b9678d163ba28a56406a2",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/5816b893f85fc590ac2b9678d163ba28a56406a2"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.1",
+    "object": {
+      "sha": "e11e587cbb80aa7596442ee720811939026f2ad2",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/e11e587cbb80aa7596442ee720811939026f2ad2"
+    }
+  },
+  {
+    "ref": "refs/tags/v1.4.2",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92MS40LjI=",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v1.4.2",
+    "object": {
+      "sha": "46492709d7cb2c12289f5242379da33d60817c26",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/46492709d7cb2c12289f5242379da33d60817c26"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4z",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.3",
+    "object": {
+      "sha": "7b23c7a2614fc5f850904c38116c0f1a5862b7fd",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/7b23c7a2614fc5f850904c38116c0f1a5862b7fd"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC40",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.4",
+    "object": {
+      "sha": "33bef201ef113ea3c46602f30e054baf6cc3608b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/33bef201ef113ea3c46602f30e054baf6cc3608b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC41",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.5",
+    "object": {
+      "sha": "15cafd65d5aaf372239bbe9e275034fc0855867a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/15cafd65d5aaf372239bbe9e275034fc0855867a"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC42",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.6",
+    "object": {
+      "sha": "8b5192908aac104b045b08367a060ee13502b89f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/8b5192908aac104b045b08367a060ee13502b89f"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.7",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC43",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.7",
+    "object": {
+      "sha": "d541c1baf65d2c8ea9eb87fa27f949033d9c4385",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d541c1baf65d2c8ea9eb87fa27f949033d9c4385"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.8",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC44",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.8",
+    "object": {
+      "sha": "99c6e4066247c2800a1d5838ac45bc996ed2d35d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/99c6e4066247c2800a1d5838ac45bc996ed2d35d"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.9",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC45",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.9",
+    "object": {
+      "sha": "80fd235c39807a904c6bffc248e6bea349bdda50",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/80fd235c39807a904c6bffc248e6bea349bdda50"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.10",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4xMA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.10",
+    "object": {
+      "sha": "d9e09b80d4f6dca966b0160e4f196f4111f251af",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/d9e09b80d4f6dca966b0160e4f196f4111f251af"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.11",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4xMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.11",
+    "object": {
+      "sha": "10c9a40a2f715d968cd994b00605a8c9469d2f6c",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/10c9a40a2f715d968cd994b00605a8c9469d2f6c"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.12",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4xMg==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.12",
+    "object": {
+      "sha": "48315098c1826cc517d93b58058c4e67fb7fb71d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/48315098c1826cc517d93b58058c4e67fb7fb71d"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.13",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4xMw==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.13",
+    "object": {
+      "sha": "f60b52b0318ad0c1f2f37c3dbfe193ad860d53c0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/f60b52b0318ad0c1f2f37c3dbfe193ad860d53c0"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.4.14",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNC4xNA==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.4.14",
+    "object": {
+      "sha": "25c8b960712ab2d46e1a7e623a6a1ca9c4ec092d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/25c8b960712ab2d46e1a7e623a6a1ca9c4ec092d"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.5.0",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNS4w",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.5.0",
+    "object": {
+      "sha": "44a9353d7ebb452c3250c4bdbd15096806a16f27",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/44a9353d7ebb452c3250c4bdbd15096806a16f27"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.5.1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNS4x",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.5.1",
+    "object": {
+      "sha": "3644adee0b8773d5a512bde848ee33490af669be",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/3644adee0b8773d5a512bde848ee33490af669be"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.5.3",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNS4z",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.5.3",
+    "object": {
+      "sha": "98cea59a58808e13bff7c6eb42d6a7e68e067fc6",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/98cea59a58808e13bff7c6eb42d6a7e68e067fc6"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.5.4",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNS40",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.5.4",
+    "object": {
+      "sha": "44bb0a40e501d2648d1421e1c7ee931a6965902b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/44bb0a40e501d2648d1421e1c7ee931a6965902b"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.5.5",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNS41",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.5.5",
+    "object": {
+      "sha": "ec8ef2c65127714f871e53a6656a98b44c9a0234",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/ec8ef2c65127714f871e53a6656a98b44c9a0234"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.5.6",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuNS42",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.5.6",
+    "object": {
+      "sha": "1393ec312a0b3fa96e0718644897eea9786d1384",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/1393ec312a0b3fa96e0718644897eea9786d1384"
+    }
+  },
+  {
+    "ref": "refs/tags/v_1.8.0-alpha1",
+    "node_id": "MDM6UmVmMjgzMzI1OnJlZnMvdGFncy92XzEuOC4wLWFscGhhMQ==",
+    "url": "https://api.github.com/repos/qos-ch/logback/git/refs/tags/v_1.8.0-alpha1",
+    "object": {
+      "sha": "21e758ba4fa16573141fceedbb1e55441c911a40",
+      "type": "tag",
+      "url": "https://api.github.com/repos/qos-ch/logback/git/tags/21e758ba4fa16573141fceedbb1e55441c911a40"
+    }
+  }
+]
