@@ -1,11 +1,12 @@
-# Horusec SAST Action
+# SAST Horusec Action
 
 ## Description
 
-An action to configure and run a Horusec SAST scan.
+An action to configure and run a SAST Horusec scan.
 
 **Notes:**
-- The action uses Horusec CLI `v2.8.0`.
+- The [fike/horusec-action](https://github.com/marketplace/actions/horusec) GitHub Action only supports Ubuntu Runners.
+- The latest CLI version is downloaded at runtime. A bug exists in which specific versions cannot be specified.
 
 ## Supported Programming Languages
 
@@ -15,10 +16,11 @@ An action to configure and run a Horusec SAST scan.
 
 ## Inputs
 
-| name              | required | type   | default                 | description                    |
-|-------------------|----------|--------|-------------------------|--------------------------------|
-| **artifact-name** | false    | string | sast-horusec-report     | Name of the artifact to upload |
-| **path**          | false    | string | ${{ github.workspace }} | Path to run the Horusec scan   |
+| name                         | required | type   | default                 | description                              |
+|------------------------------|----------|--------|-------------------------|------------------------------------------|
+| **files-or-paths-to-ignore** | false    | string | **/test/**              | Files or paths to ignore during the scan |
+| **artifact-name**            | false    | string | sast-horusec-report     | Name of the artifact to upload           |
+| **path**                     | false    | string | ${{ github.workspace }} | Path to run the Horusec scan             |
 
 ## Build Artifacts
 

@@ -24,9 +24,9 @@ The following SCA and SAST tools are supported within the experiment GitHub work
 | SAST      | CodeQL                 | yes  | yes    | yes        |
 | SAST      | DeepSource             | yes  | yes    | yes        |
 | SAST      | Horusec                | yes  | yes    | yes        |
-| SAST      | SonarQube              | yes  | yes    | yes        |
 | SAST      | Semgrep                | yes  | yes    | yes        |
 | SAST      | Snyk Code              | yes  | yes    | yes        |
+| SAST      | SonarQube              | yes  | yes    | yes        |
 
 ## Pre-requisites
 
@@ -60,6 +60,7 @@ The workflow can be triggered using the following example snippet:
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-1-java.yml@main
     secrets: inherit
     with:
+      operating-system: ubuntu-latest
       project-name: H6060-Java-Webdrivermanager
       build-directory: target
       coverage-report-name: jacoco.xml
@@ -75,6 +76,7 @@ The workflow can be triggered using the following example snippet:
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-2-python.yml@main
     secrets: inherit
     with:
+      operating-system: ubuntu-latest
       project-name: H6060-Python-Pillow
       build-directory: dist
       coverage-report-name: coverage.xml
@@ -90,6 +92,7 @@ The workflow can be triggered using the following example snippet:
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-3-javascript.yml@main
     secrets: inherit
     with:
+      operating-system: ubuntu-latest
       project-name: H6060-JavaScript-Lodash
 ```
 
@@ -114,62 +117,73 @@ The following inputs are supported for the GitHub workflows:
 
 ### experiment-1-java.yml
 
-| name                                          | required | type    | default | description                                             |
-|-----------------------------------------------|----------|---------|---------|---------------------------------------------------------|
-| **sast-sonarqube-enabled**                    | false    | boolean | true    | Enable SonarQube scan (SAST)                            |
-| **sast-semgrep-enabled**                      | false    | boolean | true    | Enable Semgrep scan (SAST)                              |
-| **sast-horusec-enabled**                      | false    | boolean | true    | Enable Horusec scan (SAST)                              |
-| **sast-codeql-enabled**                       | false    | boolean | true    | Enable CodeQL scan (SAST)                               |
-| **sast-snyk-code-enabled**                    | false    | boolean | true    | Enable Snyk Code scan (SAST)                            |
-| **sca-eclipse-steady-enabled**                | false    | boolean | true    | Enable Eclipse Steady scan (SCA)                        |
-| **sca-snyk-enabled**                          | false    | boolean | true    | Enable Snyk scan (SCA)                                  |
-| **sca-owasp-dependency-check-enabled**        | false    | boolean | true    | Enable OWASP Dependency Check scan (SCA)                |
-| **sca-grype-enabled**                         | false    | boolean | true    | Enable Grype scan (SCA)                                 |
-| **project-name**                              | false    | string  |         | Name of project to be scanned                           |
-| **build-directory**                           | false    | string  |         | Name of project build directory                         |
-| **coverage-report-name**                      | false    | string  |         | Name of test coverage report                            |
-| **eclipse-steady-workspace-token**            | false    | string  |         | Token used to identify project workspace                |
-| **eclipse-steady-application-group-id**       | false    | string  |         | Group ID of the application                             |
-| **eclipse-steady-application-artifact-id**    | false    | string  |         | Artifact ID of the application                          |
-| **eclipse-steady-application-version**        | false    | string  |         | Version of the application                              |
-| **eclipse-steady-project-source-directories** | false    | string  |         | Project source directories to scan (separated by comma) |
+| name                                          | required | type    | default    | description                                             |
+|-----------------------------------------------|----------|---------|------------|---------------------------------------------------------|
+| **operating-system**                          | true     | string  |            | Operating system to run the GitHub Workflow             |
+| **sast-codeql-enabled**                       | false    | boolean | true       | Enable CodeQL scan (SAST)                               |
+| **sast-sonarqube-enabled**                    | false    | boolean | true       | Enable SonarQube scan (SAST)                            |
+| **sast-semgrep-enabled**                      | false    | boolean | true       | Enable Semgrep scan (SAST)                              |
+| **sast-horusec-enabled**                      | false    | boolean | true       | Enable Horusec scan (SAST)                              |
+| **sast-snyk-code-enabled**                    | false    | boolean | true       | Enable Snyk Code scan (SAST)                            |
+| **sca-eclipse-steady-enabled**                | false    | boolean | true       | Enable Eclipse Steady scan (SCA)                        |
+| **sca-snyk-enabled**                          | false    | boolean | true       | Enable Snyk scan (SCA)                                  |
+| **sca-owasp-dependency-check-enabled**        | false    | boolean | true       | Enable OWASP Dependency Check scan (SCA)                |
+| **sca-grype-enabled**                         | false    | boolean | true       | Enable Grype scan (SCA)                                 |
+| **project-name**                              | false    | string  |            | Name of project to be scanned                           |
+| **java-version**                              | false    | string  | 17         | Java version to install                                 |
+| **java-distribution**                         | false    | string  | temurin    | Java distribution to install                            |
+| **build-directory**                           | false    | string  |            | Name of project build directory                         |
+| **coverage-report-name**                      | false    | string  |            | Name of test coverage report                            |
+| **horusec-files-or-paths-to-ignore**          | false    | string  | **/test/** | Files or paths to ignore during the Horusec scan        |
+| **semgrep-files-or-paths-to-ignore**          | false    | string  | test,tests | Files or paths to ignore during the Semgrep scan        |
+| **eclipse-steady-workspace-token**            | false    | string  |            | Token used to identify project workspace                |
+| **eclipse-steady-application-group-id**       | false    | string  |            | Group ID of the application                             |
+| **eclipse-steady-application-artifact-id**    | false    | string  |            | Artifact ID of the application                          |
+| **eclipse-steady-application-version**        | false    | string  |            | Version of the application                              |
+| **eclipse-steady-project-source-directories** | false    | string  |            | Project source directories to scan (separated by comma) |
 
 ### experiment-2-python.yml
 
-| name                                          | required | type    | default | description                                             |
-|-----------------------------------------------|----------|---------|---------|---------------------------------------------------------|
-| **sast-sonarqube-enabled**                    | false    | boolean | true    | Enable SonarQube scan (SAST)                            |
-| **sast-semgrep-enabled**                      | false    | boolean | true    | Enable Semgrep scan (SAST)                              |
-| **sast-horusec-enabled**                      | false    | boolean | true    | Enable Horusec scan (SAST)                              |
-| **sast-codeql-enabled**                       | false    | boolean | true    | Enable CodeQL scan (SAST)                               |
-| **sast-snyk-code-enabled**                    | false    | boolean | true    | Enable Snyk Code scan (SAST)                            |
-| **sca-eclipse-steady-enabled**                | false    | boolean | true    | Enable Eclipse Steady scan (SCA)                        |
-| **sca-snyk-enabled**                          | false    | boolean | true    | Enable Snyk scan (SCA)                                  |
-| **sca-owasp-dependency-check-enabled**        | false    | boolean | true    | Enable OWASP Dependency Check scan (SCA)                |
-| **sca-grype-enabled**                         | false    | boolean | true    | Enable Grype scan (SCA)                                 |
-| **project-name**                              | false    | string  |         | Name of project to be scanned                           |
-| **build-directory**                           | false    | string  |         | Name of project build directory                         |
-| **coverage-report-name**                      | false    | string  |         | Name of test coverage report                            |
-| **eclipse-steady-workspace-token**            | false    | string  |         | Token used to identify project workspace                |
-| **eclipse-steady-application-group-id**       | false    | string  |         | Group ID of the application                             |
-| **eclipse-steady-application-artifact-id**    | false    | string  |         | Artifact ID of the application                          |
-| **eclipse-steady-application-version**        | false    | string  |         | Version of the application                              |
-| **eclipse-steady-project-source-directories** | false    | string  |         | Project source directories to scan (separated by comma) |
+| name                                          | required | type    | default    | description                                             |
+|-----------------------------------------------|----------|---------|------------|---------------------------------------------------------|
+| **operating-system**                          | true     | string  |            | Operating system to run the GitHub Workflow             |
+| **sast-codeql-enabled**                       | false    | boolean | true       | Enable CodeQL scan (SAST)                               |
+| **sast-sonarqube-enabled**                    | false    | boolean | true       | Enable SonarQube scan (SAST)                            |
+| **sast-semgrep-enabled**                      | false    | boolean | true       | Enable Semgrep scan (SAST)                              |
+| **sast-horusec-enabled**                      | false    | boolean | true       | Enable Horusec scan (SAST)                              |
+| **sast-snyk-code-enabled**                    | false    | boolean | true       | Enable Snyk Code scan (SAST)                            |
+| **sca-eclipse-steady-enabled**                | false    | boolean | true       | Enable Eclipse Steady scan (SCA)                        |
+| **sca-snyk-enabled**                          | false    | boolean | true       | Enable Snyk scan (SCA)                                  |
+| **sca-owasp-dependency-check-enabled**        | false    | boolean | true       | Enable OWASP Dependency Check scan (SCA)                |
+| **sca-grype-enabled**                         | false    | boolean | true       | Enable Grype scan (SCA)                                 |
+| **project-name**                              | false    | string  |            | Name of project to be scanned                           |
+| **build-directory**                           | false    | string  |            | Name of project build directory                         |
+| **coverage-report-name**                      | false    | string  |            | Name of test coverage report                            |
+| **horusec-files-or-paths-to-ignore**          | false    | string  | **/test/** | Files or paths to ignore during the Horusec scan        |
+| **semgrep-files-or-paths-to-ignore**          | false    | string  | test,tests | Files or paths to ignore during the Semgrep scan        |
+| **eclipse-steady-workspace-token**            | false    | string  |            | Token used to identify project workspace                |
+| **eclipse-steady-application-group-id**       | false    | string  |            | Group ID of the application                             |
+| **eclipse-steady-application-artifact-id**    | false    | string  |            | Artifact ID of the application                          |
+| **eclipse-steady-application-version**        | false    | string  |            | Version of the application                              |
+| **eclipse-steady-project-source-directories** | false    | string  |            | Project source directories to scan (separated by comma) |
 
 ### experiment-3-javascript.yml
 
-| name                                   | required | type    | default | description                              |
-|----------------------------------------|----------|---------|---------|------------------------------------------|
-| **sast-sonarqube-enabled**             | false    | boolean | true    | Enable SonarQube scan (SAST)             |
-| **sast-semgrep-enabled**               | false    | boolean | true    | Enable Semgrep scan (SAST)               |
-| **sast-horusec-enabled**               | false    | boolean | true    | Enable Horusec scan (SAST)               |
-| **sast-codeql-enabled**                | false    | boolean | true    | Enable CodeQL scan (SAST)                |
-| **sast-snyk-code-enabled**             | false    | boolean | true    | Enable Snyk Code scan (SAST)             |
-| **sca-eclipse-steady-enabled**         | false    | boolean | true    | Enable Eclipse Steady scan (SCA)         |
-| **sca-snyk-enabled**                   | false    | boolean | true    | Enable Snyk scan (SCA)                   |
-| **sca-owasp-dependency-check-enabled** | false    | boolean | true    | Enable OWASP Dependency Check scan (SCA) |
-| **sca-grype-enabled**                  | false    | boolean | true    | Enable Grype scan (SCA)                  |
-| **project-name**                       | false    | string  |         | Name of project to be scanned            |
-| **build-directory**                    | false    | string  |         | Name of project build directory          |
-| **coverage-report-name**               | false    | string  |         | Name of test coverage report             |
-| **node-version**                       | false    | string  | 16.x    | Node.js version to install               |
+| name                                   | required | type    | default    | description                                      |
+|----------------------------------------|----------|---------|------------|--------------------------------------------------|
+| **operating-system**                   | true     | string  |            | Operating system to run the GitHub Workflow      |
+| **sast-codeql-enabled**                | false    | boolean | true       | Enable CodeQL scan (SAST)                        |
+| **sast-sonarqube-enabled**             | false    | boolean | true       | Enable SonarQube scan (SAST)                     |
+| **sast-semgrep-enabled**               | false    | boolean | true       | Enable Semgrep scan (SAST)                       |
+| **sast-horusec-enabled**               | false    | boolean | true       | Enable Horusec scan (SAST)                       |
+| **sast-snyk-code-enabled**             | false    | boolean | true       | Enable Snyk Code scan (SAST)                     |
+| **sca-eclipse-steady-enabled**         | false    | boolean | true       | Enable Eclipse Steady scan (SCA)                 |
+| **sca-snyk-enabled**                   | false    | boolean | true       | Enable Snyk scan (SCA)                           |
+| **sca-owasp-dependency-check-enabled** | false    | boolean | true       | Enable OWASP Dependency Check scan (SCA)         |
+| **sca-grype-enabled**                  | false    | boolean | true       | Enable Grype scan (SCA)                          |
+| **project-name**                       | false    | string  |            | Name of project to be scanned                    |
+| **build-directory**                    | false    | string  |            | Name of project build directory                  |
+| **coverage-report-name**               | false    | string  |            | Name of test coverage report                     |
+| **node-version**                       | false    | string  | 16.x       | Node.js version to install                       |
+| **horusec-files-or-paths-to-ignore**   | false    | string  | **/test/** | Files or paths to ignore during the Horusec scan |
+| **semgrep-files-or-paths-to-ignore**   | false    | string  | test,tests | Files or paths to ignore during the Semgrep scan |

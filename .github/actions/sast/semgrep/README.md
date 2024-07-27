@@ -21,11 +21,12 @@ The action uses the official Semgrep Docker image `returntocorp/semgrep:latest` 
 
 ## Inputs
 
-| name                     | required | type   | default                 | description                     |
-|--------------------------|----------|--------|-------------------------|---------------------------------|
-| **programming-language** | true     | string |                         | Programming language to analyse |
-| **artifact-name**        | false    | string | sast-semgrep-report     | Name of the artifact to upload  |
-| **path**                 | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan    |
+| name                         | required | type   | default                 | description                              |
+|------------------------------|----------|--------|-------------------------|------------------------------------------|
+| **programming-language**     | true     | string |                         | Programming language to analyse          |
+| **files-or-paths-to-ignore** | false    | string | test,tests              | Files or paths to ignore during the scan |
+| **artifact-name**            | false    | string | sast-semgrep-report     | Name of the artifact to upload           |
+| **path**                     | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan             |
 
 ## Build Artifacts
 

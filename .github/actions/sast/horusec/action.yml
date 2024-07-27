@@ -1,8 +1,14 @@
 name: Horusec SAST Action
-description: Run Horusec SAST scan
+description: Configure and run SAST Horusec scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
+  files-or-paths-to-ignore:
+    description: Paths to ignore during the scan
+    type: string
+    required: false
+    default: "**/test/**"
+
   artifact-name:
     description: Name of the artifact to upload
     type: string
@@ -24,17 +30,45 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Perform Horusec Analysis
-      uses: fike/horusec-action@v0.2.2
-      with:
-        arguments: >
-          --project-path=${{ inputs.path }}/ 
-          --ignore="**/test/**" 
-          --output-format=json 
-          --json-output-file=horusec-report.json 
-          --enable-owasp-dependency-check=true 
-          --enable-shellcheck=true 
-          --return-error=false
+    # Linux and macOS support
+    - name: Download Horusec Binary - ${{ runner.os }}
+      if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+      shell: bash
+      run: curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
+
+    - name: Perform Horusec Analysis - ${{ runner.os }}
+      if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+      shell: bash
+      run: |
+        horusec start -D \
+        --project-path=${{ inputs.path }} \
+        --ignore="${{ inputs.files-or-paths-to-ignore }}" \
+        --output-format=json \
+        --json-output-file=horusec-report.json \
+        --enable-owasp-dependency-check=true \
+        --enable-shellcheck=true \
+        --return-error=false
+
+    # Windows support
+    - name: Download Horusec Binary - ${{ runner.os }}
+      if: ${{ runner.os == 'Windows' }}
+      shell: bash
+      run: |
+        curl -fsSL "https://github.com/ZupIT/horusec/releases/latest/download/horusec_win_amd64.exe" -o "./horusec.exe"
+        chmod +x ./horusec.exe
+
+    - name: Perform Horusec Analysis - ${{ runner.os }}
+      if: ${{ runner.os == 'Windows' }}
+      shell: bash
+      run: |
+        ./horusec.exe start -D \
+        --project-path=${{ inputs.path }} \
+        --ignore="${{ inputs.files-or-paths-to-ignore }}" \
+        --output-format=json \
+        --json-output-file=horusec-report.json \
+        --enable-owasp-dependency-check=true \
+        --enable-shellcheck=true \
+        --return-error=false
 
     - name: Upload Horusec Report
       uses: actions/upload-artifact@v4

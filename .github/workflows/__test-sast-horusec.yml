@@ -7,68 +7,32 @@ permissions:
   security-events: write
 
 jobs:
-  test-action-java:
-    name: Test Horusec SAST Action (Java)
-    runs-on: ubuntu-latest
+  test-action:
+    name: Test Horusec SAST Action
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        category: [
+          { repository: seansmith39/H6060-Java-Logback,      ref: 7ee000a0a359d239c60bb93a2f4f4ea467c38395, programming-language: java },
+          { repository: seansmith39/H6060-Python-Pillow,     ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7, programming-language: python },
+          { repository: seansmith39/H6060-JavaScript-Lodash, ref: 1144918f3578a84fcc4986da9b806e63a6175cbb, programming-language: javascript },
+        ]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: experiment-resources
 
-      - name: Checkout Jackson-Databind Repository
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Java-Jackson-Databind
-          ref: 1acb8ffe6eb20005114bfe18cfd5809b443789c2
-          path: jackson-databind
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
       - name: Run Horusec (SAST)
         uses: ./experiment-resources/.github/actions/sast/horusec
         with:
-          artifact-name: sast-horusec-report-java
-          path: jackson-databind
-
-  test-action-python:
-    name: Test Horusec SAST Action (Python)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          path: experiment-resources
-
-      - name: Checkout Pillow Repository
-        uses: actions/checkout@v4
-        with:
-          repository: seansmith39/H6060-Python-Pillow
-          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
-          path: pillow
-
-      - name: Run Horusec (SAST)
-        uses: ./experiment-resources/.github/actions/sast/horusec
-        with:
-          artifact-name: sast-horusec-report-python
-          path: pillow
-
-  test-action-javascript:
-    name: Test Horusec SAST Action (JavaScript)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          path: experiment-resources
-
-      - name: Checkout Lodash Repository
-        uses: actions/checkout@v4
-        with:
-          repository: lodash/lodash
-          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
-          path: lodash
-
-      - name: Run Horusec (SAST)
-        uses: ./experiment-resources/.github/actions/sast/horusec
-        with:
-          artifact-name: sast-horusec-report-javascript
-          path: lodash
+          artifact-name: sast-horusec-report-${{ matrix.category.programming-language }}-${{ matrix.os }}
+          path: upstream-repository

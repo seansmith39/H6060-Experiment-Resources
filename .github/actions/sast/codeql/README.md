@@ -1,8 +1,8 @@
-# CodeQL SAST Action
+# SAST CodeQL Action
 
 ## Description
 
-An action to configure and run a CodeQL SAST scan. 
+An action to configure and run a SAST CodeQL scan. 
 
 **Notes:**
 - The action uses CodeQL CLI `v3`.
@@ -30,7 +30,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 ## Example Execution
 
 ```yaml
-- name: Run CodeQL SAST Scan
+- name: Run SAST CodeQL Scan
   uses: seansmith39/H6060-Experiment-Resources/.github/actions/sast/codeql@main
   with:
     programming-language: java

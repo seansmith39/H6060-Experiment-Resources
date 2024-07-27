@@ -8,6 +8,12 @@ inputs:
     type: string
     required: true
 
+  files-or-paths-to-ignore:
+    description: Paths to ignore during the scan
+    type: string
+    required: false
+    default: "test,tests"
+
   artifact-name:
     description: Name of the artifact to upload
     type: string
@@ -29,6 +35,17 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
+    - name: Get Files Or Paths To Ignore
+      shell: bash
+      run: |
+        cli_flags=""
+        ignore_files=${{ inputs.files-or-paths-to-ignore }}
+        
+        for ignore_file in ${ignore_files//,/ }; do
+            cli_flags="${cli_flags} --exclude=$ignore_file"
+        done
+        echo "FILES_OR_PATHS_TO_IGNORE=${cli_flags}" >> $GITHUB_ENV
+
     - name: Perform Semgrep Analysis
       shell: bash
       working-directory: ${{ inputs.path }}
@@ -39,7 +56,8 @@ runs:
           --config=p/cwe-top-25 \
           --config=p/owasp-top-ten \
           --json \
-          --json-output=semgrep-report.json
+          --json-output=semgrep-report.json \
+          ${{ env.FILES_OR_PATHS_TO_IGNORE }}
 
     - name: Upload Semgrep Report
       uses: actions/upload-artifact@v4

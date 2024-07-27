@@ -1,8 +1,19 @@
-name: Experiment 2 - Python Scanning
+name: Experiment 2 - Python
 
 on:
   workflow_call:
     inputs:
+      operating-system:
+        description: Operating system to run the workflow on
+        required: true
+        type: string
+
+      sast-codeql-enabled:
+        description: Enable CodeQL scan (SAST)
+        type: boolean
+        required: false
+        default: true
+
       sast-sonarqube-enabled:
         description: Enable SonarQube scan (SAST)
         type: boolean
@@ -17,12 +28,6 @@ on:
 
       sast-horusec-enabled:
         description: Enable Horusec scan (SAST)
-        type: boolean
-        required: false
-        default: true
-
-      sast-codeql-enabled:
-        description: Enable CodeQL scan (SAST)
         type: boolean
         required: false
         default: true
@@ -73,6 +78,12 @@ on:
         type: string
         required: false
 
+      horusec-files-or-paths-to-ignore:
+        description: Paths to ignore during the Horusec scan
+        type: string
+        required: false
+        default: "**/test/**"
+
       eclipse-steady-workspace-token:
         description: Token used to identify project workspace
         type: string
@@ -98,6 +109,13 @@ on:
         type: string
         required: false
 
+env:
+  CHECKOUT_CURRENT_REPO_NAME: seansmith39/H6060-Experiment-Resources
+  CHECKOUT_CURRENT_REPO_PATH: experiment-resources-repo
+  CHECKOUT_PROJECT_REPO_PATH: project-repo
+  DOWNLOAD_WORKFLOW_CONCLUSION: in_progress
+  PROJECT_PROGRAMMING_LANGUAGE: python
+
 permissions:
   security-events: write
   
@@ -106,55 +124,58 @@ defaults:
     shell: bash
 
 jobs:
-  sast-sonarqube:
-    name: Run SonarQube (SAST)
-    if: ${{ inputs.sast-sonarqube-enabled == true }}
-    runs-on: ubuntu-latest
+  sast-codeql:
+    name: (SAST) CodeQL - ${{ inputs.operating-system }}
+    if: ${{ inputs.sast-codeql-enabled == true }}
+    runs-on: ${{ inputs.operating-system }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Download Build
-        uses: dawidd6/action-download-artifact@v3.1.4
+      - name: Run CodeQL (SAST)
+        uses: ./experiment-resources-repo/.github/actions/sast/codeql
         with:
-          name: python-build
-          path: project-repo/${{ inputs.build-directory }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
-          commit: ${{ github.event.workflow_run.head_commit.id }}
+          programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
+          artifact-name: sast-codeql-report-${{ inputs.operating-system }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
-        uses: andstor/file-existence-action@v3
+  sast-horusec:
+    name: (SAST) Horusec - ${{ inputs.operating-system }}
+    if: ${{ inputs.sast-horusec-enabled == true }}
+    runs-on: ${{ inputs.operating-system }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
-          files: project-repo/${{ inputs.build-directory }}
-          fail: true
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
-      - name: Run SonarQube (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/sonarqube
+      - name: Checkout Project Repository
+        uses: actions/checkout@v4
         with:
-          programming-language: python
-          sonarqube-token: ${{ secrets.SONARQUBE_TOKEN }}
-          sonarqube-url: ${{ secrets.SONARQUBE_URL}}
-          sonarqube-username: ${{ secrets.SONARQUBE_USERNAME }}
-          sonarqube-password: ${{ secrets.SONARQUBE_PASSWORD }}
-          sonarqube-project-key: ${{ inputs.project-name }}
-          path: project-repo
+          fetch-depth: 0
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
+
+      - name: Run Horusec (SAST)
+        uses: ./experiment-resources-repo/.github/actions/sast/horusec
+        with:
+          files-or-paths-to-ignore: ${{ inputs.horusec-files-or-paths-to-ignore }}
+          artifact-name: sast-horusec-report-${{ inputs.operating-system }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sast-semgrep:
-    name: Run Semgrep (SAST)
+    name: (SAST) Semgrep - ${{ inputs.operating-system }}
     if: ${{ inputs.sast-semgrep-enabled == true }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.operating-system }}
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
     container:
@@ -163,65 +184,67 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Run Semgrep (SAST)
         uses: ./experiment-resources-repo/.github/actions/sast/semgrep
         with:
-          programming-language: python
-          path: project-repo
+          programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
+          files-or-paths-to-ignore: ${{ inputs.semgrep-files-or-paths-to-ignore }}
+          artifact-name: sast-semgrep-report-${{ inputs.operating-system }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-  sast-horusec:
-    name: Run Horusec (SAST)
-    if: ${{ inputs.sast-horusec-enabled == true }}
+  sast-sonarqube:
+    name: Run SonarQube (SAST)
+    if: ${{ inputs.sast-sonarqube-enabled == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Run Horusec (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/horusec
+      - name: Download Build
+        uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          path: project-repo
+          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
+          commit: ${{ github.event.workflow_run.head_commit.id }}
 
-  sast-codeql:
-    name: Run CodeQL (SAST)
-    if: ${{ inputs.sast-codeql-enabled == true }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
+        uses: andstor/file-existence-action@v3
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          fail: true
 
-      - name: Checkout Project Repository
-        uses: actions/checkout@v4
+      - name: Run SonarQube (SAST)
+        uses: ./experiment-resources-repo/.github/actions/sast/sonarqube
         with:
-          fetch-depth: 0
-          path: project-repo
-
-      - name: Run CodeQL (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/codeql
-        with:
-          programming-language: python
-          path: project-repo
+          programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
+          sonarqube-token: ${{ secrets.SONARQUBE_TOKEN }}
+          sonarqube-url: ${{ secrets.SONARQUBE_URL}}
+          sonarqube-username: ${{ secrets.SONARQUBE_USERNAME }}
+          sonarqube-password: ${{ secrets.SONARQUBE_PASSWORD }}
+          sonarqube-project-key: ${{ inputs.project-name }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sast-snyk-code:
     name: Run Snyk Code (SAST)
@@ -233,19 +256,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Run Snyk Code (SAST)
         uses: ./experiment-resources-repo/.github/actions/sast/snyk-code
         with:
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sca-eclipse-steady:
     name: Run Eclipse Steady (SCA)
@@ -255,30 +278,30 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: python-build
-          path: project-repo/${{ inputs.build-directory }}
+          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
         if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: project-repo/${{ inputs.build-directory }}
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run Eclipse Steady (SCA)
@@ -290,7 +313,7 @@ jobs:
           eclipse-steady-application-artifact-id: ${{ inputs.eclipse-steady-application-artifact-id }}
           eclipse-steady-application-version: ${{ inputs.eclipse-steady-application-version }}
           eclipse-steady-project-source-directories: ${{ inputs.eclipse-steady-project-source-directories }}
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sca-snyk:
     name: Run Snyk (SCA)
@@ -302,37 +325,37 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: python-build
-          path: project-repo/${{ inputs.build-directory }}
+          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
           
       - name: Check For File Existence
         if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: project-repo/${{ inputs.build-directory }}
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run Snyk (SCA)
         uses: ./experiment-resources-repo/.github/actions/sca/snyk
         with:
-          programming-language: python
-          path: project-repo
+          programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sca-owasp-dependency-check:
     name: Run OWASP Dependency Check (SCA)
@@ -342,30 +365,30 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: python-build
-          path: project-repo/${{ inputs.build-directory }}
+          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
         if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: project-repo/${{ inputs.build-directory }}
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run OWASP Dependency Check (SCA)
@@ -373,7 +396,7 @@ jobs:
         with:
           nvd-api-key: ${{ secrets.NVD_API_KEY }}
           project-name: ${{ inputs.project-name }}
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sca-grype:
     name: Run Grype (SCA)
@@ -383,36 +406,36 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
-          path: experiment-resources-repo
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
 
       - name: Checkout Project Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: python-build
-          path: project-repo/${{ inputs.build-directory }}
+          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
         if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: project-repo/${{ inputs.build-directory }}
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run Grype (SCA)
         uses: ./experiment-resources-repo/.github/actions/sca/grype
         with:
-          path: project-repo
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   create-security-testing-tool-report:
     name: Create Security Testing Tool Report
@@ -433,14 +456,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
 
       - name: Download All Build Artifacts
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Create Security Testing Tool Report
@@ -466,7 +489,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Experiment-Resources
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
 
       - name: Export GitHub Action OpenTelemetry Metrics
         uses: ./.github/actions/metrics/opentelemetry-metrics-exporter
