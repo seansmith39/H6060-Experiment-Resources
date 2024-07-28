@@ -4,11 +4,18 @@
 
 An action to generate a JavaScript dependency tree.
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Inputs
 
 | name              | required | type   | default                    | description                                 |
 |-------------------|----------|--------|----------------------------|---------------------------------------------|
-| **build-tool**    | false    | string | npm                        | Build tool used to generate dependency tree |
 | **artifact-name** | false    | string | javascript-dependency-tree | Name of the artifact to upload              |
 | **path**          | false    | string | ${{ github.workspace }}    | Path to run the JavaScript command          |
 
