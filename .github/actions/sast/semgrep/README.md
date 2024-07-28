@@ -18,6 +18,12 @@ It is available under `Platform` → `Settings` of the repository page on the Se
 - JavaScript
 - Python
 
+## Supported Operating Systems
+
+- Ubuntu
+- Windows
+- MacOS
+
 ## Inputs
 
 | name                         | required | type   | default                 | description                              |

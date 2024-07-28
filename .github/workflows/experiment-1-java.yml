@@ -14,8 +14,8 @@ on:
         required: false
         default: true
 
-      sast-sonarqube-enabled:
-        description: Enable SonarQube scan (SAST)
+      sast-horusec-enabled:
+        description: Enable Horusec scan (SAST)
         type: boolean
         required: false
         default: true
@@ -26,8 +26,8 @@ on:
         required: false
         default: true
 
-      sast-horusec-enabled:
-        description: Enable Horusec scan (SAST)
+      sast-sonarqube-enabled:
+        description: Enable SonarQube scan (SAST)
         type: boolean
         required: false
         default: true
@@ -62,11 +62,6 @@ on:
         required: false
         default: true
 
-      project-name:
-        description: Name of project to be scanned
-        type: string
-        required: false
-
       java-version:
         description: Java version to use
         type: string
@@ -78,8 +73,18 @@ on:
         type: string
         required: false
         default: temurin
-
-      build-directory:
+      
+      project-name:
+        description: Name of project to be scanned
+        type: string
+        required: false
+        
+      project-build-artifact:
+        description: Name of build artifact
+        type: string
+        required: false
+        
+      project-build-directory:
         description: Name of project build directory
         type: string
         required: false
@@ -224,9 +229,9 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sast-sonarqube:
-    name: Run SonarQube (SAST)
+    name: (SAST) SonarQube - ${{ inputs.operating-system }}
     if: ${{ inputs.sast-sonarqube-enabled == true }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.operating-system }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -240,21 +245,21 @@ jobs:
           fetch-depth: 0
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Download Build
+      - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          name: ${{ inputs.project-build-artifact }}
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
+        if: ${{ inputs.project-build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           fail: true
 
       - name: Run SonarQube (SAST)
@@ -309,27 +314,27 @@ jobs:
           fetch-depth: 0
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Download Build
+      - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          name: ${{ inputs.project-build-artifact }}
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
+        if: ${{ inputs.project-build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           fail: true
 
       - name: Run Eclipse Steady (SCA)
         uses: ./experiment-resources-repo/.github/actions/sca/eclipse-steady/java
         with:
-          build-directory: ${{ inputs.build-directory }}
+          project-build-directory: ${{ inputs.project-build-directory }}
           eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
           eclipse-steady-backend-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}/backend
           eclipse-steady-cia-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}/cia
@@ -358,21 +363,21 @@ jobs:
           fetch-depth: 0
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Download Build
+      - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          name: ${{ inputs.project-build-artifact }}
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
+        if: ${{ inputs.project-build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           fail: true
 
       - name: Run Snyk (SCA)
@@ -398,21 +403,21 @@ jobs:
           fetch-depth: 0
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Download Build
+      - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          name: ${{ inputs.project-build-artifact }}
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
+        if: ${{ inputs.project-build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           fail: true
 
       - name: Run OWASP Dependency Check (SCA)
@@ -439,21 +444,21 @@ jobs:
           fetch-depth: 0
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-      - name: Download Build
+      - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}-build
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          name: ${{ inputs.project-build-artifact }}
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
+        if: ${{ inputs.project-build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
           fail: true
 
       - name: Run Grype (SCA)

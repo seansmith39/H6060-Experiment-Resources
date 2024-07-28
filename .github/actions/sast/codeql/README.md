@@ -14,6 +14,12 @@ An action to configure and run a SAST CodeQL scan.
 - JavaScript
 - Python
 
+## Supported Operating Systems
+
+- Ubuntu
+- Windows
+- MacOS
+
 ## Inputs
 
 | name                     | required | type   | default                 | description                     |

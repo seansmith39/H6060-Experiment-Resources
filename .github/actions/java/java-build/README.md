@@ -7,6 +7,12 @@ An action to build a Java application and upload as a build artifact.
 **Notes:**
 - The action has only been tested against the Maven package manager.
 
+## Supported Operating Systems
+
+- Ubuntu
+- Windows
+- MacOS
+
 ## Inputs
 
 | name                | required | type   | default                 | description                    |

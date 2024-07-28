@@ -16,6 +16,12 @@ An action to configure and run a SonarQube SAST scan.
 - JavaScript
 - Python
 
+## Supported Operating Systems
+
+- Ubuntu
+- Windows
+- MacOS
+
 ## Inputs
 
 | name                      | required | type   | default                 | description                                    |
