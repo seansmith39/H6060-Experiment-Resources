@@ -7,21 +7,27 @@ permissions:
   security-events: write
 
 jobs:
-  test-action-job:
+  test-action:
     name: Test Java Dependency Tree Action
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+        category: [
+          { repository: seansmith39/H6060-Java-Logback, ref: 7ee000a0a359d239c60bb93a2f4f4ea467c38395 },
+        ]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: experiment-resources
 
-      - name: Checkout Jackson-Databind
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Java-Jackson-Databind
-          ref: 1acb8ffe6eb20005114bfe18cfd5809b443789c2
-          path: jackson-databind
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
@@ -32,4 +38,5 @@ jobs:
       - name: Create Java Dependency Tree
         uses: ./experiment-resources/.github/actions/java/java-dependency-tree
         with:
-          path: jackson-databind
+          artifact-name: java-dependency-tree-${{ matrix.os }}
+          path: upstream-repository

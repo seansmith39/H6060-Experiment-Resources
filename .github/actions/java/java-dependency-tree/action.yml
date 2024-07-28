@@ -23,10 +23,21 @@ runs:
       working-directory: ${{ inputs.path }}
       run: mvn dependency:tree -DoutputType=json -DoutputFile=java-dep-tree.json
 
+    # Ubuntu and macOS
     - name: Compress Java Dependency Tree
+      if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: find . -type f -name 'java-dep-tree.json' -exec zip -r java-dependency-tree.zip {} +
+
+    # Windows
+    - name: Compress Java Dependency Tree
+      if: runner.os == 'Windows'
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        find . -type f -name 'java-dep-tree.json' -exec sh -c 'echo "$0" >> "java-dependency-tree-paths.txt"' {} \;
+        7z a -spf -ir@java-dependency-tree-paths.txt java-dependency-tree.zip
 
     - name: Upload Java Dependency Tree
       uses: actions/upload-artifact@v4
