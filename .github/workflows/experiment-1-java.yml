@@ -202,8 +202,6 @@ jobs:
     runs-on: ${{ inputs.operating-system }}
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-    container:
-      image: semgrep/semgrep
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
