@@ -4,11 +4,18 @@
 
 An action to build and upload a JSON formatted JavaScript CycloneDX SBOM.
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Inputs
 
 | name                              | required | type   | default                   | description                                 |
 |-----------------------------------|----------|--------|---------------------------|---------------------------------------------|
-| **build-tool**                    | false    | string | npm                       | Build tool used to generate dependency tree |
 | **cyclonedx-npm-package-version** | false    | string | 1.19.0                    | Version of the CycloneDX Npm package to use |
 | **cyclonedx-schema-version**      | false    | string | 1.6                       | Version of the CycloneDX schema to use      |
 | **artifact-name**                 | false    | string | cyclonedx-sbom-javascript | Name of the artifact to upload              |

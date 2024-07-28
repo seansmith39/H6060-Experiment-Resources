@@ -33,19 +33,16 @@ runs:
       working-directory: ${{ inputs.path }}
       run: ${{ inputs.build-command }}
 
-    - name: Build JavaScript Application
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: ${{ inputs.build-command }}
-
     - name: Package JavaScript Application
       shell: bash
       working-directory: ${{ inputs.path }}
       run: ${{ inputs.package-command }}
 
+    # See v4 issue: https://github.com/actions/upload-artifact/issues/485
+    # TGZ issue: https://github.com/actions/upload-artifact/issues/109
     - name: Upload JavaScript Application
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.artifact-name }}
-        path: ${{ inputs.path }}
+        path: ${{ inputs.path }}/*.tgz
         if-no-files-found: error

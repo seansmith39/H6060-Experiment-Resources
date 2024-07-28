@@ -11,21 +11,27 @@ defaults:
     shell: bash
 
 jobs:
-  test-action-job:
+  test-action:
     name: Test JavaScript CycloneDX SBOM Action
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+        category: [
+          { repository: seansmith39/H6060-JavaScript-Lodash, ref: 1144918f3578a84fcc4986da9b806e63a6175cbb },
+        ]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: experiment-resources
 
-      - name: Checkout Lodash
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: lodash/lodash
-          ref: 1144918f3578a84fcc4986da9b806e63a6175cbb
-          path: lodash
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.2
@@ -33,10 +39,11 @@ jobs:
           node-version: 16.x
 
       - name: Install JavaScript Dependencies
-        working-directory: lodash
+        working-directory: upstream-repository
         run: npm ci
 
       - name: Create CycloneDX SBOM
         uses: ./experiment-resources/.github/actions/javascript/javascript-cyclonedx-sbom
         with:
-          path: lodash
+          artifact-name: cyclonedx-sbom-javascript-${{ matrix.os }}
+          path: upstream-repository
