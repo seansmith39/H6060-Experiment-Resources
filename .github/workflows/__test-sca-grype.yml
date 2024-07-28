@@ -9,7 +9,7 @@ permissions:
 jobs:
   test-action-java:
     name: Test Grype SCA Action (Java)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
 
   test-action-python:
     name: Test Grype SCA Action (Python)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -84,7 +84,7 @@ jobs:
 
   test-action-javascript:
     name: Test Grype SCA Action (JavaScript)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

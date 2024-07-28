@@ -60,7 +60,7 @@ The workflow can be triggered using the following example snippet:
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-1-java.yml@main
     secrets: inherit
     with:
-      operating-system: ubuntu-latest
+      operating-system: ubuntu-22.04
       project-name: H6060-Java-Webdrivermanager
       project-build-directory: target
       coverage-report-name: jacoco.xml
@@ -76,7 +76,7 @@ The workflow can be triggered using the following example snippet:
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-2-python.yml@main
     secrets: inherit
     with:
-      operating-system: ubuntu-latest
+      operating-system: ubuntu-22.04
       project-name: H6060-Python-Pillow
       project-build-directory: dist
       coverage-report-name: coverage.xml
@@ -92,7 +92,7 @@ The workflow can be triggered using the following example snippet:
     uses: seansmith39/H6060-Experiment-Workflows/.github/workflows/experiment-3-javascript.yml@main
     secrets: inherit
     with:
-      operating-system: ubuntu-latest
+      operating-system: ubuntu-22.04
       project-name: H6060-JavaScript-Lodash
 ```
 

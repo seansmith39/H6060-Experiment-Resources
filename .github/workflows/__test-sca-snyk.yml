@@ -9,7 +9,7 @@ permissions:
 jobs:
   test-action-java:
     name: Test Snyk SCA Action (Java)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
@@ -47,7 +47,7 @@ jobs:
 
   test-action-python:
     name: Test Snyk SCA Action (Python)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
@@ -90,7 +90,7 @@ jobs:
 
   test-action-javascript:
     name: Test Snyk SCA Action (JavaScript)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:

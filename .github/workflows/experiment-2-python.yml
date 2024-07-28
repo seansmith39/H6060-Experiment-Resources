@@ -251,7 +251,7 @@ jobs:
   sast-snyk-code:
     name: Run Snyk Code (SAST)
     if: ${{ inputs.sast-snyk-code-enabled == true }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
@@ -275,7 +275,7 @@ jobs:
   sca-eclipse-steady:
     name: Run Eclipse Steady (SCA)
     if: ${{ inputs.sca-eclipse-steady-enabled == true }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -320,7 +320,7 @@ jobs:
   sca-snyk:
     name: Run Snyk (SCA)
     if: ${{ inputs.sca-snyk-enabled == true }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
@@ -362,7 +362,7 @@ jobs:
   sca-owasp-dependency-check:
     name: Run OWASP Dependency Check (SCA)
     if: ${{ inputs.sca-owasp-dependency-check-enabled == true }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -403,7 +403,7 @@ jobs:
   sca-grype:
     name: Run Grype (SCA)
     if: ${{ inputs.sca-grype-enabled == true }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -441,7 +441,7 @@ jobs:
 
   create-security-testing-tool-report:
     name: Create Security Testing Tool Report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [
       sast-sonarqube,
       sast-semgrep,
@@ -486,7 +486,7 @@ jobs:
     name: Export GitHub Action OpenTelemetry Metrics
     if: ${{ ! failure() && ! cancelled() }}
     needs: create-security-testing-tool-report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

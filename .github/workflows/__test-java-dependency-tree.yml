@@ -9,7 +9,7 @@ permissions:
 jobs:
   test-action-job:
     name: Test Java Dependency Tree Action
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

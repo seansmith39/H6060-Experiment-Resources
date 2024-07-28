@@ -9,9 +9,11 @@ An action to build a Java application and upload as a build artifact.
 
 ## Supported Operating Systems
 
-- Ubuntu
-- Windows
-- MacOS
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
 
 ## Inputs
 

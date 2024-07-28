@@ -20,9 +20,11 @@ It is available under `Platform` → `Settings` of the repository page on the Se
 
 ## Supported Operating Systems
 
-- Ubuntu
-- Windows
-- MacOS
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
 
 ## Inputs
 

@@ -16,9 +16,11 @@ An action to configure and run a SAST CodeQL scan.
 
 ## Supported Operating Systems
 
-- Ubuntu
-- Windows
-- MacOS
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
 
 ## Inputs
 

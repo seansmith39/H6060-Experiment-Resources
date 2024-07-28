@@ -9,7 +9,7 @@ permissions:
 jobs:
   build-java-application:
     name: Build Application (Java)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
 
   build-python-application:
     name: Build Application (Python)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -83,7 +83,7 @@ jobs:
 
   build-javascript-application:
     name: Build Application (JavaScript)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -120,7 +120,7 @@ jobs:
 
   test-action-job:
     name: Test CycloneDX SBOM OSV Report Action
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [ build-java-application, build-python-application, build-javascript-application ]
     strategy:
       matrix:
