@@ -196,7 +196,7 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Project Build
-        uses: dawidd6/action-download-artifact@v3.1.4§
+        uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: ${{ inputs.project-build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"

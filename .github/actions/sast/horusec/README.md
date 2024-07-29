@@ -10,9 +10,11 @@ An action to configure and run a SAST Horusec scan.
 
 ## Supported Programming Languages
 
-- Java
-- JavaScript
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
+| JavaScript           | Npm       |
+| Python               | PyPi      |
 
 ## Supported Operating Systems
 

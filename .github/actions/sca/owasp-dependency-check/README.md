@@ -15,9 +15,11 @@ NVD API key is required to access the NVD API. A key can be requested using http
 
 ## Supported Programming Languages
 
-- Java
-- JavaScript
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
+| JavaScript           | Npm       |
+| Python               | PyPi      |
 
 ## Inputs
 

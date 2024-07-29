@@ -6,7 +6,9 @@ An action to configure and run an Eclipse Steady SCA plugin scan for Java applic
 
 ## Supported Programming Languages
 
-- Java
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
 
 ## Inputs
 

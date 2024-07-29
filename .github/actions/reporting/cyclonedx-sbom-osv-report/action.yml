@@ -65,6 +65,24 @@ inputs:
     required: false
     default: ${{ github.run_id }}
 
+  experiment-runner-environment:
+    description: Environment of the GitHub runner
+    type: string
+    required: false
+    default: ${{ runner.environment }}
+
+  experiment-runner-operating-system:
+    description: Operating system of the GitHub runner
+    type: string
+    required: false
+    default: ${{ runner.os }}
+
+  experiment-runner-architecture:
+    description: Architecture of the GitHub runner
+    type: string
+    required: false
+    default: ${{ runner.arch }}
+
   experiment-programming-language:
     description: Programming language of the experiment
     type: string
@@ -92,6 +110,12 @@ inputs:
     required: false
     default: cyclonedx-sbom-osv-report
 
+  path:
+    description: Directory to run the action
+    type: string
+    required: false
+    default: experiment-resources
+
   include-unit-tests:
     description: Run unit tests in the action (for testing use only)
     type: string # See https://github.com/actions/runner/issues/2238
@@ -102,7 +126,7 @@ runs:
     using: composite
     steps:
       - name: Download CycloneDX SBOM Artifact
-        uses: dawidd6/action-download-artifact@v3.1.4
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: ${{ inputs.cyclonedx-sbom-artifact-name }}
           path: ${{ github.action_path }}
@@ -122,7 +146,7 @@ runs:
         run: pip install -r requirements-dev.txt
 
       - name: Run Unit Tests
-        if: ${{ inputs.include-unit-tests == 'true' }}
+        if: ${{ inputs.include-unit-tests == 'true' && runner.os != 'Windows' }}
         shell: bash
         working-directory: ${{ github.action_path }}
         run: ./run_unit_tests.sh
@@ -142,20 +166,28 @@ runs:
           --experiment-github-commit ${{ inputs.experiment-github-commit }}
           --experiment-github-workflow-name "${{ inputs.experiment-github-workflow-name }}"
           --experiment-github-workflow-run-id ${{ inputs.experiment-github-workflow-run-id }}
+          --experiment-runner-environment ${{ inputs.experiment-runner-environment }}
+          --experiment-runner-operating-system ${{ inputs.experiment-runner-operating-system }}
+          --experiment-runner-architecture ${{ inputs.experiment-runner-architecture }}
           --experiment-programming-language ${{ inputs.experiment-programming-language }}
           --cyclonedx-sbom-filename ${{ inputs.cyclonedx-sbom-filename }}
           --csv-report-filename ${{ inputs.csv-report-filename }}
 
       # See https://github.com/actions/runner/issues/2185
+      # For Windows - github.action_path uses backslashes but path arg only accepts forward slashes
       - name: Set GitHub Action Path
         shell: bash
         run: |
-          GITHUB_ACTION_NEW_PATH=$(python -c "print('${{github.action_path}}'.replace('./.', '.'))")
+          if [[ "${{ inputs.experiment-runner-operating-system }}" == "Linux" || "${{ inputs.experiment-runner-operating-system }}" == "macOS" ]]; then
+              GITHUB_ACTION_NEW_PATH=$(python -c "print('${{ github.action_path }}'.replace('./', ''))")
+          else
+              GITHUB_ACTION_NEW_PATH="${{ inputs.path }}/.github/actions/reporting/cyclonedx-sbom-osv-report"
+          fi
           echo "GITHUB_ACTION_NEW_PATH=$GITHUB_ACTION_NEW_PATH" >> $GITHUB_ENV
 
       - name: Upload CycloneDX SBOM OSV Report
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact-name }}
-          path: ${{ env.GITHUB_ACTION_NEW_PATH }}/src/main/python3/${{ inputs.csv-report-filename }}
+          path: "${{ env.GITHUB_ACTION_NEW_PATH }}/src/main/python3/${{ inputs.csv-report-filename }}"
           if-no-files-found: error

@@ -9,9 +9,11 @@ An action to run a Grype SCA scan.
 
 ## Supported Programming Languages
 
-- Java
-- JavaScript
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
+| JavaScript           | Npm       |
+| Python               | PyPi      |
 
 ## Inputs
 

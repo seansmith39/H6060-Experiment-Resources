@@ -69,6 +69,9 @@ SOURCE_DIRECTORY = "../../main/python3"
 GITHUB_API_URL = "https://api.github.com"
 GITHUB_API_TOKEN = "ghp_1234567890"
 EXPERIMENT_ID = "1"
+EXPERIMENT_RUNNER_ENVIRONMENT = "github-hosted"
+EXPERIMENT_RUNNER_OPERATING_SYSTEM = "ubuntu-22.04"
+EXPERIMENT_RUNNER_ARCHITECTURE = "ARM"
 
 # Mocked GitHub arguments
 GITHUB_PROJECT_NAME = "project-name"
@@ -91,6 +94,12 @@ REQUIRED_ARGUMENTS = [
     GITHUB_PROJECT_NAME,
     "--experiment-github-package-manager",
     GITHUB_PACKAGE_MANAGER,
+    "--experiment-runner-environment",
+    EXPERIMENT_RUNNER_ENVIRONMENT,
+    "--experiment-runner-operating-system",
+    EXPERIMENT_RUNNER_OPERATING_SYSTEM,
+    "--experiment-runner-architecture",
+    EXPERIMENT_RUNNER_ARCHITECTURE,
 ]
 
 

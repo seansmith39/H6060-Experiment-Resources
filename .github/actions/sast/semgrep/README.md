@@ -14,9 +14,11 @@ It is available under `Platform` → `Settings` of the repository page on the Se
 
 ## Supported Programming Languages
 
-- Java
-- JavaScript
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
+| JavaScript           | Npm       |
+| Python               | PyPi      |
 
 ## Supported Operating Systems
 

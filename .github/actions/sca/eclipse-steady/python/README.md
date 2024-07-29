@@ -11,7 +11,9 @@ An action to configure and run an Eclipse Steady SCA CLI scan for Python applica
 
 ## Supported Programming Languages
 
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Python               | PyPi      |
 
 ## Inputs
 

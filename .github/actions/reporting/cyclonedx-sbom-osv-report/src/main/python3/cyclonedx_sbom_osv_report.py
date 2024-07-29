@@ -97,6 +97,24 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         help="Experiment GitHub workflow run ID",
     )
     parser.add_argument(
+        "--experiment-runner-environment",
+        action="store",
+        required=True,
+        help="Experiment GitHub runner environment",
+    )
+    parser.add_argument(
+        "--experiment-runner-operating-system",
+        action="store",
+        required=True,
+        help="Experiment GitHub runner operating system",
+    )
+    parser.add_argument(
+        "--experiment-runner-architecture",
+        action="store",
+        required=True,
+        help="Experiment GitHub runner architecture",
+    )
+    parser.add_argument(
         "--experiment-programming-language",
         action="store",
         required=True,
@@ -510,7 +528,9 @@ def get_current_date() -> str:
     return datetime.today().strftime("%Y-%m-%d")
 
 
-def get_experiment_information(args: argparse.Namespace, upstream_github_repository: str, github_repository: str) -> list:
+def get_experiment_information(
+    args: argparse.Namespace, upstream_github_repository: str, github_repository: str
+) -> list:
     """Get experiment information
 
     :parameter
@@ -524,6 +544,9 @@ def get_experiment_information(args: argparse.Namespace, upstream_github_reposit
     return [
         str(args.experiment_id),
         get_current_date(),
+        args.experiment_runner_environment.title(),
+        args.experiment_runner_operating_system,
+        args.experiment_runner_architecture,
         args.experiment_github_project_name.title(),
         upstream_github_repository,
         github_repository,
@@ -706,7 +729,7 @@ def write_csv_report_header(csv_output_filename: str) -> None:
     """
     log.info(f"Writing CSV report header to {get_directory_path()}/{csv_output_filename}")
 
-    with open(f"{get_directory_path()}/{csv_output_filename}", "w") as file:
+    with open(f"{get_directory_path()}/{csv_output_filename}", "w", newline="") as file:
         file.write(get_csv_column_headers())
 
     log.info(f"Successfully wrote CSV report header to {get_directory_path()}/{csv_output_filename}")
@@ -773,6 +796,9 @@ def get_csv_column_headers() -> str:
     github_headers = [
         "Experiment ID",
         "Experiment Date",
+        "Experiment Runner Environment",
+        "Experiment Runner Operating System",
+        "Experiment Runner Architecture",
         "Experiment Project Name",
         "Experiment Upstream GitHub Repository",
         "Experiment GitHub Repository",
@@ -871,7 +897,7 @@ def write_to_csv_report(csv_data: list, csv_output_filename: str) -> None:
     csv_data.sort()
     csv_data = list(item for item, _ in itertools.groupby(csv_data))
 
-    with open(f"{get_directory_path()}/{csv_output_filename}", "a") as csv_file:
+    with open(f"{get_directory_path()}/{csv_output_filename}", "a", newline="") as csv_file:
         writer = csv.writer(csv_file)
         writer.writerows(csv_data)
 

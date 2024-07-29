@@ -14,27 +14,39 @@ The script supports the parsing of CycloneDX SBOM v1.5 and v1.6 schemas.
 | JavaScript           | Npm       |
 | Python               | PyPi      |
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Inputs
 
-| name                                  | required | type    | default                       | description                                         |
-|---------------------------------------|----------|---------|-------------------------------|-----------------------------------------------------|
-| **github-server-url**                 | false    | string  | ${{ github.server_url }}      | GitHub server URL                                   |
-| **github-api-url**                    | false    | string  | ${{ github.api_url }}         | GitHub API URL                                      |
-| **github-api-token**                  | true     | string  |                               | Token to access the GitHub API                      |
-| **github-secret-access-token**        | true     | string  |                               | GitHub Workflow secret access token                 |
-| **experiment-id**                     | true     | string  |                               | Experiment ID                                       |
-| **experiment-github-project-name**    | true     | string  |                               | Name of the project being evaluated                 |"
-| **experiment-github-repository**      | false    | string  | ${{ github.repository }}      | Repository name in GitHub (owner/repository)        |
-| **experiment-github-branch**          | false    | string  | ${{ github.ref_name }}        | Branch name in GitHub                               |
-| **experiment-github-commit**          | false    | string  | ${{ github.sha }}             | Commit SHA in GitHub                                |
-| **experiment-github-workflow-name**   | false    | string  | ${{ github.workflow }}        | Workflow name in GitHub                             |
-| **experiment-github-workflow-run-id** | false    | string  | ${{ github.run_id }}          | Workflow run in GitHub                              |
-| **experiment-programming-language**   | true     | string  |                               | Programming language of the project being evaluated |
-| **cyclonedx-sbom-artifact-name**      | true     | string  |                               | Name of CycloneDX SBOM build artifact               |
-| **cyclonedx-sbom-filename**           | true     | string  |                               | Name of CycloneDX SBOM JSON report                  |
-| **csv-report-filename**               | false    | string  | cyclonedx_sbom_osv_report.csv | Name of the CSV report filename                     |
-| **artifact-name**                     | false    | string  | cyclonedx-sbom-osv            | Name of the artifact to upload                      |
-| **include-unit-tests**                | false    | boolean | false                         | Whether to run action unit tests                    |
+| name                                   | required | type   | default                       | description                                         |
+|----------------------------------------|----------|--------|-------------------------------|-----------------------------------------------------|
+| **github-server-url**                  | false    | string | ${{ github.server_url }}      | GitHub server URL                                   |
+| **github-api-url**                     | false    | string | ${{ github.api_url }}         | GitHub API URL                                      |
+| **github-api-token**                   | true     | string |                               | Token to access the GitHub API                      |
+| **github-secret-access-token**         | true     | string |                               | GitHub Workflow secret access token                 |
+| **experiment-id**                      | true     | string |                               | Experiment ID                                       |
+| **experiment-github-project-name**     | true     | string |                               | Name of the project being evaluated                 |"
+| **experiment-github-repository**       | false    | string | ${{ github.repository }}      | Repository name in GitHub (owner/repository)        |
+| **experiment-github-branch**           | false    | string | ${{ github.ref_name }}        | Branch name in GitHub                               |
+| **experiment-github-commit**           | false    | string | ${{ github.sha }}             | Commit SHA in GitHub                                |
+| **experiment-github-workflow-name**    | false    | string | ${{ github.workflow }}        | Workflow name in GitHub                             |
+| **experiment-github-workflow-run-id**  | false    | string | ${{ github.run_id }}          | Workflow run in GitHub                              |
+| **experiment-runner-environment**      | false    | string | ${{ runner.environment }}     | GitHub runner environment                           |
+| **experiment-runner-operating-system** | false    | string | ${{ runner.os }}              | GitHub runner operating system                      |
+| **experiment-runner-architecture**     | false    | string | ${{ runner.arch }}            | GitHub runner architecture                          |
+| **experiment-programming-language**    | true     | string |                               | Programming language of the project being evaluated |
+| **cyclonedx-sbom-artifact-name**       | true     | string |                               | Name of CycloneDX SBOM build artifact               |
+| **cyclonedx-sbom-filename**            | true     | string |                               | Name of CycloneDX SBOM JSON report                  |
+| **csv-report-filename**                | false    | string | cyclonedx_sbom_osv_report.csv | Name of the CSV report filename                     |
+| **artifact-name**                      | false    | string | cyclonedx-sbom-osv            | Name of the artifact to upload                      |
+| **path**                               | false    | string | experiment-resources          | Path to the project root directory                  |
+| **include-unit-tests**                 | false    | string | false                         | Whether to run action unit tests                    |
 
 ## Build Artifacts
 
@@ -70,6 +82,9 @@ The generated report contains the following columns.
 |-------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|-----------------------|-----------------------|
 | **Experiment ID**                         | Experiment Number                                                                                                                    |
 | **Experiment Date**                       | Date of experiment execution                                                                                                         |
+| **Experiment Runner Environment**         | GitHub runner environment                                                                                                            |
+| **Experiment Runner Operating System**    | GitHub runner operating system                                                                                                       |
+| **Experiment Runner Architecture**        | GitHub runner architecture                                                                                                           |
 | **Experiment Project Name**               | Name of project being evaluated                                                                                                      |
 | **Experiment Upstream GitHub Repository** | URL of upstream GitHub repository                                                                                                    |
 | **Experiment GitHub Repository**          | URL of forked GitHub repository                                                                                                      |

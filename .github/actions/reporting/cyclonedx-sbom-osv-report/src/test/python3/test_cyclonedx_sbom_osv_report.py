@@ -43,6 +43,9 @@ GITHUB_SERVER_URL = "https://github.com"
 GITHUB_API_URL = "https://api.github.com"
 GITHUB_API_TOKEN = "ghp_1234567890"
 EXPERIMENT_ID = "1"
+EXPERIMENT_RUNNER_ENVIRONMENT = "github-hosted"
+EXPERIMENT_RUNNER_OPERATING_SYSTEM = "ubuntu-22.04"
+EXPERIMENT_RUNNER_ARCHITECTURE = "ARM"
 EXPERIMENT_PROGRAMMING_LANGUAGE = "java"
 
 # Mocked GitHub arguments
@@ -76,6 +79,12 @@ REQUIRED_ARGUMENTS = [
     GITHUB_WORKFLOW_NAME,
     "--experiment-github-workflow-run-id",
     GITHUB_WORKFLOW_RUN_ID,
+    "--experiment-runner-environment",
+    EXPERIMENT_RUNNER_ENVIRONMENT,
+    "--experiment-runner-operating-system",
+    EXPERIMENT_RUNNER_OPERATING_SYSTEM,
+    "--experiment-runner-architecture",
+    EXPERIMENT_RUNNER_ARCHITECTURE,
     "--experiment-programming-language",
     EXPERIMENT_PROGRAMMING_LANGUAGE,
 ]
@@ -180,6 +189,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
         experiment_github_commit: str,
         experiment_github_workflow_name: str,
         experiment_github_workflow_run_id: str,
+        experiment_runner_operating_system: str,
         experiment_programming_language: str,
         cyclonedx_sbom_filename: str,
         csv_report_filename: str,
@@ -197,6 +207,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
             experiment_github_commit:str -- Experiment GitHub commit to be mocked in the arguments
             experiment_github_workflow_name:str -- Experiment GitHub workflow name to be mocked in the arguments
             experiment_github_workflow_run_id:str -- Experiment GitHub workflow run ID to be mocked in the arguments
+            experiment_runner_operating_system:str -- Experiment operating system to be mocked in the arguments
             experiment_programming_language:str -- Experiment programming language to be mocked in the arguments
             cyclonedx_sbom_filename:str -- Name of CycloneDX SBOM JSON report to parse
             csv_report_filename:str -- Name of CSV report to generate
@@ -215,6 +226,7 @@ class TestCycloneDxSbomOsvReport(unittest.TestCase):
             experiment_github_commit=experiment_github_commit,
             experiment_github_workflow_name=experiment_github_workflow_name,
             experiment_github_workflow_run_id=experiment_github_workflow_run_id,
+            experiment_runner_operating_system=experiment_runner_operating_system,
             experiment_programming_language=experiment_programming_language,
             cyclonedx_sbom_filename=cyclonedx_sbom_filename,
             csv_report_filename=csv_report_filename,

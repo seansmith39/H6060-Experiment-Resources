@@ -9,18 +9,21 @@ An action that reports information about the upstream GitHub repository and it's
 
 ## Inputs
 
-| name                                                  | required | type    | default                                  | description                                                           |
-|-------------------------------------------------------|----------|---------|------------------------------------------|-----------------------------------------------------------------------|
-| **github-api-url**                                    | false    | string  | ${{ github.api_url }}                    | GitHub API URL                                                        |
-| **github-api-token**                                  | true     | string  |                                          | Token to access the GitHub API                                        |
-| **experiment-id**                                     | true     | string  |                                          | Experiment ID                                                         |
-| **experiment-github-project-name**                    | true     | string  |                                          | Name of the project being evaluated                                   |"
-| **experiment-github-package-manager**                 | true     | string  |                                          | Package manager used in the project                                   |
-| **experiment-github-repository**                      | false    | string  | ${{ github.repository }}                 | Repository name in GitHub (owner/repository)                          |
-| **csv-github-repository-information-report-filename** | false    | string  | github_repository_information_report.csv | Name of the CSV file to save the GitHub Repository information report |
-| **github_repository_tag_report.csv**                  | false    | string  | github_repository_tag_report.csv         | Name of the CSV file to save the GitHub Repository tag report         |
-| **artifact-name**                                     | false    | string  | github-repository-reports                | Name of the artifact to upload                                        |
-| **include-unit-tests**                                | false    | boolean | false                                    | Whether to run action unit tests                                      |
+| name                                                  | required | type   | default                                  | description                                                           |
+|-------------------------------------------------------|----------|--------|------------------------------------------|-----------------------------------------------------------------------|
+| **github-api-url**                                    | false    | string | ${{ github.api_url }}                    | GitHub API URL                                                        |
+| **github-api-token**                                  | true     | string |                                          | Token to access the GitHub API                                        |
+| **experiment-id**                                     | true     | string |                                          | Experiment ID                                                         |
+| **experiment-github-project-name**                    | true     | string |                                          | Name of the project being evaluated                                   |"
+| **experiment-github-package-manager**                 | true     | string |                                          | Package manager used in the project                                   |
+| **experiment-github-repository**                      | false    | string | ${{ github.repository }}                 | Repository name in GitHub (owner/repository)                          |
+| **experiment-runner-environment**                     | false    | string | ${{ runner.environment }}                | GitHub runner environment                                             |
+| **experiment-runner-operating-system**                | false    | string | ${{ runner.os }}                         | GitHub runner operating system                                        |
+| **experiment-runner-architecture**                    | false    | string | ${{ runner.arch }}                       | GitHub runner architecture                                            |
+| **csv-github-repository-information-report-filename** | false    | string | github_repository_information_report.csv | Name of the CSV file to save the GitHub Repository information report |
+| **github_repository_tag_report.csv**                  | false    | string | github_repository_tag_report.csv         | Name of the CSV file to save the GitHub Repository tag report         |
+| **artifact-name**                                     | false    | string | github-repository-reports                | Name of the artifact to upload                                        |
+| **include-unit-tests**                                | false    | string | false                                    | Whether to run action unit tests                                      |
 
 ## Build Artifacts
 
@@ -53,6 +56,9 @@ The generated reports contain the following columns.
 |---------------------------------------------------------------|--------------------------------------------------------------|
 | **Experiment ID**                                             | Experiment Number                                            |
 | **Experiment Date**                                           | Date of experiment execution                                 |
+| **Experiment Runner Environment**                             | GitHub runner environment                                    |
+| **Experiment Runner Operating System**                        | GitHub runner operating system                               |
+| **Experiment Runner Architecture**                            | GitHub runner architecture                                   |
 | **Experiment GitHub Project Name**                            | Name of project being evaluated                              |
 | **Experiment GitHub Package Manager**                         | Package manager used in the project                          |
 | **GitHub Repository URL**                                     | Repository URL in GitHub                                     |
@@ -87,22 +93,24 @@ The generated reports contain the following columns.
 
 ### GitHub Repository Tag Report
 
-
-| Name                                  | Description                         | 
-|---------------------------------------|-------------------------------------|
-| **Experiment ID**                     | Experiment Number                   |
-| **Experiment Date**                   | Date of experiment execution        |
-| **Experiment GitHub Project Name**    | Name of project being evaluated     |
-| **Experiment GitHub Package Manager** | Package manager used in the project |
-| **GitHub Repository URL**             | Repository URL in GitHub            |
-| **GitHub Organisation**               | Organisation in GitHub              |
-| **GitHub Repository Name**            | Repository name in GitHub           | 
-| **GitHub Repository Tag Name**        | Repository tag name in GitHub       |
-| **GitHub Repository Tag Commit**      | Repository tag commit in GitHub     |
-| **GitHub Repository Tag Date**        | Repository tag date in GitHub       |
-| **GitHub Repository Tag Author**      | Repository tag author in GitHub     |
-| **GitHub Repository Tag Verified**    | Repository tag verified in GitHub   |
-| **GitHub Repository Tag Reason**      | Repository tag reason in GitHub     |
+| Name                                   | Description                         | 
+|----------------------------------------|-------------------------------------|
+| **Experiment ID**                      | Experiment Number                   |
+| **Experiment Date**                    | Date of experiment execution        |
+| **Experiment Runner Environment**      | GitHub runner environment           |
+| **Experiment Runner Operating System** | GitHub runner operating system      |
+| **Experiment Runner Architecture**     | GitHub runner architecture          |
+| **Experiment GitHub Project Name**     | Name of project being evaluated     |
+| **Experiment GitHub Package Manager**  | Package manager used in the project |
+| **GitHub Repository URL**              | Repository URL in GitHub            |
+| **GitHub Organisation**                | Organisation in GitHub              |
+| **GitHub Repository Name**             | Repository name in GitHub           | 
+| **GitHub Repository Tag Name**         | Repository tag name in GitHub       |
+| **GitHub Repository Tag Commit**       | Repository tag commit in GitHub     |
+| **GitHub Repository Tag Date**         | Repository tag date in GitHub       |
+| **GitHub Repository Tag Author**       | Repository tag author in GitHub     |
+| **GitHub Repository Tag Verified**     | Repository tag verified in GitHub   |
+| **GitHub Repository Tag Reason**       | Repository tag reason in GitHub     |
 
 ## Resources
 

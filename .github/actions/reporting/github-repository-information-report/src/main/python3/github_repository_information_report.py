@@ -71,6 +71,24 @@ def get_args(args: argparse.Namespace) -> argparse.Namespace:
         help="Experiment GitHub repository",
     )
     parser.add_argument(
+        "--experiment-runner-environment",
+        action="store",
+        required=True,
+        help="Experiment GitHub runner environment",
+    )
+    parser.add_argument(
+        "--experiment-runner-operating-system",
+        action="store",
+        required=True,
+        help="Experiment GitHub runner operating system",
+    )
+    parser.add_argument(
+        "--experiment-runner-architecture",
+        action="store",
+        required=True,
+        help="Experiment GitHub runner architecture",
+    )
+    parser.add_argument(
         "--csv-github-repository-information-report-filename",
         action="store",
         required=True,
@@ -170,6 +188,9 @@ def get_experiment_information(args: argparse.Namespace) -> list:
     return [
         str(args.experiment_id),
         get_current_date(),
+        args.experiment_runner_environment.title(),
+        args.experiment_runner_operating_system,
+        args.experiment_runner_architecture,
         args.experiment_github_project_name.title(),
         args.experiment_github_package_manager.title(),
     ]
@@ -225,6 +246,9 @@ def get_csv_github_repository_information_column_headers() -> str:
     csv_headers = [
         "Experiment ID",
         "Experiment Date",
+        "Experiment Runner Environment",
+        "Experiment Runner Operating System",
+        "Experiment Runner Architecture",
         "Experiment Project Name",
         "Experiment Package Manager",
         "GitHub Repository URL",
@@ -269,6 +293,9 @@ def get_csv_github_repository_tags_column_headers() -> str:
     csv_headers = [
         "Experiment ID",
         "Experiment Date",
+        "Experiment Runner Environment",
+        "Experiment Runner Operating System",
+        "Experiment Runner Architecture",
         "Experiment Project Name",
         "Experiment Package Manager",
         "GitHub Repository URL",
