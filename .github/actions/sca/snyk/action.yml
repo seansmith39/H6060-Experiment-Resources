@@ -42,20 +42,8 @@ runs:
       shell: bash
       run: npm install snyk@${{ inputs.snyk-cli-version }} -g
 
-    - name: Perform Snyk Monitor Analysis
-      if: ${{ inputs.programming-language == 'java' }}
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: |
-        snyk monitor \
-          --all-projects \
-          --severity-threshold=low \
-          --prune-repeated-subdependencies \
-          --json || EXIT_CODE=$?
-        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
-
+    # Java and JavaScript Snyk scan
     - name: Perform Snyk Test Analysis
-      if: ${{ inputs.programming-language == 'java' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
@@ -63,39 +51,12 @@ runs:
           --all-projects \
           --severity-threshold=low \
           --prune-repeated-subdependencies \
+          --dev \
           --json \
           --json-file-output=snyk-report.json || EXIT_CODE=$?
         if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
 
     - name: Perform Snyk Monitor Analysis
-      if: ${{ inputs.programming-language == 'python' }}
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: |
-        snyk monitor \
-          --command=python \
-          --package-manager=pip \
-          --severity-threshold=low \
-          --prune-repeated-subdependencies \
-          --json || EXIT_CODE=$?
-        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
-
-    - name: Perform Snyk Test Analysis
-      if: ${{ inputs.programming-language == 'python' }}
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: |
-        snyk test \
-          --command=python \
-          --package-manager=pip \
-          --severity-threshold=low \
-          --prune-repeated-subdependencies \
-          --json \
-          --json-file-output=snyk-report.json || EXIT_CODE=$?
-        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
-
-    - name: Perform Snyk Monitor Analysis
-      if: ${{ inputs.programming-language == 'javascript' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
@@ -107,17 +68,34 @@ runs:
           --json || EXIT_CODE=$?
         if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
 
+    # Python Snyk scan
     - name: Perform Snyk Test Analysis
-      if: ${{ inputs.programming-language == 'javascript' }}
+      if: ${{ inputs.programming-language == 'python' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
         snyk test \
+          --command=python3 \
+          --all-projects \
           --severity-threshold=low \
           --prune-repeated-subdependencies \
           --dev \
           --json \
           --json-file-output=snyk-report.json || EXIT_CODE=$?
+        if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
+
+    - name: Perform Snyk Monitor Analysis
+      if: ${{ inputs.programming-language == 'python' }}
+      shell: bash
+      working-directory: ${{ inputs.path }}
+      run: |
+        snyk monitor \
+          --command=python3 \
+          --all-projects \
+          --severity-threshold=low \
+          --prune-repeated-subdependencies \
+          --dev \
+          --json || EXIT_CODE=$?
         if [[ $EXIT_CODE -eq 1 ]]; then exit 0; fi
 
     - name: Upload Snyk Report
