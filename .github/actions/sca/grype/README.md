@@ -15,6 +15,15 @@ An action to run a Grype SCA scan.
 | JavaScript           | Npm       |
 | Python               | PyPi      |
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **MacOS**   | 14      |
+
+Grype does not support Windows. See [Grype documentation](https://github.com/anchore/grype?tab=readme-ov-file#macports).
+
 ## Inputs
 
 | name                     | required | type   | default                 | description                    |
