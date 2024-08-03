@@ -13,6 +13,14 @@ An action to configure and run a OWASP Dependency Check SCA scan.
 
 NVD API key is required to access the NVD API. A key can be requested using https://nvd.nist.gov/developers/request-an-api-key.
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Supported Programming Languages
 
 | Programming Language | Ecosystem |

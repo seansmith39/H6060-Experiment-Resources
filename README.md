@@ -100,18 +100,20 @@ The workflow can be triggered using the following example snippet:
 
 The following GitHub Action repository secrets must be set in a GitHub repository settings:
 
-| Secret Name               | Description                                         |
-|---------------------------|-----------------------------------------------------|
-| `DEEPSOURCE_API_KEY`      | API key to authenticate with DeepSource             |
-| `HONEYCOMB_API_KEY`       | Honeycomb API key to export GitHub Workflow metrics |
-| `NVD_API_KEY`             | API key to access the NVD API                       |
-| `OPENCVE_USERNAME`        | Username to authenticate with OpenCVE               |
-| `OPENCVE_PASSWORD`        | Password to authenticate with OpenCVE               |
-| `SEMGREP_APP_TOKEN`       | Token to authenticate with Semgrep                  |
-| `SNYK_TOKEN`              | Token to authenticate with Snyk                     |
-| `SONARQUBE_PASSWORD`      | Password to authenticate with SonarQube             |
-| `SONARQUBE_USERNAME`      | Username to authenticate with SonarQube             |
-| `SONARQUBE_TOKEN`         | Token to authenticate with SonarQube                |
+| Secret Name               | Description                                          |
+|---------------------------|------------------------------------------------------|
+| `DEEPSOURCE_API_KEY`      | API key to authenticate with DeepSource              |
+| `HONEYCOMB_API_KEY`       | Honeycomb API key to export GitHub Workflow metrics  |
+| `NVD_API_KEY`             | API key to access the NVD API                        |
+| `OPENCVE_USERNAME`        | Username to authenticate with OpenCVE                |
+| `OPENCVE_PASSWORD`        | Password to authenticate with OpenCVE                |
+| `SEMGREP_APP_TOKEN`       | Token to authenticate with Semgrep                   |
+| `SNYK_TOKEN`              | Token to authenticate with Snyk                      |
+| `SONARQUBE_PASSWORD`      | Password to authenticate with SonarQube              |
+| `SONARQUBE_USERNAME`      | Username to authenticate with SonarQube              |
+| `SONARQUBE_TOKEN_UBUNTU`  | Token to authenticate with SonarQube on Ubuntu 22.04 |
+| `SONARQUBE_TOKEN_WINDOWS` | Token to authenticate with SonarQube on Windows 2022 |
+| `SONARQUBE_TOKEN_MACOS`   | Token to authenticate with SonarQube on MacOS 14     |
 
 The following inputs are supported for the GitHub workflows:
 
