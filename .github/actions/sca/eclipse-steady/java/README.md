@@ -10,13 +10,22 @@ An action to configure and run an Eclipse Steady SCA plugin scan for Java applic
 |----------------------|-----------|
 | Java                 | Maven     |
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+
+Eclipse Steady does not support Windows and has insufficient support for M1 Mac.
+
 ## Inputs
 
 | name                                          | required | type   | default                   | description                                             |
 |-----------------------------------------------|----------|--------|---------------------------|---------------------------------------------------------|
 | **build-directory**                           | true     | string |                           | Build results directory                                 |
 | **eclipse-steady-workspace-token**            | true     | string |                           | Token used to identify project workspace                |
-| **eclipse-steady-url**                        | true     | string |                           | Hostname of Eclipse Steady                              |
+| **eclipse-steady-backend-url**                | true     | string |                           | URL of Eclipse Steady backend                           |
+| **eclipse-steady-backend-cia**                | true     | string |                           | URL of Eclipse Steady CIA                               |
 | **eclipse-steady-application-group-id**       | true     | string |                           | Group ID of the application                             |
 | **eclipse-steady-application-artifact-id**    | true     | string |                           | Artifact ID of the application                          |
 | **eclipse-steady-application-version**        | true     | string |                           | Version of the application                              |
@@ -51,6 +60,20 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
     eclipse-steady-application-version: 1.0.0
     eclipse-steady-project-source-directories: src    
 ```
+
+## Eclipse Steady Server Setup
+
+### Ubuntu
+
+An AWS EC2 instance running Ubuntu 22.04 is used to host Eclipse Steady. The following steps are used to configure the server:
+- [Eclipse Steady Configuration](https://eclipse.github.io/steady/user/tutorials/#quickstart)
+
+An Nginx reverse proxy is used to route traffic to the SonarQube server. Certbot is used to generate SSL certificates for the server.
+
+### MacOS
+
+An AWS EC2 instance running MacOS is deemed too costly, as the user is billed per second with a 24-hour minimum allocation period.
+Therefore a local M1 MacOS 14 machine is used to host Eclipse Steady using Pinggy, which creates a HTTP tunnel to a local MacOS machine.
 
 ## Resources
 

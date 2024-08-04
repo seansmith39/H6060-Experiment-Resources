@@ -84,7 +84,7 @@ on:
         type: string
         required: false
         
-      project-build-directory:
+      build-directory:
         description: Name of project build directory
         type: string
         required: false
@@ -249,17 +249,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: ${{ inputs.project-build-artifact }}
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.project-build-directory != '' }}
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run SonarQube (SAST)
@@ -318,23 +318,23 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: ${{ inputs.project-build-artifact }}
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.project-build-directory != '' }}
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run Eclipse Steady (SCA)
         uses: ./experiment-resources-repo/.github/actions/sca/eclipse-steady/java
         with:
-          project-build-directory: ${{ inputs.project-build-directory }}
+          build-directory: ${{ inputs.build-directory }}
           eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
           eclipse-steady-backend-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}/backend
           eclipse-steady-cia-url: ${{ secrets.ECLIPSE_STEADY_HOST_URL }}/cia
@@ -367,17 +367,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: ${{ inputs.project-build-artifact }}
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.project-build-directory != '' }}
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run Snyk (SCA)
@@ -407,17 +407,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: ${{ inputs.project-build-artifact }}
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.project-build-directory != '' }}
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run OWASP Dependency Check (SCA)
@@ -448,17 +448,17 @@ jobs:
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
           name: ${{ inputs.project-build-artifact }}
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
       - name: Check For File Existence
-        if: ${{ inputs.project-build-directory != '' }}
+        if: ${{ inputs.build-directory != '' }}
         uses: andstor/file-existence-action@v3
         with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.project-build-directory }}"
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
       - name: Run Grype (SCA)

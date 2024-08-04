@@ -13,8 +13,13 @@ inputs:
     type: string
     required: true
   
-  eclipse-steady-url:
-    description: Hostname of Eclipse Steady instance
+  eclipse-steady-backend-url:
+    description: Hostname of Eclipse Steady backend url
+    type: string
+    required: true
+    
+  eclipse-steady-cia-url:
+    description: Hostname of Eclipse Steady CIA url
     type: string
     required: true
   
@@ -77,8 +82,8 @@ runs:
       run: >
         mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:app
         -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}
-        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-url }}/backend
-        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-url }}/cia
+        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }}
+        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }}
         -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp
         -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }}
         -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }}
@@ -107,8 +112,8 @@ runs:
       run: >
         mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:a2c
         -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}
-        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-url }}/backend
-        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-url }}/cia
+        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }}
+        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }}
         -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp
         -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }}
         -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }}
@@ -137,8 +142,8 @@ runs:
       run: >
         mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:t2c
         -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}
-        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-url }}/backend
-        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-url }}/cia
+        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }}
+        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }}
         -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp
         -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }}
         -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }}
@@ -169,8 +174,8 @@ runs:
       run: >
         mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:checkcode
         -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}
-        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-url }}/backend
-        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-url }}/cia
+        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }}
+        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }}
         -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp
         -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }}
         -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }}
@@ -199,8 +204,8 @@ runs:
       run: >
         mvn compile org.eclipse.steady:plugin-maven:${{ inputs.eclipse-steady-plugin-version }}:report
         -Dvulas.core.space.token=${{ inputs.eclipse-steady-workspace-token }}
-        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-url }}/backend
-        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-url }}/cia
+        -Dvulas.shared.backend.serviceUrl=${{ inputs.eclipse-steady-backend-url }}
+        -Dvulas.shared.cia.serviceUrl=${{ inputs.eclipse-steady-cia-url }}
         -Dvulas.shared.tmpDir=${{ inputs.build-directory }}/vulas/tmp
         -Dvulas.core.appContext.group=${{ inputs.eclipse-steady-application-group-id }}
         -Dvulas.core.appContext.artifact=${{ inputs.eclipse-steady-application-artifact-id }}
