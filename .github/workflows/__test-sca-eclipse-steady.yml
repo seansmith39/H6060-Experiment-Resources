@@ -40,7 +40,7 @@ jobs:
         with:
           build-command: mvn -Dmaven.test.skip=true clean install
           build-directory: "**/target"
-          artifact-name: java-build-${{ matrix.system.os }}
+          artifact-name: java-build-${{ matrix.os }}
           path: upstream-repository
 
       - name: Run Eclipse Steady (SCA)

@@ -121,7 +121,7 @@ runs:
         if [[ "${{ inputs.experiment-runner-operating-system }}" == "Linux" || "${{ inputs.experiment-runner-operating-system }}" == "macOS" ]]; then
             GITHUB_ACTION_NEW_PATH=$(python -c "print('${{ github.action_path }}'.replace('./', ''))")
         else
-            GITHUB_ACTION_NEW_PATH="${{ inputs.path }}/.github/actions/reporting/github-repository-information-report"
+            GITHUB_ACTION_NEW_PATH="${{ github.workspace }}/.github/actions/reporting/github-repository-information-report"
         fi
         echo "GITHUB_ACTION_NEW_PATH=$GITHUB_ACTION_NEW_PATH" >> $GITHUB_ENV
 

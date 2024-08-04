@@ -12,16 +12,16 @@ jobs:
     strategy:
       matrix:
         system: [
-          { os: ubuntu-22.04, run-unit-tests: true },
+          { os: ubuntu-22.04, run-unit-tests: true  },
           { os: windows-2022, run-unit-tests: false },
-          { os: macos-14,     run-unit-tests: true }
+          { os: macos-14,     run-unit-tests: true  }
         ]
         category: [
           { experiment-id: 1, programming-language: java,       package-manager: Maven, github-repository-name: H6060-Java-Logback      },
           { experiment-id: 2, programming-language: python,     package-manager: Pip,   github-repository-name: H6060-Python-Django     },
           { experiment-id: 3, programming-language: javascript, package-manager: Npm,   github-repository-name: H6060-JavaScript-Lodash }
         ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.system.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,5 +34,5 @@ jobs:
           experiment-github-project-name: ${{ matrix.category.github-repository-name }}
           experiment-github-repository: seansmith39/${{ matrix.category.github-repository-name }}
           experiment-github-package-manager: ${{ matrix.category.package-manager }}
-          artifact-name: github-repository-information-report-${{ matrix.category.programming-language }}-${{ matrix.os }}
+          artifact-name: github-repository-information-report-${{ matrix.category.programming-language }}-${{ matrix.system.os }}
           include-unit-tests: ${{ matrix.system.run-unit-tests }}
