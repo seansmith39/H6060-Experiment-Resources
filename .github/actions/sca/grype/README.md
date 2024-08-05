@@ -40,7 +40,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Run Grype SCA Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/grype@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/sca/grype@main
 ```
 
 ## Resources

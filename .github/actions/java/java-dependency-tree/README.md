@@ -35,5 +35,5 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Create Java Dependency Tree
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/java/java-dependency-tree@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/java/java-dependency-tree@main
 ```

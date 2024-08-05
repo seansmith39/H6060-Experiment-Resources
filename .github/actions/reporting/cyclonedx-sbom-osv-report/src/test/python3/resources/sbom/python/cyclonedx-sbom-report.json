@@ -2,16 +2,16 @@
   "components": [
     {
       "bom-ref": "requirements-L14",
-      "description": "requirements line 14: -e git+https://github.com/seansmith39/H6060-Python-Django@709d19aa740eb59e5eb881c0923e749f09911090#egg=Django",
+      "description": "requirements line 14: -e git+https://github.com/seansmith2600/H6060-Python-Django@709d19aa740eb59e5eb881c0923e749f09911090#egg=Django",
       "externalReferences": [
         {
           "comment": "explicit dist url",
           "type": "vcs",
-          "url": "git+https://github.com/seansmith39/H6060-Python-Django@709d19aa740eb59e5eb881c0923e749f09911090#egg=Django"
+          "url": "git+https://github.com/seansmith2600/H6060-Python-Django@709d19aa740eb59e5eb881c0923e749f09911090#egg=Django"
         }
       ],
       "name": "Django",
-      "purl": "pkg:pypi/django?vcs_url=git%2Bhttps://github.com/seansmith39/H6060-Python-Django%40709d19aa740eb59e5eb881c0923e749f09911090%23egg%3DDjango",
+      "purl": "pkg:pypi/django?vcs_url=git%2Bhttps://github.com/seansmith2600/H6060-Python-Django%40709d19aa740eb59e5eb881c0923e749f09911090%23egg%3DDjango",
       "type": "library"
     },
     {

@@ -20,11 +20,6 @@ inputs:
     type: string
     required: true
 
-  github-secret-access-token:
-    description: GitHub workflow secret access token
-    type: string
-    required: true
-
   experiment-id:
     description: Experiment ID to record in the report
     type: string
@@ -88,11 +83,6 @@ inputs:
     type: string
     required: true
 
-  cyclonedx-sbom-artifact-name:
-    description: Name of CycloneDX SBOM artifact
-    type: string
-    required: true
-
   cyclonedx-sbom-filename:
     description: Name of CycloneDX SBOM filename
     type: string
@@ -114,7 +104,6 @@ inputs:
     description: Directory to run the action
     type: string
     required: false
-    default: experiment-resources
 
   include-unit-tests:
     description: Run unit tests in the action (for testing use only)
@@ -125,16 +114,6 @@ inputs:
 runs:
     using: composite
     steps:
-      - name: Download CycloneDX SBOM Artifact
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          name: ${{ inputs.cyclonedx-sbom-artifact-name }}
-          path: ${{ github.action_path }}
-          github_token: ${{ inputs.github-secret-access-token }}
-          workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: in_progress
-          commit: ${{ github.event.workflow_run.head_commit.id }}
-
       - name: Install Python 3.12
         uses: actions/setup-python@v5.1.0
         with:

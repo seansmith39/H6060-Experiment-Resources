@@ -13,7 +13,7 @@ jobs:
       matrix:
         os: [ ubuntu-22.04, windows-2022, macos-14 ]
         category: [
-          { repository: seansmith39/H6060-Python-Urllib3, ref: d1616473df94b94f0f5ad19d2a6608cfe93b7cdf },
+          { repository: seansmith2600/H6060-Python-Urllib3, ref: d1616473df94b94f0f5ad19d2a6608cfe93b7cdf },
         ]
     runs-on: ${{ matrix.os }}
     steps:

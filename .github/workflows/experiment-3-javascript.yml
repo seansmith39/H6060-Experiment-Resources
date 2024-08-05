@@ -92,7 +92,7 @@ on:
 
 
 env:
-  CHECKOUT_CURRENT_REPO_NAME: seansmith39/H6060-Experiment-Resources
+  CHECKOUT_CURRENT_REPO_NAME: seansmith2600/H6060-Experiment-Resources
   CHECKOUT_CURRENT_REPO_PATH: experiment-resources-repository
   CHECKOUT_PROJECT_REPO_PATH: upstream-repository
   DOWNLOAD_WORKFLOW_CONCLUSION: in_progress
@@ -224,7 +224,7 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Project Build
-        uses: dawidd6/action-download-artifact@v3.1.4
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: ${{ inputs.build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
@@ -289,7 +289,7 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Project Build
-        uses: dawidd6/action-download-artifact@v3.1.4
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: ${{ inputs.build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
@@ -329,7 +329,7 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Project Build
-        uses: dawidd6/action-download-artifact@v3.1.4
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: ${{ inputs.build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
@@ -373,7 +373,7 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Download Project Build
-        uses: dawidd6/action-download-artifact@v3.1.4
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: ${{ inputs.build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
@@ -420,7 +420,7 @@ jobs:
           repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
 
       - name: Download All Build Artifacts
-        uses: dawidd6/action-download-artifact@v3.1.4
+        uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
@@ -461,7 +461,7 @@ jobs:
           repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
 
       - name: Download All Build Artifacts
-        uses: dawidd6/action-download-artifact@v3.1.4
+        uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}

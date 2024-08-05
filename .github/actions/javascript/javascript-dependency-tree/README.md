@@ -35,5 +35,5 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Create JavaScript Dependency Tree
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/javascript/javascript-dependency-tree@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/javascript/javascript-dependency-tree@main
 ```

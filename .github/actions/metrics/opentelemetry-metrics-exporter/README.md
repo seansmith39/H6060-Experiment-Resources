@@ -24,7 +24,7 @@ An action to configure and export GitHub Workflow metrics to OpenTelemetry.
 
 ```yaml
 - name: Export GitHub Workflow Metrics To OpenTelemetry
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/metrics/opentelemetry-metrics-exporter@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/metrics/opentelemetry-metrics-exporter@main
   with:
     honeycomb-api-key: 11111111-2222-3333-4444-555555555555
     original-github-workflow-name: ${{ github.workflow }}

@@ -29,7 +29,6 @@ The script supports the parsing of CycloneDX SBOM v1.5 and v1.6 schemas.
 | **github-server-url**                  | false    | string | ${{ github.server_url }}      | GitHub server URL                                   |
 | **github-api-url**                     | false    | string | ${{ github.api_url }}         | GitHub API URL                                      |
 | **github-api-token**                   | true     | string |                               | Token to access the GitHub API                      |
-| **github-secret-access-token**         | true     | string |                               | GitHub Workflow secret access token                 |
 | **experiment-id**                      | true     | string |                               | Experiment ID                                       |
 | **experiment-github-project-name**     | true     | string |                               | Name of the project being evaluated                 |"
 | **experiment-github-repository**       | false    | string | ${{ github.repository }}      | Repository name in GitHub (owner/repository)        |
@@ -41,7 +40,6 @@ The script supports the parsing of CycloneDX SBOM v1.5 and v1.6 schemas.
 | **experiment-runner-operating-system** | false    | string | ${{ runner.os }}              | GitHub runner operating system                      |
 | **experiment-runner-architecture**     | false    | string | ${{ runner.arch }}            | GitHub runner architecture                          |
 | **experiment-programming-language**    | true     | string |                               | Programming language of the project being evaluated |
-| **cyclonedx-sbom-artifact-name**       | true     | string |                               | Name of CycloneDX SBOM build artifact               |
 | **cyclonedx-sbom-filename**            | true     | string |                               | Name of CycloneDX SBOM JSON report                  |
 | **csv-report-filename**                | false    | string | cyclonedx_sbom_osv_report.csv | Name of the CSV report filename                     |
 | **artifact-name**                      | false    | string | cyclonedx-sbom-osv            | Name of the artifact to upload                      |
@@ -57,14 +55,12 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Create CycloneDX SBOM OSV Report
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/reporting/cyclonedx-sbom-osv-report@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/reporting/cyclonedx-sbom-osv-report@main
   with:
-    github-api-token: ${{ secrets.GITHUB_API_TOKEN }}
-    github-secret-access-token: ${{ secrets.GITHUB_TOKEN }}
+    git-api-token: ${{ secrets.GITHUB_API_TOKEN }}
     experiment-id: 1
     experiment-github-project-name: my-project
     experiment-programming-language: java
-    cyclonedx-sbom-artifact-name: cyclonedx-sbom
     cyclonedx-sbom-filename: sbom.json
 ```
 

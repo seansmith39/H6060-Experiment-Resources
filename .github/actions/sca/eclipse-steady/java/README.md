@@ -49,7 +49,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 ## Example Execution
 
 ```yaml
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady/java@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/sca/eclipse-steady/java@main
   with:
     build-directory: target
     eclipse-steady-workspace-token: 1111-2222-3333-4444

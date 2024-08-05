@@ -47,7 +47,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Run OWASP Dependency Check SCA Scan
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/sca/owasp-dependency-check@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/sca/owasp-dependency-check@main
   with:
     nvd-api-key: 11111111-2222-3333-4444-555555555555
     project-name: my-project

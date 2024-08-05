@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [ ubuntu-22.04 ]
         category: [
-          { repository: seansmith39/H6060-JavaScript-Lodash, ref: 1144918f3578a84fcc4986da9b806e63a6175cbb },
+          { repository: seansmith2600/H6060-JavaScript-Lodash, ref: 1144918f3578a84fcc4986da9b806e63a6175cbb },
         ]
     runs-on: ${{ matrix.os }}
     steps:

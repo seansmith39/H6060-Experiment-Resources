@@ -33,7 +33,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Build Java Application
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/java/java-build@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/java/java-build@main
   with:
     build-command: mvn clean install
     build-directory: target

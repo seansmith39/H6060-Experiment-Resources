@@ -32,7 +32,7 @@ jobs:
           github-api-token: ${{ secrets.TEST_GITHUB_API_TOKEN }}
           experiment-id: ${{ matrix.category.experiment-id }}
           experiment-github-project-name: ${{ matrix.category.github-repository-name }}
-          experiment-github-repository: seansmith39/${{ matrix.category.github-repository-name }}
+          experiment-github-repository: seansmith2600/${{ matrix.category.github-repository-name }}
           experiment-github-package-manager: ${{ matrix.category.package-manager }}
           artifact-name: github-repository-information-report-${{ matrix.category.programming-language }}-${{ matrix.system.os }}
           include-unit-tests: ${{ matrix.system.run-unit-tests }}

@@ -31,7 +31,7 @@ The following build artifact is uploaded to the GitHub Actions workflow run. Thi
 
 ```yaml
 - name: Create Python CycloneDX SBOM
-  uses: seansmith39/H6060-Experiment-Resources/.github/actions/python/python-cyclonedx-sbom@main
+  uses: seansmith2600/H6060-Experiment-Resources/.github/actions/python/python-cyclonedx-sbom@main
 ```
 
 ## Resources

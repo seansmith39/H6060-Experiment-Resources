@@ -7,7 +7,7 @@ permissions:
   security-events: write
 
 env:
-  GITHUB_ORGANISATION_NAME: seansmith39
+  GITHUB_ORGANISATION_NAME: seansmith2600
   GITHUB_UPSTREAM_CHECKOUT_PATH: upstream-repository
 
 jobs:
