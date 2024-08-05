@@ -62,8 +62,7 @@ The workflow can be triggered using the following example snippet:
     with:
       operating-system: ubuntu-22.04
       project-name: H6060-Java-Webdrivermanager
-      project-build-directory: target
-      coverage-report-name: jacoco.xml
+      build-directory: target
       eclipse-steady-workspace-token: 1111-2222-3333-4444
       eclipse-steady-application-group-id: com.example
       eclipse-steady-application-artifact-id: my-project
@@ -78,8 +77,7 @@ The workflow can be triggered using the following example snippet:
     with:
       operating-system: ubuntu-22.04
       project-name: H6060-Python-Pillow
-      project-build-directory: dist
-      coverage-report-name: coverage.xml
+      build-directory: dist
       eclipse-steady-workspace-token: 1111-2222-3333-4444
       eclipse-steady-application-group-id: com.example
       eclipse-steady-application-artifact-id: my-project
@@ -100,20 +98,27 @@ The workflow can be triggered using the following example snippet:
 
 The following GitHub Action repository secrets must be set in a GitHub repository settings:
 
-| Secret Name               | Description                                          |
-|---------------------------|------------------------------------------------------|
-| `DEEPSOURCE_API_KEY`      | API key to authenticate with DeepSource              |
-| `HONEYCOMB_API_KEY`       | Honeycomb API key to export GitHub Workflow metrics  |
-| `NVD_API_KEY`             | API key to access the NVD API                        |
-| `OPENCVE_USERNAME`        | Username to authenticate with OpenCVE                |
-| `OPENCVE_PASSWORD`        | Password to authenticate with OpenCVE                |
-| `SEMGREP_APP_TOKEN`       | Token to authenticate with Semgrep                   |
-| `SNYK_TOKEN`              | Token to authenticate with Snyk                      |
-| `SONARQUBE_PASSWORD`      | Password to authenticate with SonarQube              |
-| `SONARQUBE_USERNAME`      | Username to authenticate with SonarQube              |
-| `SONARQUBE_TOKEN_UBUNTU`  | Token to authenticate with SonarQube on Ubuntu 22.04 |
-| `SONARQUBE_TOKEN_WINDOWS` | Token to authenticate with SonarQube on Windows 2022 |
-| `SONARQUBE_TOKEN_MACOS`   | Token to authenticate with SonarQube on MacOS 14     |
+| Secret Name                    | Description                                          |
+|--------------------------------|------------------------------------------------------|
+| `DEEPSOURCE_API_KEY`           | API key to authenticate with DeepSource              |
+| `GITHUB_API_TOKEN`             | GitHub API token to access the GitHub API            |
+| `HONEYCOMB_API_KEY`            | Honeycomb API key to export GitHub Workflow metrics  |
+| `NVD_API_KEY`                  | API key to access the NVD API                        |
+| `OPENCVE_USERNAME`             | Username to authenticate with OpenCVE                |
+| `OPENCVE_PASSWORD`             | Password to authenticate with OpenCVE                |
+| `SEMGREP_APP_TOKEN`            | Token to authenticate with Semgrep                   |
+| `SNYK_TOKEN`                   | Token to authenticate with Snyk                      |
+| `SONARQUBE_PASSWORD`           | Password to authenticate with SonarQube              |
+| `SONARQUBE_USERNAME`           | Username to authenticate with SonarQube              |
+| `SONARQUBE_TOKEN_UBUNTU`       | Token to authenticate with SonarQube on Ubuntu 22.04 |
+| `SONARQUBE_TOKEN_WINDOWS`      | Token to authenticate with SonarQube on Windows 2022 |
+| `SONARQUBE_TOKEN_MACOS`        | Token to authenticate with SonarQube on MacOS 14     |
+| `SONARQUBE_USER_TOKEN_UBUNTU`  | Token to query API with SonarQube on Ubuntu 22.04    |
+| `SONARQUBE_USER_TOKEN_WINDOWS` | Token to query API with SonarQube on Windows 2022    |
+| `SONARQUBE_USER_TOKEN_MACOS`   | Token to query API with SonarQube on MacOS 14        |
+| `SONARQUBE_URL_UBUNTU`         | URL of Ubuntu 22.04 SonarQube                        |
+| `SONARQUBE_URL_WINDOWS`        | URL of Windows 2022 SonarQube                        |
+| `SONARQUBE_URL_MACOS`          | URL of MacOS 14 SonarQube                            |
 
 The following inputs are supported for the GitHub workflows:
 
@@ -134,9 +139,8 @@ The following inputs are supported for the GitHub workflows:
 | **java-version**                              | false    | string  | 17         | Java version to install                                 |
 | **java-distribution**                         | false    | string  | temurin    | Java distribution to install                            |
 | **project-name**                              | false    | string  |            | Name of project to be scanned                           |
-| **project-build-artifact**                    | false    | string  |            | Name of project build artifact                          |
-| **project-build-directory**                   | false    | string  |            | Name of project build directory                         |
-| **coverage-report-name**                      | false    | string  |            | Name of test coverage report                            |
+| **build-artifact**                            | false    | string  |            | Name of project build artifact                          |
+| **build-directory**                           | false    | string  |            | Name of project build directory                         |
 | **horusec-files-or-paths-to-ignore**          | false    | string  | **/test/** | Files or paths to ignore during the Horusec scan        |
 | **semgrep-files-or-paths-to-ignore**          | false    | string  | test,tests | Files or paths to ignore during the Semgrep scan        |
 | **eclipse-steady-workspace-token**            | false    | string  |            | Token used to identify project workspace                |
@@ -162,7 +166,6 @@ The following inputs are supported for the GitHub workflows:
 | **project-name**                              | false    | string  |            | Name of project to be scanned                           |
 | **project-build-artifact**                    | false    | string  |            | Name of project build artifact                          |
 | **project-build-directory**                   | false    | string  |            | Name of project build directory                         |
-| **coverage-report-name**                      | false    | string  |            | Name of test coverage report                            |
 | **horusec-files-or-paths-to-ignore**          | false    | string  | **/test/** | Files or paths to ignore during the Horusec scan        |
 | **semgrep-files-or-paths-to-ignore**          | false    | string  | test,tests | Files or paths to ignore during the Semgrep scan        |
 | **eclipse-steady-workspace-token**            | false    | string  |            | Token used to identify project workspace                |
@@ -181,14 +184,12 @@ The following inputs are supported for the GitHub workflows:
 | **sast-semgrep-enabled**               | false    | boolean | true       | Enable Semgrep scan (SAST)                       |
 | **sast-sonarqube-enabled**             | false    | boolean | true       | Enable SonarQube scan (SAST)                     |
 | **sast-snyk-code-enabled**             | false    | boolean | true       | Enable Snyk Code scan (SAST)                     |
-| **sca-eclipse-steady-enabled**         | false    | boolean | true       | Enable Eclipse Steady scan (SCA)                 |
 | **sca-snyk-enabled**                   | false    | boolean | true       | Enable Snyk scan (SCA)                           |
 | **sca-owasp-dependency-check-enabled** | false    | boolean | true       | Enable OWASP Dependency Check scan (SCA)         |
 | **sca-grype-enabled**                  | false    | boolean | true       | Enable Grype scan (SCA)                          |
 | **project-name**                       | false    | string  |            | Name of project to be scanned                    |
 | **project-build-artifact**             | false    | string  |            | Name of project build artifact                   |
 | **project-build-directory**            | false    | string  |            | Name of project build directory                  |
-| **coverage-report-name**               | false    | string  |            | Name of test coverage report                     |
 | **node-version**                       | false    | string  | 16.x       | Node.js version to install                       |
 | **horusec-files-or-paths-to-ignore**   | false    | string  | **/test/** | Files or paths to ignore during the Horusec scan |
 | **semgrep-files-or-paths-to-ignore**   | false    | string  | test,tests | Files or paths to ignore during the Semgrep scan |

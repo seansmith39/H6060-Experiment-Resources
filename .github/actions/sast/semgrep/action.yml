@@ -11,7 +11,7 @@ inputs:
   semgrep-version:
     description: Semgrep version to use
     type: string
-    required: true
+    required: false
     default: 1.81.0
 
   wsl-distribution:

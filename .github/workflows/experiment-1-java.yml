@@ -79,18 +79,13 @@ on:
         type: string
         required: false
         
-      project-build-artifact:
+      build-artifact:
         description: Name of build artifact
         type: string
         required: false
         
       build-directory:
         description: Name of project build directory
-        type: string
-        required: false
-  
-      coverage-report-name:
-        description: Name of coverage report
         type: string
         required: false
 
@@ -105,7 +100,7 @@ on:
         type: string
         required: false
         default: "test,tests"
-        
+
       eclipse-steady-workspace-token:
         description: Token used to identify project workspace
         type: string
@@ -133,14 +128,14 @@ on:
 
 env:
   CHECKOUT_CURRENT_REPO_NAME: seansmith39/H6060-Experiment-Resources
-  CHECKOUT_CURRENT_REPO_PATH: experiment-resources-repo
-  CHECKOUT_PROJECT_REPO_PATH: project-repo
+  CHECKOUT_CURRENT_REPO_PATH: experiment-resources-repository
+  CHECKOUT_PROJECT_REPO_PATH: upstream-repository
   DOWNLOAD_WORKFLOW_CONCLUSION: in_progress
   PROJECT_PROGRAMMING_LANGUAGE: java
 
 permissions:
   security-events: write
-  
+
 defaults:
   run:
     shell: bash
@@ -171,10 +166,10 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
 
       - name: Run CodeQL (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/codeql
+        uses: ./experiment-resources-repository/.github/actions/sast/codeql
         with:
           programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
-          artifact-name: sast-codeql-report-${{ inputs.operating-system }}
+          artifact-name: sast-codeql-report-${{ runner.os }}
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sast-horusec:
@@ -195,10 +190,10 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Run Horusec (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/horusec
+        uses: ./experiment-resources-repository/.github/actions/sast/horusec
         with:
           files-or-paths-to-ignore: ${{ inputs.horusec-files-or-paths-to-ignore }}
-          artifact-name: sast-horusec-report-${{ inputs.operating-system }}
+          artifact-name: sast-horusec-report-${{ runner.os }}
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sast-semgrep:
@@ -221,11 +216,36 @@ jobs:
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
       - name: Run Semgrep (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/semgrep
+        uses: ./experiment-resources-repository/.github/actions/sast/semgrep
         with:
           programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
           files-or-paths-to-ignore: ${{ inputs.semgrep-files-or-paths-to-ignore }}
-          artifact-name: sast-semgrep-report-${{ inputs.operating-system }}
+          artifact-name: sast-semgrep-report-${{ runner.os }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
+
+  sast-snyk-code:
+    name: (SAST) Snyk Code - ${{ inputs.operating-system }}
+    if: ${{ inputs.sast-snyk-code-enabled == true }}
+    runs-on: ${{ inputs.operating-system }}
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
+
+      - name: Checkout Project Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
+
+      - name: Run Snyk Code (SAST)
+        uses: ./experiment-resources-repository/.github/actions/sast/snyk-code
+        with:
+          artifact-name: sast-snyk-code-report-${{ runner.os }}
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sast-sonarqube:
@@ -248,7 +268,7 @@ jobs:
       - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ inputs.project-build-artifact }}
+          name: ${{ inputs.build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
@@ -262,45 +282,41 @@ jobs:
           files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           fail: true
 
+      - name: Set SonarQube Environment Variables
+        if: ${{ inputs.operating-system == 'ubuntu-22.04' || inputs.operating-system == 'macos-14' }}
+        shell: bash
+        run: |
+          if [[ "${{ inputs.operating-system }}" == "ubuntu-22.04" ]]; then
+              echo "SONARQUBE_TOKEN=${{ secrets.SONARQUBE_TOKEN_UBUNTU }}" >> $GITHUB_ENV
+              echo "SONARQUBE_URL=${{ secrets.SONARQUBE_URL_UBUNTU }}" >> $GITHUB_ENV
+          else
+              echo "SONARQUBE_TOKEN=${{ secrets.SONARQUBE_TOKEN_MACOS }}" >> $GITHUB_ENV
+              echo "SONARQUBE_URL=${{ secrets.SONARQUBE_URL_MACOS }}" >> $GITHUB_ENV
+          fi
+
+      - name: Set SonarQube Environment Variables (Windows)
+        if: ${{ inputs.operating-system == 'windows-2022' }}
+        shell: pwsh
+        run: |
+          echo "SONARQUBE_TOKEN=${{ secrets.SONARQUBE_TOKEN_WINDOWS }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "SONARQUBE_URL=${{ secrets.SONARQUBE_URL_WINDOWS }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+
       - name: Run SonarQube (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/sonarqube
+        uses: ./experiment-resources-repository/.github/actions/sast/sonarqube
         with:
           programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
-          sonarqube-token: ${{ secrets.SONARQUBE_TOKEN }}
-          sonarqube-url: ${{ secrets.SONARQUBE_URL}}
+          sonarqube-token: ${{ env.SONARQUBE_TOKEN }}
+          sonarqube-url: ${{ env.SONARQUBE_URL }}
           sonarqube-username: ${{ secrets.SONARQUBE_USERNAME }}
           sonarqube-password: ${{ secrets.SONARQUBE_PASSWORD }}
           sonarqube-project-key: ${{ inputs.project-name }}
-          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
-
-  sast-snyk-code:
-    name: Run Snyk Code (SAST)
-    if: ${{ inputs.sast-snyk-code-enabled == true }}
-    runs-on: ubuntu-22.04
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
-          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
-
-      - name: Checkout Project Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
-
-      - name: Run Snyk Code (SAST)
-        uses: ./experiment-resources-repo/.github/actions/sast/snyk-code
-        with:
+          artifact-name: sast-sonarqube-report-${{ runner.os }}
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sca-eclipse-steady:
-    name: Run Eclipse Steady (SCA)
+    name: (SCA) Eclipse Steady - ${{ inputs.operating-system }}
     if: ${{ inputs.sca-eclipse-steady-enabled == true }}
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.operating-system }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -317,7 +333,7 @@ jobs:
       - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ inputs.project-build-artifact }}
+          name: ${{ inputs.build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
@@ -332,7 +348,7 @@ jobs:
           fail: true
 
       - name: Run Eclipse Steady (SCA)
-        uses: ./experiment-resources-repo/.github/actions/sca/eclipse-steady/java
+        uses: ./experiment-resources-repository/.github/actions/sca/eclipse-steady/java
         with:
           build-directory: ${{ inputs.build-directory }}
           eclipse-steady-workspace-token: ${{ inputs.eclipse-steady-workspace-token }}
@@ -342,12 +358,95 @@ jobs:
           eclipse-steady-application-artifact-id: ${{ inputs.eclipse-steady-application-artifact-id }}
           eclipse-steady-application-version: ${{ inputs.eclipse-steady-application-version }}
           eclipse-steady-project-source-directories: ${{ inputs.eclipse-steady-project-source-directories }}
+          artifact-name: sca-eclipse-steady-report-${{ runner.os }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
+
+  sca-grype:
+    name: (SCA) Grype - ${{ inputs.operating-system }}
+    if: ${{ inputs.sca-grype-enabled == true }}
+    runs-on: ${{ inputs.operating-system }}
+    steps:
+      - name: Checkout Current GitHub Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
+
+      - name: Checkout Project Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
+
+      - name: Download Project Build
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          name: ${{ inputs.build-artifact }}
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          fail: true
+
+      - name: Run Grype (SCA)
+        uses: ./experiment-resources-repository/.github/actions/sca/grype
+        with:
+          artifact-name: sca-grype-report-${{ runner.os }}
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
+
+  sca-owasp-dependency-check:
+    name: (SCA) OWASP Dependency Check - ${{ inputs.operating-system }}
+    if: ${{ inputs.sca-owasp-dependency-check-enabled == true }}
+    runs-on: ${{ inputs.operating-system }}
+    steps:
+      - name: Checkout Current GitHub Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
+
+      - name: Checkout Project Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
+
+      - name: Download Project Build
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          name: ${{ inputs.build-artifact }}
+          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Check For File Existence
+        if: ${{ inputs.build-directory != '' }}
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
+          fail: true
+
+      - name: Run OWASP Dependency Check (SCA)
+        uses: ./experiment-resources-repository/.github/actions/sca/owasp-dependency-check
+        with:
+          nvd-api-key: ${{ secrets.NVD_API_KEY }}
+          project-name: ${{ inputs.project-name }}
+          artifact-name: sca-owasp-dependency-check-report-${{ runner.os }}
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
   sca-snyk:
-    name: Run Snyk (SCA)
+    name: (SCA) Snyk - ${{ inputs.operating-system }}
     if: ${{ inputs.sca-snyk-enabled == true }}
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.operating-system }}
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
@@ -366,7 +465,7 @@ jobs:
       - name: Download Project Build
         uses: dawidd6/action-download-artifact@v3.1.4
         with:
-          name: ${{ inputs.project-build-artifact }}
+          name: ${{ inputs.build-artifact }}
           path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: ${{ github.event.workflow_run.workflow_id }}
@@ -381,106 +480,21 @@ jobs:
           fail: true
 
       - name: Run Snyk (SCA)
-        uses: ./experiment-resources-repo/.github/actions/sca/snyk
+        uses: ./experiment-resources-repository/.github/actions/sca/snyk
         with:
           programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
+          artifact-name: sca-snyk-report-${{ runner.os }}
           path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
 
-  sca-owasp-dependency-check:
-    name: Run OWASP Dependency Check (SCA)
-    if: ${{ inputs.sca-owasp-dependency-check-enabled == true }}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout Current GitHub Repository
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
-          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
-
-      - name: Checkout Project Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
-
-      - name: Download Project Build
-        uses: dawidd6/action-download-artifact@v3.1.4
-        with:
-          name: ${{ inputs.project-build-artifact }}
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
-          commit: ${{ github.event.workflow_run.head_commit.id }}
-
-      - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
-        uses: andstor/file-existence-action@v3
-        with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
-          fail: true
-
-      - name: Run OWASP Dependency Check (SCA)
-        uses: ./experiment-resources-repo/.github/actions/sca/owasp-dependency-check
-        with:
-          nvd-api-key: ${{ secrets.NVD_API_KEY }}
-          project-name: ${{ inputs.project-name }}
-          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
-
-  sca-grype:
-    name: Run Grype (SCA)
-    if: ${{ inputs.sca-grype-enabled == true }}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout Current GitHub Repository
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
-          path: ${{ env.CHECKOUT_CURRENT_REPO_PATH }}
-
-      - name: Checkout Project Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
-
-      - name: Download Project Build
-        uses: dawidd6/action-download-artifact@v3.1.4
-        with:
-          name: ${{ inputs.project-build-artifact }}
-          path: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ${{ github.event.workflow_run.workflow_id }}
-          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
-          commit: ${{ github.event.workflow_run.head_commit.id }}
-
-      - name: Check For File Existence
-        if: ${{ inputs.build-directory != '' }}
-        uses: andstor/file-existence-action@v3
-        with:
-          files: "${{ env.CHECKOUT_PROJECT_REPO_PATH }}/${{ inputs.build-directory }}"
-          fail: true
-
-      - name: Run Grype (SCA)
-        uses: ./experiment-resources-repo/.github/actions/sca/grype
-        with:
-          path: ${{ env.CHECKOUT_PROJECT_REPO_PATH }}
-
-  create-security-testing-tool-report:
-    name: Create Security Testing Tool Report
-    runs-on: ubuntu-22.04
+  create-cyclonedx-osv-report:
+    name: Create CycloneDX OSV Report - ${{ inputs.operating-system }}
+    runs-on: ${{ inputs.operating-system }}
     needs: [
-      sast-sonarqube,
-      sast-semgrep,
-      sast-horusec,
-      sast-codeql,
-      sast-snyk-code,
       sca-eclipse-steady,
-      sca-snyk,
+      sca-grype,
       sca-owasp-dependency-check,
-      sca-grype
+      sca-snyk
     ]
-    if: ${{ ! failure() && ! cancelled() }}
     steps:
       - name: Checkout Current GitHub Repository
         uses: actions/checkout@v4
@@ -495,25 +509,115 @@ jobs:
           workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
           commit: ${{ github.event.workflow_run.head_commit.id }}
 
+      - name: Create CycloneDX OSV Report
+        uses: ./experiment-resources/.github/actions/reporting/cyclonedx-sbom-osv-report
+        with:
+          github-api-token: ${{ secrets.TEST_GITHUB_API_TOKEN }}
+          github-secret-access-token: ${{ secrets.GITHUB_TOKEN }}
+          experiment-id: 1
+          experiment-github-project-name: ${{ inputs.project-name }}
+          experiment-github-repository: ${{ github.repository }}
+          experiment-programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
+          cyclonedx-sbom-artifact-name: cyclonedx-sbom-${{ runner.os }}
+          cyclonedx-sbom-filename: sbom.json
+          artifact-name: cyclonedx-sbom-osv-report-${{ runner.os }}
+          include-unit-tests: false
+
+  create-security-testing-tool-report:
+    name: Create Security Testing Tool Report - ${{ inputs.operating-system }}
+    runs-on: ${{ inputs.operating-system }}
+    needs: [
+      sast-codeql,
+      sast-horusec,
+      sast-semgrep,
+      sast-snyk-code,
+      sast-sonarqube,
+      sca-eclipse-steady,
+      sca-grype,
+      sca-owasp-dependency-check,
+      sca-snyk
+    ]
+    steps:
+      - name: Checkout Current GitHub Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CHECKOUT_CURRENT_REPO_NAME }}
+
+      - name: Download All Build Artifacts
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: ${{ env.DOWNLOAD_WORKFLOW_CONCLUSION }}
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Set SonarQube Environment Variables
+        if: ${{ inputs.operating-system == 'ubuntu-22.04' || inputs.operating-system == 'macos-14' }}
+        shell: bash
+        run: |
+          if [[ "${{ inputs.operating-system }}" == "ubuntu-22.04" ]]; then
+              echo "SONARQUBE_TOKEN=${{ secrets.SONARQUBE_USER_TOKEN_UBUNTU }}" >> $GITHUB_ENV
+              echo "SONARQUBE_URL=${{ secrets.SONARQUBE_URL_UBUNTU }}" >> $GITHUB_ENV
+          else
+              echo "SONARQUBE_TOKEN=${{ secrets.SONARQUBE_USER_TOKEN_MACOS }}" >> $GITHUB_ENV
+              echo "SONARQUBE_URL=${{ secrets.SONARQUBE_URL_MACOS }}" >> $GITHUB_ENV
+          fi
+
+      - name: Set SonarQube Environment Variables (Windows)
+        if: ${{ inputs.operating-system == 'windows-2022' }}
+        shell: pwsh
+        run: |
+          echo "SONARQUBE_USER_TOKEN=${{ secrets.SONARQUBE_USER_TOKEN_WINDOWS }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "SONARQUBE_URL=${{ secrets.SONARQUBE_URL_WINDOWS }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      # Only applicable for Ubuntu
+      - name: Set Eclipse Steady Environment Variable
+        shell: bash
+        run: |
+          if [[ "${{ inputs.sca-eclipse-steady-enabled }}" == "true" && "${{ inputs.operating-system }}" == "ubuntu-22.04" }} ]]; then
+              echo "SCA_ECLIPSE_STEADY_REPORT_FILENAME=sca-eclipse-steady-report-${{ runner.os }}/vulas-report.json" >> $GITHUB_ENV
+          else
+              echo "SCA_ECLIPSE_STEADY_REPORT_FILENAME=" >> $GITHUB_ENV
+          fi
+
+      # Only applicable for Ubuntu and MacOS
+      - name: Set Grype Environment Variable
+        shell: bash
+        run: |
+          if [[ "${{ inputs.sca-grype-enabled }}" == "true" && "${{ inputs.operating-system }}" != "windows-2022" }} ]]; then
+              echo "SCA_GRYPE_REPORT_FILENAME=sca-grype-report-${{ runner.os }}/results.json" >> $GITHUB_ENV
+          else
+              echo "SCA_GRYPE_REPORT_FILENAME=" >> $GITHUB_ENV
+          fi
+
       - name: Create Security Testing Tool Report
         uses: ./.github/actions/common/security-testing-tool-csv-report
         with:
           nvd-api-key: ${{ secrets.NVD_API_KEY }}
+          github-api-token: ${{ secrets.GITHUB_API_TOKEN }}
           opencve-username: ${{ secrets.OPENCVE_USERNAME }}
           opencve-password: ${{ secrets.OPENCVE_PASSWORD }}
-          sast-horusec-report-filename: sast-horusec-report/horusec-report.json
-          sast-semgrep-report-filename: sast-semgrep-report/semgrep-report.json
-          sast-snyk-code-report-filename: sast-snyk-code-report/snyk-code-report.json
-          sca-eclipse-steady-report-filename: sca-eclipse-steady-report/vulas-report.json
-          sca-grype-report-filename: sca-grype-report/results.json
-          sca-owasp-dependency-check-report-filename: sca-owasp-dependency-check-report/dependency-check-report.json
-          sca-snyk-report-filename: sca-snyk-report/snyk-report.json
+          experiment-id: 1
+          experiment-github-project-name: ${{ inputs.project-name }}
+          experiment-programming-language: ${{ env.PROJECT_PROGRAMMING_LANGUAGE }}
+          sonarqube-url: ${{ env.SONARQUBE_URL }}
+          sonarqube-user-token: ${{ env.SONARQUBE_USER_TOKEN }}
+          sonarqube-project-key: ${{ inputs.project-name }}
+          deepsource-api-key: ${{ secrets.DEEPSOURCE_API_KEY }}
+          sast-horusec-report-filename: sast-horusec-report-${{ runner.os }}/horusec-report.json
+          sast-semgrep-report-filename: sast-semgrep-report-${{ runner.os }}/semgrep-report.json
+          sast-snyk-code-report-filename: sast-snyk-code-report-${{ runner.os }}/snyk-code-report.json
+          sca-eclipse-steady-report-filename: ${{ env.SCA_ECLIPSE_STEADY_REPORT_FILENAME }}
+          sca-grype-report-filename: ${{ env.SCA_GRYPE_REPORT_FILENAME }}
+          sca-owasp-dependency-check-report-filename: sca-owasp-dependency-check-report-${{ runner.os }}/owasp-dependency-check-report.json
+          sca-snyk-report-filename: sca-snyk-report-${{ runner.os }}/snyk-report.json
+          artifact-name: automated-vulnerability-results-report-${{ runner.os }}
+          include-unit-tests: false
 
   export-opentelemetry-metrics:
-    name: Export GitHub Action OpenTelemetry Metrics
-    if: ${{ ! failure() && ! cancelled() }}
-    needs: create-security-testing-tool-report
-    runs-on: ubuntu-22.04
+    name: Export GitHub Action OpenTelemetry Metrics - ${{ inputs.operating-system }}
+    needs: [ create-cyclonedx-osv-report, create-security-testing-tool-report ]
+    runs-on: ${{ inputs.operating-system }}
     steps:
       - name: Checkout Current GitHub Repository
         uses: actions/checkout@v4
