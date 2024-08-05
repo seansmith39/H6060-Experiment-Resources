@@ -14,9 +14,11 @@ It is available under `Account Settings` → `General` → `Auth Token` on the S
 
 ## Supported Programming Languages
 
-- Java
-- JavaScript
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
+| JavaScript           | Npm       |
+| Python               | PyPi      |
 
 ## Inputs
 

@@ -54,12 +54,17 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
+    - name: Setup Sonar Scanner
+      uses: Warchant/setup-sonar-scanner@v8
+
     - name: Setup Java JDK
+      if: ${{ inputs.programming-language == 'java' }}
       uses: actions/setup-java@v4.2.1
       with:
         distribution: temurin
         java-version: 17
 
+    # Perform Java analysis
     - name: Perform SonarQube Analysis
       if: ${{ inputs.programming-language == 'java' }}
       shell: bash
@@ -71,17 +76,41 @@ runs:
           -Dsonar.projectKey=${{ inputs.sonarqube-project-key }} \
           -Dsonar.projectName=${{ inputs.sonarqube-project-key }}
 
+    # Perform non-Java analysis on Ubuntu 22.04
+    # Docker image only supports Ubuntu 22.04
     - name: Perform SonarQube Analysis
-      if: ${{ inputs.programming-language != 'java' }}
+      if: ${{ inputs.programming-language != 'java' && matrix.system.os == 'ubuntu-22.04' }}
       uses: SonarSource/sonarqube-scan-action@v2.0.2
       env:
-        SONARQUBE_TOKEN: ${{ inputs.sonarqube-token }}
-        SONARQUBE_URL: ${{ inputs.sonarqube-url }}
+        SONAR_TOKEN: ${{ inputs.sonarqube-token }}
+        SONAR_HOST_URL: ${{ inputs.sonarqube-url }}
       with:
         projectBaseDir: ${{ inputs.path }}
         args: >
           -Dsonar.projectKey=${{ inputs.sonarqube-project-key }}
           -Dsonar.projectName=${{ inputs.sonarqube-project-key }}
+
+    # Perform non-Java analysis on MacOS 14
+    - name: Perform SonarQube Analysis
+      if: ${{ inputs.programming-language != 'java' && matrix.system.os == 'macos-14' }}
+      shell: bash
+      run: |
+        sonar-scanner \
+          -Dsonar.login=${{ inputs.sonarqube-token }} \
+          -Dsonar.host.url=${{ inputs.sonarqube-url }} \
+          -Dsonar.projectKey=${{ inputs.sonarqube-project-key }} \
+          -Dsonar.projectName=${{ inputs.sonarqube-project-key }}
+
+    # Perform non-Java analysis on Windows 2022
+    - name: Perform SonarQube Analysis
+      if: ${{ inputs.programming-language != 'java' && matrix.system.os == 'windows-2022' }}
+      shell: pwsh
+      run: |
+        sonar-scanner.bat `
+        -D"sonar.login=${{ inputs.sonarqube-token }}" `
+        -D"sonar.host.url=${{ inputs.sonarqube-url }}" `
+        -D"sonar.projectKey=${{ inputs.sonarqube-project-key }}" `
+        -D"sonar.projectName=${{ inputs.sonarqube-project-key }}" 
 
     - name: Download SonarQube Report
       shell: bash

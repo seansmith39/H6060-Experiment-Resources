@@ -35,6 +35,24 @@ inputs:
     required: false
     default: ${{ github.repository }}
 
+  experiment-runner-environment:
+    description: Environment of the GitHub runner
+    type: string
+    required: false
+    default: ${{ runner.environment }}
+
+  experiment-runner-operating-system:
+    description: Operating system of the GitHub runner
+    type: string
+    required: false
+    default: ${{ runner.os }}
+
+  experiment-runner-architecture:
+    description: Architecture of the GitHub runner
+    type: string
+    required: false
+    default: ${{ runner.arch }}
+
   csv-github-repository-information-report-filename:
     description: Name of resulting GitHub repository information CSV report
     type: string
@@ -89,14 +107,22 @@ runs:
         --experiment-github-project-name "${{ inputs.experiment-github-project-name }}"
         --experiment-github-package-manager ${{ inputs.experiment-github-package-manager }}
         --experiment-github-repository ${{ inputs.experiment-github-repository }}
+        --experiment-runner-environment ${{ inputs.experiment-runner-environment }}
+        --experiment-runner-operating-system ${{ inputs.experiment-runner-operating-system }}
+        --experiment-runner-architecture ${{ inputs.experiment-runner-architecture }}
         --csv-github-repository-information-report-filename ${{ inputs.csv-github-repository-information-report-filename }}
         --csv-github-repository-tag-report-filename ${{ inputs.csv-github-repository-tag-report-filename }}
 
     # See https://github.com/actions/runner/issues/2185
+    # For Windows - github.action_path uses backslashes but path arg only accepts forward slashes
     - name: Set GitHub Action Path
       shell: bash
       run: |
-        GITHUB_ACTION_NEW_PATH=$(python -c "print('${{github.action_path}}'.replace('./.', '.'))")
+        if [[ "${{ inputs.experiment-runner-operating-system }}" == "Linux" || "${{ inputs.experiment-runner-operating-system }}" == "macOS" ]]; then
+            GITHUB_ACTION_NEW_PATH=$(python -c "print('${{ github.action_path }}'.replace('./', ''))")
+        else
+            GITHUB_ACTION_NEW_PATH="${{ github.workspace }}/.github/actions/reporting/github-repository-information-report"
+        fi
         echo "GITHUB_ACTION_NEW_PATH=$GITHUB_ACTION_NEW_PATH" >> $GITHUB_ENV
 
     - name: Upload GitHub Repository Information Report

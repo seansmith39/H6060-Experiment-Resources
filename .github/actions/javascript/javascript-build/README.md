@@ -7,6 +7,14 @@ An action to build a JavaScript application and upload as a build artifact.
 **Notes:**
 - The action has only been tested against the Npm package manager.
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Inputs
 
 | name                | required | type   | default                 | description                    |

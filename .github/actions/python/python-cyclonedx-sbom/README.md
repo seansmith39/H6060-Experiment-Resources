@@ -4,6 +4,14 @@
 
 An action to build and upload a JSON formatted Python CycloneDX SBOM.
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Inputs
 
 | name                              | required | type   | default                 | description                                 |

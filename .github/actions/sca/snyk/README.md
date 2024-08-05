@@ -13,11 +13,21 @@ An action to configure and run a Snyk SCA scan.
 Snyk API token is required to be set as a secret in the repository. The environment variable name should be `SNYK_TOKEN`.
 It is available under `Account Settings` → `General` → `Auth Token` on the Snyk platform.
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Supported Programming Languages
 
-- Java
-- JavaScript
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
+| JavaScript           | Npm       |
+| Python               | PyPi      |
 
 ## Inputs
 

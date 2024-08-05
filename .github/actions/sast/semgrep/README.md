@@ -9,23 +9,35 @@ An action to configure and run a Semgrep SAST scan.
 A Semgrep token is required to be set as a secret in the repository. The environment variable name should be `SEMGREP_APP_TOKEN`.
 It is available under `Platform` → `Settings` of the repository page on the Semgrep AppSec Platform.
 
-## Semgrep Docker Image
-
-The action uses the official Semgrep Docker image `returntocorp/semgrep:latest` to run the scan.
+**Notes:**
+- The action cannot use the official Semgrep Docker image `returntocorp/semgrep:latest` to run the scan, as GitHub self-hosted runners are not able to install docker for mac.
 
 ## Supported Programming Languages
 
-- Java
-- JavaScript
-- Python
+| Programming Language | Ecosystem |
+|----------------------|-----------|
+| Java                 | Maven     |
+| JavaScript           | Npm       |
+| Python               | PyPi      |
+
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
 
 ## Inputs
 
-| name                     | required | type   | default                 | description                     |
-|--------------------------|----------|--------|-------------------------|---------------------------------|
-| **programming-language** | true     | string |                         | Programming language to analyse |
-| **artifact-name**        | false    | string | sast-semgrep-report     | Name of the artifact to upload  |
-| **path**                 | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan    |
+| name                         | required | type   | default                 | description                              |
+|------------------------------|----------|--------|-------------------------|------------------------------------------|
+| **programming-language**     | true     | string |                         | Programming language to analyse          |
+| **semgrep-version**          | false    | string | 1.81.0                  | Semgrep version to use                   |
+| **wsl-distribution**         | false    | string | Ubuntu-20.04            | WSL distribution to use (Windows only)   |
+| **files-or-paths-to-ignore** | false    | string | test,tests              | Files or paths to ignore during the scan |
+| **artifact-name**            | false    | string | sast-semgrep-report     | Name of the artifact to upload           |
+| **path**                     | false    | string | ${{ github.workspace }} | Path to run the Semgrep scan             |
 
 ## Build Artifacts
 

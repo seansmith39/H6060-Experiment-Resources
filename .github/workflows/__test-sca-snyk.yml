@@ -9,7 +9,13 @@ permissions:
 jobs:
   test-action-java:
     name: Test Snyk SCA Action (Java)
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+        category: [
+          { repository: seansmith39/H6060-Java-Logback, ref: 7ee000a0a359d239c60bb93a2f4f4ea467c38395, programming-language: java }
+        ]
+    runs-on: ${{ matrix.os }}
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
@@ -18,12 +24,12 @@ jobs:
         with:
           path: experiment-resources
 
-      - name: Checkout Jackson-Databind
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Java-Jackson-Databind
-          ref: 1acb8ffe6eb20005114bfe18cfd5809b443789c2
-          path: jackson-databind
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
@@ -35,19 +41,26 @@ jobs:
         uses: ./experiment-resources/.github/actions/java/java-build
         with:
           build-command: mvn -Dmaven.test.skip=true clean install
-          build-directory: target
-          path: jackson-databind
+          build-directory: "**/target"
+          artifact-name: java-build-${{ matrix.os }}
+          path: upstream-repository
 
       - name: Run Snyk (SCA)
         uses: ./experiment-resources/.github/actions/sca/snyk
         with:
-          programming-language: java
-          artifact-name: sca-snyk-report-java
-          path: jackson-databind
+          programming-language: ${{ matrix.category.programming-language }}
+          artifact-name: sca-snyk-report-${{ matrix.category.programming-language }}-${{ matrix.os }}
+          path: upstream-repository
 
   test-action-python:
     name: Test Snyk SCA Action (Python)
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+        category: [
+          { repository: seansmith39/H6060-Python-Urllib3, ref: d1616473df94b94f0f5ad19d2a6608cfe93b7cdf, programming-language: python }
+        ]
+    runs-on: ${{ matrix.os }}
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
@@ -56,41 +69,50 @@ jobs:
         with:
           path: experiment-resources
 
-      - name: Checkout Pillow Repository
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Python-Pillow
-          ref: 75694927a10d2ba9549188bf0185c0e990c05d1d
-          path: pillow
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
-      - name: Install Python 3.7
+      # Python version < 3.8 no longer supported on MacOS
+      # See issue: https://github.com/actions/runner-images/issues/9770#issuecomment-2085623315
+      - name: Install Python 3.8
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: 3.7
+          python-version: 3.8
 
       - name: Install Python Dependencies
-        working-directory: pillow
-        env:
-          GHA_PYTHON_VERSION: 3.7
-        run: .ci/install.sh
+        working-directory: upstream-repository
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install setuptools build wheel nox
 
       - name: Build Python Application
         uses: ./experiment-resources/.github/actions/python/python-build
         with:
-          build-command: .ci/build.sh
-          build-directory: build
-          path: pillow
+          build-command: python -m build
+          build-directory: dist
+          artifact-name: python-build-${{ matrix.os }}
+          path: upstream-repository
 
       - name: Run Snyk (SCA)
         uses: ./experiment-resources/.github/actions/sca/snyk
         with:
-          programming-language: python
-          artifact-name: sca-snyk-report-python
-          path: pillow
+          programming-language: ${{ matrix.category.programming-language }}
+          artifact-name: sca-snyk-report-${{ matrix.category.programming-language }}-${{ matrix.os }}
+          path: upstream-repository
 
   test-action-javascript:
     name: Test Snyk SCA Action (JavaScript)
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+        category: [
+          { repository: seansmith39/H6060-JavaScript-Lodash, ref: 1144918f3578a84fcc4986da9b806e63a6175cbb, programming-language: javascript }
+        ]
+    runs-on: ${{ matrix.os }}
     env:
       SNYK_TOKEN: ${{ secrets.TEST_SNYK_TOKEN }}
     steps:
@@ -99,12 +121,12 @@ jobs:
         with:
           path: experiment-resources
 
-      - name: Checkout Lodash Repository
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-JavaScript-Lodash
-          ref: e71d6cdd56ae17412ad71e5c248228b7b61ee87a
-          path: lodash
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.2
@@ -112,7 +134,7 @@ jobs:
           node-version: 16.x
 
       - name: Install JavaScript Dependencies
-        working-directory: lodash
+        working-directory: upstream-repository
         run: npm ci
 
       - name: Build JavaScript Application
@@ -120,11 +142,12 @@ jobs:
         with:
           build-command: npm run build
           package-command: npm pack
-          path: lodash
+          artifact-name: javascript-build-${{ matrix.os }}
+          path: upstream-repository
 
       - name: Run Snyk (SCA)
         uses: ./experiment-resources/.github/actions/sca/snyk
         with:
-          programming-language: javascript
-          artifact-name: sca-snyk-report-javascript
-          path: lodash
+          programming-language: ${{ matrix.category.programming-language }}
+          artifact-name: sca-snyk-report-${{ matrix.category.programming-language }}-${{ matrix.os }}
+          path: upstream-repository

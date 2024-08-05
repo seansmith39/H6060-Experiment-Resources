@@ -9,19 +9,25 @@ permissions:
 jobs:
   test-action-java:
     name: Test Eclipse Steady SCA Action (Java)
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04 ]
+        category: [
+          { repository: seansmith39/H6060-Java-Logback, ref: 7ee000a0a359d239c60bb93a2f4f4ea467c38395, programming-language: java }
+        ]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: experiment-resources
 
-      - name: Checkout Jackson-Databind Repository
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Java-Jackson-Databind
-          ref: d0e9952ea70d1af5c512322a32456f237afb9e9b
-          path: jackson-databind
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4.2.1
@@ -33,63 +39,75 @@ jobs:
         uses: ./experiment-resources/.github/actions/java/java-build
         with:
           build-command: mvn -Dmaven.test.skip=true clean install
-          path: jackson-databind
+          build-directory: "**/target"
+          artifact-name: java-build-${{ matrix.os }}
+          path: upstream-repository
 
       - name: Run Eclipse Steady (SCA)
         uses: ./experiment-resources/.github/actions/sca/eclipse-steady/java
         with:
           build-directory: target
-          eclipse-steady-workspace-token: 19DACF250B828F3BAB827AFA5789DB55
-          eclipse-steady-url: http://steady.b00158319.com:8033
-          eclipse-steady-application-group-id: com.fasterxml.jackson
-          eclipse-steady-application-artifact-id: jackson-databind
-          eclipse-steady-application-version: 2.9.10.7
-          eclipse-steady-project-source-directories: src
-          artifact-name: sast-eclipse-steady-report-java
-          path: jackson-databind
+          eclipse-steady-workspace-token: BAB77AC201B415E4F2D8F32CE2286B15
+          eclipse-steady-backend-url: http://steady-ubuntu.b00158319.com:8033/backend
+          eclipse-steady-cia-url: http://steady-ubuntu.b00158319.com:8033/cia
+          eclipse-steady-application-group-id: ch.qos.logback
+          eclipse-steady-application-artifact-id: logback-parent
+          eclipse-steady-application-version: 1.4.13
+          eclipse-steady-project-source-directories: logback-access/src,logback-classic/src,logback-core/src,logback-examples/src
+          artifact-name: sast-eclipse-steady-report-${{ matrix.category.programming-language }}-${{ matrix.os }}
+          path: upstream-repository
 
   test-action-python:
     name: Test Eclipse Steady SCA Action (Python)
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04 ]
+        category: [
+          { repository: seansmith39/H6060-Python-Urllib3, ref: d1616473df94b94f0f5ad19d2a6608cfe93b7cdf, programming-language: python }
+        ]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: experiment-resources
 
-      - name: Checkout Pillow Repository
+      - name: Checkout Upstream Repository
         uses: actions/checkout@v4
         with:
-          repository: seansmith39/H6060-Python-Pillow
-          ref: 722b5d3350fbbb599fd3966e08e55547a2656cd7
-          path: pillow
+          repository: ${{ matrix.category.repository }}
+          ref: ${{ matrix.category.ref }}
+          path: upstream-repository
 
-      - name: Install Python 3.7
+      # Python version < 3.8 no longer supported on MacOS
+      # See issue: https://github.com/actions/runner-images/issues/9770#issuecomment-2085623315
+      - name: Install Python 3.8
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: 3.7
+          python-version: 3.8
 
       - name: Install Python Dependencies
-        working-directory: pillow
-        env:
-          GHA_PYTHON_VERSION: 3.7
-        run: .ci/install.sh
+        working-directory: upstream-repository
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install setuptools build wheel nox
 
       - name: Build Python Application
         uses: ./experiment-resources/.github/actions/python/python-build
         with:
-          build-command: .ci/build.sh
-          build-directory: build
-          path: pillow
+          build-command: python -m build
+          build-directory: dist
+          artifact-name: python-build-${{ matrix.os }}
+          path: upstream-repository
 
       - name: Run Eclipse Steady (SCA)
         uses: ./experiment-resources/.github/actions/sca/eclipse-steady/python
         with:
-          eclipse-steady-workspace-token: 1A8CC68377BFEEA81CDF80CFA757872E
-          eclipse-steady-url: http://steady.b00158319.com:8033
+          eclipse-steady-workspace-token: B980175C6DAEEFDA6016E9B8789DADC3
+          eclipse-steady-backend-url: http://steady-ubuntu.b00158319.com:8033/backend
           eclipse-steady-application-group-id: org.python
-          eclipse-steady-application-artifact-id: pillow
-          eclipse-steady-application-version: 8.3.0
+          eclipse-steady-application-artifact-id: urllib3
+          eclipse-steady-application-version: 1.26.5
           eclipse-steady-project-source-directories: src
-          artifact-name: sca-eclipse-steady-report-python
-          path: pillow
+          artifact-name: sca-eclipse-steady-report-${{ matrix.category.programming-language }}-${{ matrix.os }}
+          path: upstream-repository

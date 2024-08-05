@@ -4,6 +4,14 @@
 
 An action to configure and export GitHub Workflow metrics to OpenTelemetry.
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Inputs
 
 | name                              | required | type   | default | description                          |

@@ -1,5 +1,5 @@
 name: CodeQL SAST Action
-description: Setup and run CodeQL SAST scan
+description: Configure and run SAST CodeQL scan
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
@@ -35,6 +35,8 @@ runs:
         source-root: ${{ inputs.path }}
         languages: ${{ inputs.programming-language }}
 
+    # CodeQL autobuild only supports Java and C#
+    # Ref: https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages#comparison-of-the-build-modes
     - name: Autobuild Java Application
       if: ${{ inputs.programming-language == 'java' }}
       uses: github/codeql-action/autobuild@v3

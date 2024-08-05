@@ -3,12 +3,6 @@ description: Generate a JavaScript dependency tree and upload as a build artifac
 author: sean.smith [B00158319@mytudublin.ie]
 
 inputs:
-  build-tool:
-    description: Build tool to use
-    type: string
-    required: false
-    default: npm
-
   artifact-name:
     description: Name of the artifact to upload
     type: string
@@ -25,7 +19,6 @@ runs:
   using: composite
   steps:
     - name: Generate Npm Dependency Tree
-      if: ${{ inputs.build-tool == 'npm' }}
       shell: bash
       working-directory: ${{ inputs.path }}
       run: npm shrinkwrap

@@ -8,6 +8,24 @@ inputs:
     type: string
     required: true
 
+  semgrep-version:
+    description: Semgrep version to use
+    type: string
+    required: false
+    default: 1.81.0
+
+  wsl-distribution:
+    description: WSL distribution to use (Windows only)
+    type: string
+    required: false
+    default: Ubuntu-22.04
+
+  files-or-paths-to-ignore:
+    description: Paths to ignore during the scan
+    type: string
+    required: false
+    default: "test,tests"
+
   artifact-name:
     description: Name of the artifact to upload
     type: string
@@ -29,8 +47,45 @@ runs:
         files: ${{ inputs.path }}
         fail: true
 
-    - name: Perform Semgrep Analysis
+    - name: Set Files or Paths to Ignore Environment Variable
       shell: bash
+      run: |
+        cli_flags=""
+        ignore_files=${{ inputs.files-or-paths-to-ignore }}
+        
+        for ignore_file in ${ignore_files//,/ }; do
+            cli_flags="${cli_flags} --exclude=$ignore_file"
+        done
+        echo "FILES_OR_PATHS_TO_IGNORE=${cli_flags}" >> $GITHUB_ENV
+
+    - name: Set Default Shell Environment Variable
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+            echo "DEFAULT_SHELL=wsl-bash_${{ inputs.wsl-distribution }} {0}" >> $GITHUB_ENV
+        else
+            echo "DEFAULT_SHELL=bash" >> $GITHUB_ENV
+        fi
+
+    - name: Setup Windows Subsystem for Linux (WSL)
+      if: runner.os == 'Windows'
+      uses: Vampire/setup-wsl@v3.1.1
+      with:
+        distribution: ${{ inputs.wsl-distribution }}
+        additional-packages: python3 python3-pip
+
+    - name: Install Python 3.12
+      if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: 3.12
+
+    - name: Install Semgrep
+      shell: ${{ env.DEFAULT_SHELL }}
+      run: pip install semgrep==${{ inputs.semgrep-version }}
+
+    - name: Perform Semgrep Analysis
+      shell: ${{ env.DEFAULT_SHELL }}
       working-directory: ${{ inputs.path }}
       run: |
         semgrep scan \
@@ -39,7 +94,8 @@ runs:
           --config=p/cwe-top-25 \
           --config=p/owasp-top-ten \
           --json \
-          --json-output=semgrep-report.json
+          --json-output=semgrep-report.json \
+          ${{ env.FILES_OR_PATHS_TO_IGNORE }}
 
     - name: Upload Semgrep Report
       uses: actions/upload-artifact@v4

@@ -8,6 +8,14 @@ An action to build and upload a JSON formatted Java CycloneDX SBOM.
 - Maven GitHub Action only supports up to CycloneDX SBOM schema `v1.5`.
 - `cyclonedx-maven-plugin-version` default version to be updated to include support CycloneDX SBOM schema `v1.6` after resolution of https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/489
 
+## Supported Operating Systems
+
+| name        | version | 
+|-------------|---------|
+| **Ubuntu**  | 22.04   |
+| **Windows** | 2022    |
+| **MacOS**   | 14      |
+
 ## Inputs
 
 | name                               | required | type   | default                 | description                                  |
